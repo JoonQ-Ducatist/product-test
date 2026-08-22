@@ -112,16 +112,17 @@
       <!-- Feed Stream Status Header (Scalable HUD for Infinite Items) -->
       <div class="w-full flex items-center justify-between mb-2 px-1 text-xs">
         <div class="flex items-center gap-1.5 font-mono text-[11px]">
-          <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-          <span id="feed-stream-label" class="text-slate-300 font-medium">LIVE STREAM</span>
+          <span id="stream-pulse-dot" class="w-2 h-2 rounded-full bg-cyan-400 animate-pulse"></span>
+          <span id="feed-stream-label" class="text-cyan-400 font-bold transition-colors">LIVE STREAM</span>
         </div>
         <div class="flex items-center gap-2">
           <!-- Feed Item Position Counter -->
-          <span id="feed-counter-badge" class="font-mono text-[10px] text-cyan-glow bg-surface-container px-2 py-0.5 rounded-full border border-cyan-glow/20 font-bold">
+          <span id="feed-counter-badge" class="font-mono text-[10px] text-cyan-400 bg-cyan-400/10 px-2 py-0.5 rounded-full border border-cyan-400/30 font-bold transition-all shadow-sm">
             01 / 04
           </span>
-          <button onclick="shuffleCard()" title="랜덤 다음 룩 보기" class="p-1 rounded-md bg-surface-container hover:bg-surface-container-high text-slate-400 hover:text-cyan-glow transition-colors">
-            <span class="material-symbols-outlined text-[15px]">shuffle</span>
+          <button id="shuffle-btn" onclick="shuffleCard()" title="무제한 롤링 / 셔플 디스커버리" class="p-1 px-2 rounded-lg bg-surface-container hover:bg-surface-container-high border border-surface-container-high text-slate-300 hover:text-white flex items-center gap-1 text-[10px] font-mono transition-all">
+            <span class="material-symbols-outlined text-[14px] text-cyan-glow">shuffle</span>
+            <span>셔플 탐색</span>
           </button>
         </div>
       </div>

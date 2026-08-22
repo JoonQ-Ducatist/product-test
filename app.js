@@ -1,12 +1,12 @@
 /**
  * FirstLook - Quantitative Intuition & Realtime Impression Analytics
- * Scalable Infinite Feed Stream, Gesture Engine, Category Filtering & Theming
+ * Scalable Infinite Feed Stream, Category Filter Gathering, Shuffle Discovery & User Card Prioritization
  */
 
 // Category Theme System
 const CATEGORY_THEMES = {
   Business: {
-    name: '비즈니스 / 출근',
+    name: '비즈니스',
     primaryColor: '#00f0ff',
     textColor: 'text-cyan-400',
     dotBg: 'bg-cyan-400',
@@ -18,7 +18,7 @@ const CATEGORY_THEMES = {
     liveTag: 'Live Business'
   },
   Dating: {
-    name: '소개팅 / 데이트',
+    name: '소개팅/데이트',
     primaryColor: '#ff7597', // Soft romantic loving pastel rose pink
     textColor: 'text-[#ff7597]',
     dotBg: 'bg-[#ff7597]',
@@ -30,7 +30,7 @@ const CATEGORY_THEMES = {
     liveTag: 'Live Dating'
   },
   Workout: {
-    name: '운동 / 피트니스',
+    name: '운동/피트니스',
     primaryColor: '#ff3b30',
     textColor: 'text-rose-400',
     dotBg: 'bg-rose-500',
@@ -42,7 +42,7 @@ const CATEGORY_THEMES = {
     liveTag: 'Live Fitness'
   },
   Interview: {
-    name: '면접 / 커리어',
+    name: '면접/이력서',
     primaryColor: '#6366f1',
     textColor: 'text-indigo-400',
     dotBg: 'bg-indigo-500',
@@ -54,7 +54,7 @@ const CATEGORY_THEMES = {
     liveTag: 'Live Career'
   },
   Style: {
-    name: '데일리 / 스타일',
+    name: '데일리 룩',
     primaryColor: '#a855f7',
     textColor: 'text-purple-400',
     dotBg: 'bg-purple-500',
@@ -146,7 +146,7 @@ const INITIAL_CARDS = [
 // App State
 let appCards = [];
 let currentCardIndex = 0;
-let currentFeedCategory = 'ALL';
+let currentFeedCategory = 'ALL'; // 'ALL' or specific category
 let currentSelectedFile = null;
 let currentSelectedDataUrl = '';
 let currentCategory = 'Business';
@@ -154,7 +154,7 @@ let currentCategoryIcon = 'work';
 let votedCards = new Set();
 let isAnimating = false;
 
-// Get Active Cards based on Category Filter
+// Return cards filtered by active stream category
 function getActiveFeedCards() {
   if (currentFeedCategory === 'ALL') {
     return appCards;
@@ -162,9 +162,9 @@ function getActiveFeedCards() {
   return appCards.filter(c => c.category.toLowerCase() === currentFeedCategory.toLowerCase());
 }
 
-// Load stored cards or initialize
+// Load stored cards and prioritize user's card on initial load (1 time priority)
 function initData() {
-  const stored = localStorage.getItem('firstlook_cards_v6');
+  const stored = localStorage.getItem('firstlook_cards_v7');
   if (stored) {
     try {
       appCards = JSON.parse(stored);
@@ -175,11 +175,21 @@ function initData() {
     appCards = [...INITIAL_CARDS];
     saveCards();
   }
+
+  // Prioritize user's uploaded photo on initial load
+  const hasPrioritized = sessionStorage.getItem('firstlook_user_priority_shown');
+  if (!hasPrioritized) {
+    const myIndex = appCards.findIndex(c => c.isMyUpload);
+    if (myIndex !== -1) {
+      currentCardIndex = myIndex;
+      sessionStorage.setItem('firstlook_user_priority_shown', 'true');
+    }
+  }
 }
 
 function saveCards() {
   try {
-    localStorage.setItem('firstlook_cards_v6', JSON.stringify(appCards));
+    localStorage.setItem('firstlook_cards_v7', JSON.stringify(appCards));
   } catch (e) {
     console.warn('Storage quota exceeded, caching in memory only');
   }
@@ -218,31 +228,71 @@ function switchTab(tabName) {
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
-// Feed Category Stream Filter
+// Category Stream Filter (같은 카테고리만 모아보기)
 function filterFeedCategory(cat) {
   currentFeedCategory = cat;
   currentCardIndex = 0;
 
+  const targetTheme = (cat !== 'ALL' && CATEGORY_THEMES[cat]) ? CATEGORY_THEMES[cat] : CATEGORY_THEMES.Business;
+
   document.querySelectorAll('.feed-cat-pill').forEach(btn => {
     const isSelected = btn.getAttribute('data-feed-cat') === cat;
     if (isSelected) {
-      btn.classList.add('active', 'bg-cyan-glow/15', 'border-cyan-glow', 'text-cyan-glow', 'font-bold');
-      btn.classList.remove('bg-surface-container', 'border-surface-container-high', 'text-slate-400', 'font-medium');
+      btn.className = 'feed-cat-pill active px-3 py-1 rounded-full font-mono text-[11px] font-bold whitespace-nowrap transition-all shadow-sm';
+      btn.style.backgroundColor = `${targetTheme.primaryColor}20`;
+      btn.style.borderColor = targetTheme.primaryColor;
+      btn.style.color = targetTheme.primaryColor;
     } else {
-      btn.classList.remove('active', 'bg-cyan-glow/15', 'border-cyan-glow', 'text-cyan-glow', 'font-bold');
-      btn.classList.add('bg-surface-container', 'border-surface-container-high', 'text-slate-400', 'font-medium');
+      btn.className = 'feed-cat-pill px-3 py-1 rounded-full bg-surface-container border border-surface-container-high text-slate-400 font-mono text-[11px] font-medium whitespace-nowrap hover:text-white transition-all';
+      btn.style.backgroundColor = '';
+      btn.style.borderColor = '';
+      btn.style.color = '';
     }
   });
 
-  const streamLabel = document.getElementById('feed-stream-label');
-  if (streamLabel) {
-    streamLabel.textContent = cat === 'ALL' ? 'LIVE STREAM (ALL)' : `LIVE STREAM (${cat.toUpperCase()})`;
-  }
-
   renderCurrentFeedCard('none');
+  if (cat !== 'ALL') {
+    showToast(`'${targetTheme.name}' 카테고리만 모아보기 필터가 적용되었습니다.`);
+  }
 }
 
-// Render Feed Card with Dynamic Category Theming & Arrow Colors
+// 무제한 롤링 / 셔플 디스커버리 (모아보기 카테고리 자동 해제 후 전체 무한 셔플)
+function shuffleCard() {
+  // 모아보기 카테고리 해제
+  currentFeedCategory = 'ALL';
+
+  // 전체 피드 탭으로 시각적 복귀
+  document.querySelectorAll('.feed-cat-pill').forEach(btn => {
+    const isAll = btn.getAttribute('data-feed-cat') === 'ALL';
+    if (isAll) {
+      btn.className = 'feed-cat-pill active px-3 py-1 rounded-full bg-cyan-glow/15 border border-cyan-glow text-cyan-glow font-mono text-[11px] font-bold whitespace-nowrap transition-all shadow-sm';
+      btn.style.backgroundColor = '';
+      btn.style.borderColor = '';
+      btn.style.color = '';
+    } else {
+      btn.className = 'feed-cat-pill px-3 py-1 rounded-full bg-surface-container border border-surface-container-high text-slate-400 font-mono text-[11px] font-medium whitespace-nowrap hover:text-white transition-all';
+      btn.style.backgroundColor = '';
+      btn.style.borderColor = '';
+      btn.style.color = '';
+    }
+  });
+
+  // 전체 카드 풀에서 무작위 카드 선택
+  if (appCards.length > 1) {
+    let randIdx = Math.floor(Math.random() * appCards.length);
+    if (randIdx === currentCardIndex) {
+      randIdx = (currentCardIndex + 1) % appCards.length;
+    }
+    currentCardIndex = randIdx;
+  } else {
+    currentCardIndex = 0;
+  }
+
+  renderCurrentFeedCard('next');
+  showToast('카테고리 모아보기가 해제되고 전체 무제한 셔플 탐색이 시작되었습니다.');
+}
+
+// Render Feed Card with Category Color Synchronization across Header & Counter
 function renderCurrentFeedCard(direction = 'next') {
   const activeCards = getActiveFeedCards();
   if (activeCards.length === 0) {
@@ -276,21 +326,45 @@ function renderCurrentFeedCard(direction = 'next') {
   const liveDotSolid = document.getElementById('live-dot-solid');
   const laserBar = document.getElementById('laser-bar');
 
+  // Top Stream Header HUD Elements
+  const streamPulseDot = document.getElementById('stream-pulse-dot');
+  const streamLabel = document.getElementById('feed-stream-label');
+  const counterBadge = document.getElementById('feed-counter-badge');
+  const shuffleBtnIcon = document.querySelector('#shuffle-btn .material-symbols-outlined');
+
   // Floating Arrow Navigation Buttons
   const prevBtn = document.getElementById('prev-card-btn');
   const nextBtn = document.getElementById('next-card-btn');
   const prevIcon = document.getElementById('prev-card-icon');
   const nextIcon = document.getElementById('next-card-icon');
 
-  // Stream Position Counter
-  const counterBadge = document.getElementById('feed-counter-badge');
+  const theme = CATEGORY_THEMES[card.category] || CATEGORY_THEMES.Business;
+
+  // Update Stream Header HUD with Category Color
+  if (streamLabel) {
+    if (currentFeedCategory === 'ALL') {
+      streamLabel.textContent = `LIVE STREAM • 전체`;
+    } else {
+      streamLabel.textContent = `LIVE STREAM • ${theme.name} 모아보기`;
+    }
+    streamLabel.style.color = theme.primaryColor;
+  }
+  if (streamPulseDot) {
+    streamPulseDot.style.backgroundColor = theme.primaryColor;
+    streamPulseDot.style.boxShadow = `0 0 8px ${theme.dotGlow}`;
+  }
   if (counterBadge) {
     const curNum = String(currentCardIndex + 1).padStart(2, '0');
     const totNum = String(activeCards.length).padStart(2, '0');
     counterBadge.textContent = `${curNum} / ${totNum}`;
+    counterBadge.style.color = theme.primaryColor;
+    counterBadge.style.borderColor = `${theme.primaryColor}50`;
+    counterBadge.style.backgroundColor = `${theme.primaryColor}15`;
+    counterBadge.style.boxShadow = `0 0 10px ${theme.primaryColor}30`;
   }
-
-  const theme = CATEGORY_THEMES[card.category] || CATEGORY_THEMES.Business;
+  if (shuffleBtnIcon) {
+    shuffleBtnIcon.style.color = theme.primaryColor;
+  }
 
   if (peekImg && nextCard) {
     peekImg.src = nextCard.imageUrl;
@@ -370,10 +444,12 @@ function showEmptyFeedNotice() {
   const subtextEl = document.getElementById('feed-subtext');
   const voteActions = document.getElementById('vote-actions');
   const voteResult = document.getElementById('vote-result-container');
+  const counterBadge = document.getElementById('feed-counter-badge');
 
   cardImg.src = 'assets/images/card1_business.jpg';
   questionText.textContent = '해당 카테고리에 아직 등록된 사진이 없습니다.';
   if (subtextEl) subtextEl.textContent = '새로운 첫인상 사진을 첫 번째로 등록해 보세요!';
+  if (counterBadge) counterBadge.textContent = '00 / 00';
   voteActions.classList.add('hidden');
   voteResult.classList.add('hidden');
 }
@@ -393,17 +469,6 @@ function prevCard() {
   if (activeCards.length === 0) return;
   const prevIdx = (currentCardIndex - 1 + activeCards.length) % activeCards.length;
   goToCard(prevIdx, 'prev');
-}
-
-function shuffleCard() {
-  const activeCards = getActiveFeedCards();
-  if (activeCards.length <= 1) return;
-  let randIdx = Math.floor(Math.random() * activeCards.length);
-  if (randIdx === currentCardIndex) {
-    randIdx = (currentCardIndex + 1) % activeCards.length;
-  }
-  goToCard(randIdx, 'next');
-  showToast('랜덤 피드로 이동했습니다.');
 }
 
 function goToCard(idx, direction = 'next') {
