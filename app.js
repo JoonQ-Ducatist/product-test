@@ -1,6 +1,6 @@
 /**
  * FirstLook - Quantitative Intuition & Realtime Impression Analytics
- * Application Logic, Gesture/Swipe Engine & Category Theming
+ * Scalable Infinite Feed Stream, Gesture Engine, Category Filtering & Theming
  */
 
 // Category Theme System
@@ -146,6 +146,7 @@ const INITIAL_CARDS = [
 // App State
 let appCards = [];
 let currentCardIndex = 0;
+let currentFeedCategory = 'ALL';
 let currentSelectedFile = null;
 let currentSelectedDataUrl = '';
 let currentCategory = 'Business';
@@ -153,9 +154,17 @@ let currentCategoryIcon = 'work';
 let votedCards = new Set();
 let isAnimating = false;
 
+// Get Active Cards based on Category Filter
+function getActiveFeedCards() {
+  if (currentFeedCategory === 'ALL') {
+    return appCards;
+  }
+  return appCards.filter(c => c.category.toLowerCase() === currentFeedCategory.toLowerCase());
+}
+
 // Load stored cards or initialize
 function initData() {
-  const stored = localStorage.getItem('firstlook_cards_v5');
+  const stored = localStorage.getItem('firstlook_cards_v6');
   if (stored) {
     try {
       appCards = JSON.parse(stored);
@@ -170,7 +179,7 @@ function initData() {
 
 function saveCards() {
   try {
-    localStorage.setItem('firstlook_cards_v5', JSON.stringify(appCards));
+    localStorage.setItem('firstlook_cards_v6', JSON.stringify(appCards));
   } catch (e) {
     console.warn('Storage quota exceeded, caching in memory only');
   }
@@ -203,54 +212,50 @@ function switchTab(tabName) {
   } else if (tabName === 'profile') {
     renderProfile();
   } else if (tabName === 'feed') {
-    renderStorySegments();
     renderCurrentFeedCard('none');
   }
 
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
-// Story Segment Progress Bars
-function renderStorySegments() {
-  const container = document.getElementById('story-segments');
-  if (!container) return;
+// Feed Category Stream Filter
+function filterFeedCategory(cat) {
+  currentFeedCategory = cat;
+  currentCardIndex = 0;
 
-  const currentCard = appCards[currentCardIndex];
-  const theme = currentCard ? (CATEGORY_THEMES[currentCard.category] || CATEGORY_THEMES.Business) : CATEGORY_THEMES.Business;
-
-  container.innerHTML = appCards.map((_, idx) => {
-    let stateClass = '';
-    let customStyle = '';
-    if (idx < currentCardIndex) {
-      stateClass = 'passed';
-      customStyle = `background-color: ${theme.primaryColor}80;`;
-    } else if (idx === currentCardIndex) {
-      stateClass = 'active';
-      customStyle = `background-color: ${theme.primaryColor}; box-shadow: 0 0 8px ${theme.primaryColor};`;
+  document.querySelectorAll('.feed-cat-pill').forEach(btn => {
+    const isSelected = btn.getAttribute('data-feed-cat') === cat;
+    if (isSelected) {
+      btn.classList.add('active', 'bg-cyan-glow/15', 'border-cyan-glow', 'text-cyan-glow', 'font-bold');
+      btn.classList.remove('bg-surface-container', 'border-surface-container-high', 'text-slate-400', 'font-medium');
+    } else {
+      btn.classList.remove('active', 'bg-cyan-glow/15', 'border-cyan-glow', 'text-cyan-glow', 'font-bold');
+      btn.classList.add('bg-surface-container', 'border-surface-container-high', 'text-slate-400', 'font-medium');
     }
-    return `<div class="story-bar flex-1 ${stateClass}" style="${customStyle}" data-index="${idx}"></div>`;
-  }).join('');
-
-  container.querySelectorAll('.story-bar').forEach(bar => {
-    bar.addEventListener('click', (e) => {
-      const targetIdx = parseInt(e.currentTarget.getAttribute('data-index'), 10);
-      if (!isNaN(targetIdx) && targetIdx !== currentCardIndex) {
-        goToCard(targetIdx, targetIdx > currentCardIndex ? 'next' : 'prev');
-      }
-    });
   });
+
+  const streamLabel = document.getElementById('feed-stream-label');
+  if (streamLabel) {
+    streamLabel.textContent = cat === 'ALL' ? 'LIVE STREAM (ALL)' : `LIVE STREAM (${cat.toUpperCase()})`;
+  }
+
+  renderCurrentFeedCard('none');
 }
 
 // Render Feed Card with Dynamic Category Theming & Arrow Colors
 function renderCurrentFeedCard(direction = 'next') {
-  if (appCards.length === 0) return;
+  const activeCards = getActiveFeedCards();
+  if (activeCards.length === 0) {
+    showEmptyFeedNotice();
+    return;
+  }
 
-  if (currentCardIndex >= appCards.length) currentCardIndex = 0;
-  if (currentCardIndex < 0) currentCardIndex = appCards.length - 1;
+  if (currentCardIndex >= activeCards.length) currentCardIndex = 0;
+  if (currentCardIndex < 0) currentCardIndex = activeCards.length - 1;
 
-  const card = appCards[currentCardIndex];
-  const nextIdx = (currentCardIndex + 1) % appCards.length;
-  const nextCard = appCards[nextIdx];
+  const card = activeCards[currentCardIndex];
+  const nextIdx = (currentCardIndex + 1) % activeCards.length;
+  const nextCard = activeCards[nextIdx];
 
   const activeLayer = document.getElementById('active-card-layer');
   const cardImg = document.getElementById('feed-card-image');
@@ -276,6 +281,14 @@ function renderCurrentFeedCard(direction = 'next') {
   const nextBtn = document.getElementById('next-card-btn');
   const prevIcon = document.getElementById('prev-card-icon');
   const nextIcon = document.getElementById('next-card-icon');
+
+  // Stream Position Counter
+  const counterBadge = document.getElementById('feed-counter-badge');
+  if (counterBadge) {
+    const curNum = String(currentCardIndex + 1).padStart(2, '0');
+    const totNum = String(activeCards.length).padStart(2, '0');
+    counterBadge.textContent = `${curNum} / ${totNum}`;
+  }
 
   const theme = CATEGORY_THEMES[card.category] || CATEGORY_THEMES.Business;
 
@@ -343,8 +356,6 @@ function renderCurrentFeedCard(direction = 'next') {
     nextBtn.style.boxShadow = `0 0 10px ${theme.primaryColor}35`;
   }
 
-  renderStorySegments();
-
   if (votedCards.has(card.id)) {
     showVoteResults(card, theme);
   } else {
@@ -353,17 +364,46 @@ function renderCurrentFeedCard(direction = 'next') {
   }
 }
 
+function showEmptyFeedNotice() {
+  const cardImg = document.getElementById('feed-card-image');
+  const questionText = document.getElementById('feed-question');
+  const subtextEl = document.getElementById('feed-subtext');
+  const voteActions = document.getElementById('vote-actions');
+  const voteResult = document.getElementById('vote-result-container');
+
+  cardImg.src = 'assets/images/card1_business.jpg';
+  questionText.textContent = '해당 카테고리에 아직 등록된 사진이 없습니다.';
+  if (subtextEl) subtextEl.textContent = '새로운 첫인상 사진을 첫 번째로 등록해 보세요!';
+  voteActions.classList.add('hidden');
+  voteResult.classList.add('hidden');
+}
+
 // Navigation between cards
 function nextCard() {
   if (isAnimating) return;
-  const nextIdx = (currentCardIndex + 1) % appCards.length;
+  const activeCards = getActiveFeedCards();
+  if (activeCards.length === 0) return;
+  const nextIdx = (currentCardIndex + 1) % activeCards.length;
   goToCard(nextIdx, 'next');
 }
 
 function prevCard() {
   if (isAnimating) return;
-  const prevIdx = (currentCardIndex - 1 + appCards.length) % appCards.length;
+  const activeCards = getActiveFeedCards();
+  if (activeCards.length === 0) return;
+  const prevIdx = (currentCardIndex - 1 + activeCards.length) % activeCards.length;
   goToCard(prevIdx, 'prev');
+}
+
+function shuffleCard() {
+  const activeCards = getActiveFeedCards();
+  if (activeCards.length <= 1) return;
+  let randIdx = Math.floor(Math.random() * activeCards.length);
+  if (randIdx === currentCardIndex) {
+    randIdx = (currentCardIndex + 1) % activeCards.length;
+  }
+  goToCard(randIdx, 'next');
+  showToast('랜덤 피드로 이동했습니다.');
 }
 
 function goToCard(idx, direction = 'next') {
@@ -373,7 +413,8 @@ function goToCard(idx, direction = 'next') {
 
 // Handle Vote Action
 function castVote(isYes) {
-  const card = appCards[currentCardIndex];
+  const activeCards = getActiveFeedCards();
+  const card = activeCards[currentCardIndex];
   if (!card) return;
 
   if (isYes) {
@@ -710,6 +751,7 @@ function setupLocalFileUpload() {
 
     appCards.unshift(newCard);
     saveCards();
+    currentFeedCategory = 'ALL';
     currentCardIndex = 0;
 
     resetFileUploadState();
@@ -719,6 +761,7 @@ function setupLocalFileUpload() {
     
     setTimeout(() => {
       switchTab('feed');
+      filterFeedCategory('ALL');
     }, 350);
   });
 }
@@ -774,6 +817,7 @@ function renderRanking() {
 function viewCardFromRanking(cardId) {
   const idx = appCards.findIndex(c => c.id === cardId);
   if (idx !== -1) {
+    currentFeedCategory = 'ALL';
     currentCardIndex = idx;
     switchTab('feed');
   }
@@ -859,7 +903,6 @@ document.addEventListener('DOMContentLoaded', () => {
   initData();
   setupGestureEngine();
   setupLocalFileUpload();
-  renderStorySegments();
   renderCurrentFeedCard('none');
 
   const notifBtn = document.getElementById('notification-btn');
