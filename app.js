@@ -251,8 +251,10 @@ function filterFeedCategory(cat) {
   });
 
   renderCurrentFeedCard('none');
-  if (cat !== 'ALL') {
-    showToast(`'${targetTheme.name}' 카테고리만 모아보기 필터가 적용되었습니다.`);
+  if (cat === 'ALL') {
+    showToast('전체 피드 모아보기');
+  } else {
+    showToast(`'${targetTheme.name}' 모아보기`);
   }
 }
 
@@ -343,7 +345,7 @@ function renderCurrentFeedCard(direction = 'next') {
   // Update Stream Header HUD with Category Color
   if (streamLabel) {
     if (currentFeedCategory === 'ALL') {
-      streamLabel.textContent = `LIVE STREAM • 전체`;
+      streamLabel.textContent = `LIVE STREAM`;
     } else {
       streamLabel.textContent = `LIVE STREAM • ${theme.name} 모아보기`;
     }
