@@ -19,14 +19,14 @@ const CATEGORY_THEMES = {
   },
   Dating: {
     name: '소개팅 / 데이트',
-    primaryColor: '#ff2d78',
-    textColor: 'text-pink-400',
-    dotBg: 'bg-pink-500',
-    dotGlow: '#ff2d78',
-    badgeBorder: 'border-pink-500/40',
-    badgeText: 'text-pink-400',
-    laserColor: '#ff2d78',
-    laserGlow: '0 0 12px #ff2d78',
+    primaryColor: '#ff7597', // Soft romantic loving pastel rose pink
+    textColor: 'text-[#ff7597]',
+    dotBg: 'bg-[#ff7597]',
+    dotGlow: 'rgba(255, 117, 151, 0.7)',
+    badgeBorder: 'border-[#ff7597]/40',
+    badgeText: 'text-[#ff7597]',
+    laserColor: '#ff7597',
+    laserGlow: '0 0 12px rgba(255, 117, 151, 0.6)',
     liveTag: 'Live Dating'
   },
   Workout: {
@@ -155,7 +155,7 @@ let isAnimating = false;
 
 // Load stored cards or initialize
 function initData() {
-  const stored = localStorage.getItem('firstlook_cards_v4');
+  const stored = localStorage.getItem('firstlook_cards_v5');
   if (stored) {
     try {
       appCards = JSON.parse(stored);
@@ -170,7 +170,7 @@ function initData() {
 
 function saveCards() {
   try {
-    localStorage.setItem('firstlook_cards_v4', JSON.stringify(appCards));
+    localStorage.setItem('firstlook_cards_v5', JSON.stringify(appCards));
   } catch (e) {
     console.warn('Storage quota exceeded, caching in memory only');
   }
@@ -241,7 +241,7 @@ function renderStorySegments() {
   });
 }
 
-// Render Feed Card with Dynamic Category Theming & Image Framing
+// Render Feed Card with Dynamic Category Theming & Arrow Colors
 function renderCurrentFeedCard(direction = 'next') {
   if (appCards.length === 0) return;
 
@@ -270,6 +270,12 @@ function renderCurrentFeedCard(direction = 'next') {
   const liveDotPing = document.getElementById('live-dot-ping');
   const liveDotSolid = document.getElementById('live-dot-solid');
   const laserBar = document.getElementById('laser-bar');
+
+  // Floating Arrow Navigation Buttons
+  const prevBtn = document.getElementById('prev-card-btn');
+  const nextBtn = document.getElementById('next-card-btn');
+  const prevIcon = document.getElementById('prev-card-icon');
+  const nextIcon = document.getElementById('next-card-icon');
 
   const theme = CATEGORY_THEMES[card.category] || CATEGORY_THEMES.Business;
 
@@ -301,14 +307,14 @@ function renderCurrentFeedCard(direction = 'next') {
     catIcon.style.color = theme.primaryColor;
   }
   if (feedCategoryBadge) {
-    feedCategoryBadge.style.borderColor = `${theme.primaryColor}50`;
+    feedCategoryBadge.style.borderColor = `${theme.primaryColor}60`;
   }
   authorText.textContent = `@${card.author}`;
   questionText.innerHTML = card.question.replace(/\n/g, '<br/>');
   if (subtextEl) subtextEl.textContent = card.subtext || '실시간 피드백 투표에 참여해 보세요';
   nodeId.textContent = card.nodeId || 'NODE: 89.B';
 
-  // Apply Category Color Theme to "Live Test" Tag & Blinking Dot
+  // Apply Category Color Theme to "Live" Tag & Blinking Dot
   if (liveTagText) {
     liveTagText.textContent = theme.liveTag;
     liveTagText.style.color = theme.primaryColor;
@@ -323,6 +329,18 @@ function renderCurrentFeedCard(direction = 'next') {
   if (laserBar) {
     laserBar.style.backgroundColor = theme.laserColor;
     laserBar.style.boxShadow = theme.laserGlow;
+  }
+
+  // Apply Category Color to Up / Down Arrow Navigation Buttons
+  if (prevIcon) prevIcon.style.color = theme.primaryColor;
+  if (nextIcon) nextIcon.style.color = theme.primaryColor;
+  if (prevBtn) {
+    prevBtn.style.borderColor = `${theme.primaryColor}60`;
+    prevBtn.style.boxShadow = `0 0 10px ${theme.primaryColor}35`;
+  }
+  if (nextBtn) {
+    nextBtn.style.borderColor = `${theme.primaryColor}60`;
+    nextBtn.style.boxShadow = `0 0 10px ${theme.primaryColor}35`;
   }
 
   renderStorySegments();
@@ -635,7 +653,7 @@ function setupLocalFileUpload() {
     placeholder.classList.remove('hidden');
   }
 
-  // Category Picker with live theme styling
+  // Category Picker
   const categoryBtns = document.querySelectorAll('.category-btn');
   categoryBtns.forEach(btn => {
     btn.addEventListener('click', () => {
