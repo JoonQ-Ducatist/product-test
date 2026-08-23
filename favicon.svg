@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" role="img" aria-labelledby="title">
+  <title>FirstLook</title>
+  <defs>
+    <linearGradient id="logo-gradient" x1="0" y1="1" x2="1" y2="0">
+      <stop offset="0" stop-color="#2e5bff" />
+      <stop offset="1" stop-color="#00f0ff" />
+    </linearGradient>
+  </defs>
+  <rect width="32" height="32" rx="8" fill="url(#logo-gradient)" />
+  <path fill="#000" d="M4.5 16s4.2-6.5 11.5-6.5S27.5 16 27.5 16 23.2 22.5 16 22.5 4.5 16 4.5 16Zm4.25 0A7.25 7.25 0 1 0 23.25 16a7.25 7.25 0 0 0-14.5 0Zm3.75 0a3.5 3.5 0 1 1 7 0 3.5 3.5 0 0 1-7 0Z" />
+</svg>
