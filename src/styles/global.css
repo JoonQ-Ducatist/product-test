@@ -54,6 +54,8 @@ button:focus-visible, input:focus-visible, textarea:focus-visible, select:focus-
 .ranking-item:hover { border-color: var(--primary); }
 .ranking-item img, .post-item img { width: 56px; height: 56px; border-radius: 12px; object-fit: cover; }
 .ranking-item span:not(.rank-number), .post-item > div { display: grid; gap: 4px; min-width: 0; }
+.card-topline { display: flex !important; justify-content: space-between; gap: 8px; color: var(--muted); }
+.card-topline em { color: var(--primary); font-style: normal; }
 .ranking-item strong, .post-item strong { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .ranking-item small, .post-item small { font-size: .76rem; }
 .rank-number, .ranking-item b { color: var(--primary); }

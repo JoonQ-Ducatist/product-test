@@ -13,10 +13,10 @@ export default function FeedView({ categories, cards, card, currentIndex, active
       {Object.entries(categories).map(([id, category]) => <button type="button" key={id} className={activeCategory === id ? 'chip active' : 'chip'} onClick={() => onCategoryChange(id)}>{category.label}</button>)}
     </div>
     <article className="feed-card" style={{ '--accent': theme.color }}>
-      <img className="feed-image" src={card.imageUrl} alt={${card.category} 카테고리의 ${card.author} 업로드 사진} />
+      <img className="feed-image" src={card.imageUrl} alt={`${card.category} 카테고리의 ${card.author} 업로드 사진`} />
       <div className="card-body">
-        <div className="card-meta"><span>{theme.icon} {theme.label}</span><span>{String(currentIndex + 1).padStart(2, '0')} / {String(cards.length).padStart(2, '0')}</span></div>
-        <p className="author">@{card.author} · {card.timestamp}</p>
+        <div className="card-meta"><span>{theme.icon} {theme.label}</span><span>@{card.author}</span></div>
+        <p className="author">{card.timestamp} · {String(currentIndex + 1).padStart(2, '0')} / {String(cards.length).padStart(2, '0')}</p>
         <h3>{card.question}</h3>
         {hasVoted ? <div className="vote-result"><strong>현재 긍정률 {approval}%</strong><span>유효 투표 {total.toLocaleString()}표 · 결과는 참고용 피드백입니다.</span></div> : <div className="vote-actions"><button type="button" className="button button-yes" onClick={() => onVote('yes')}>YES</button><button type="button" className="button button-no" onClick={() => onVote('no')}>NO</button></div>}
       </div>

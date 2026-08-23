@@ -144,6 +144,9 @@ const INITIAL_CARDS = [
 ];
 
 // App State
+const LEGACY_STORAGE_KEY = 'firstlook_cards_v7';
+const PREVIOUS_STORAGE_KEY = 'firstlook_cards_v8';
+const STORAGE_KEY = 'firstlook_cards_v9';
 let appCards = [];
 let currentCardIndex = 0;
 let currentFeedCategory = 'ALL'; // 'ALL' or specific category
@@ -164,7 +167,12 @@ function getActiveFeedCards() {
 
 // Load stored cards and prioritize user's card on initial load (1 time priority)
 function initData() {
-  const stored = localStorage.getItem('firstlook_cards_v7');
+  // React prototype data used v7 and may contain transformed image URLs.
+  // Start this legacy UI from its original sample cards once.
+  localStorage.removeItem(LEGACY_STORAGE_KEY);
+  localStorage.removeItem(PREVIOUS_STORAGE_KEY);
+  sessionStorage.removeItem('firstlook_user_priority_shown');
+  const stored = localStorage.getItem(STORAGE_KEY);
   if (stored) {
     try {
       appCards = JSON.parse(stored);
@@ -189,7 +197,7 @@ function initData() {
 
 function saveCards() {
   try {
-    localStorage.setItem('firstlook_cards_v7', JSON.stringify(appCards));
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(appCards));
   } catch (e) {
     console.warn('Storage quota exceeded, caching in memory only');
   }
@@ -321,6 +329,9 @@ function renderCurrentFeedCard(direction = 'next') {
   const nodeId = document.getElementById('node-id');
   const voteResult = document.getElementById('vote-result-container');
   const voteActions = document.getElementById('vote-actions');
+  const yesVoteButton = document.getElementById('vote-yes-btn');
+  const noVoteButton = document.getElementById('vote-no-btn');
+  const noVoteIcon = document.getElementById('vote-no-icon');
 
   // Dynamic Theme Elements
   const liveTagText = document.getElementById('live-tag-text');
@@ -432,6 +443,20 @@ function renderCurrentFeedCard(direction = 'next') {
     nextBtn.style.boxShadow = `0 0 10px ${theme.primaryColor}35`;
   }
 
+  // Keep the vote controls in the active category's visual language.
+  // YES is the filled primary action; NO remains a lighter outline action.
+  if (yesVoteButton) {
+    yesVoteButton.style.background = `linear-gradient(90deg, ${theme.primaryColor}c0, ${theme.primaryColor})`;
+    yesVoteButton.style.borderColor = `${theme.primaryColor}cc`;
+    yesVoteButton.style.boxShadow = `0 0 15px ${theme.primaryColor}55`;
+  }
+  if (noVoteButton) {
+    noVoteButton.style.color = theme.primaryColor;
+    noVoteButton.style.borderColor = `${theme.primaryColor}80`;
+    noVoteButton.style.boxShadow = `0 0 12px ${theme.primaryColor}20`;
+  }
+  if (noVoteIcon) noVoteIcon.style.color = theme.primaryColor;
+
   if (votedCards.has(card.id)) {
     showVoteResults(card, theme);
   } else {
@@ -520,6 +545,8 @@ function showVoteResults(card, theme) {
 
   yesBar.style.width = `${yesPct}%`;
   noBar.style.width = `${noPct}%`;
+  yesBar.style.background = theme.primaryColor;
+  yesBar.style.boxShadow = `0 0 10px ${theme.primaryColor}80`;
 
   voteActions.classList.add('hidden');
   voteResult.classList.remove('hidden');
@@ -861,9 +888,9 @@ function renderRanking() {
         <img src="${card.imageUrl}" alt="${card.author}" style="object-position: ${card.objectPosition || 'center top'};" class="w-14 h-14 rounded-xl object-cover border border-white/10" />
 
         <div class="flex-1 min-w-0">
-          <div class="flex items-center gap-2">
-            <span class="font-headline font-bold text-sm text-white truncate">@${card.author}</span>
+          <div class="flex items-center justify-between gap-2">
             <span class="text-[10px] font-mono px-1.5 py-0.5 rounded bg-surface-container-high" style="color: ${theme.primaryColor}; border: 1px solid ${theme.primaryColor}30;">${card.category}</span>
+            <span class="font-headline font-bold text-sm text-white truncate">@${card.author}</span>
           </div>
           <p class="text-xs text-slate-400 truncate mt-0.5">${card.question.replace(/\n/g, ' ')}</p>
           <div class="flex items-center gap-3 mt-1 text-[11px] font-mono text-slate-400">
@@ -933,9 +960,9 @@ function renderProfile() {
       <div class="p-3.5 rounded-2xl bg-surface-container border border-surface-container-high flex gap-3 items-center">
         <img src="${post.imageUrl}" alt="My Upload" style="object-position: ${post.objectPosition || 'center top'};" class="w-16 h-20 rounded-xl object-cover border border-white/10" />
         <div class="flex-1 min-w-0">
-          <div class="flex justify-between items-start">
+          <div class="flex justify-between items-start gap-2">
             <span class="text-[10px] font-mono px-2 py-0.5 rounded font-bold" style="background-color: ${theme.primaryColor}20; color: ${theme.primaryColor}; border: 1px solid ${theme.primaryColor}40;">${post.category}</span>
-            <span class="text-[10px] text-slate-400 font-mono">${post.timestamp || '최근'}</span>
+            <span class="text-xs text-white font-headline font-semibold truncate">@${post.author}</span>
           </div>
           <p class="text-xs text-white font-medium line-clamp-2 mt-1.5">${post.question.replace(/\n/g, ' ')}</p>
           
@@ -943,6 +970,7 @@ function renderProfile() {
             <div class="flex items-center gap-2">
               <span class="text-xs font-mono font-bold" style="color: ${theme.primaryColor};">YES ${pct}%</span>
               <span class="text-[10px] text-slate-400 font-mono">(${total.toLocaleString()}명)</span>
+              <span class="text-[10px] text-slate-500 font-mono">${post.timestamp || '최근'}</span>
             </div>
             <button onclick="deleteCard('${post.id}')" class="text-slate-500 hover:text-rose-400 transition-colors p-1" title="삭제">
               <span class="material-symbols-outlined text-base">delete</span>
