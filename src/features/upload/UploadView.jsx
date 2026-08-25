@@ -1,41 +1,80 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 
-/** @param {{ categories: object, onSubmit: Function }} props */
+const MAX_IMAGES = 5;
+const MAX_VIDEOS = 1;
+const MAX_FILE_SIZE = 15 * 1024 * 1024;
+const presets = ['비즈니스 캐주얼 룩으로 전문성이 느껴지나요?', '소개팅에서 이 첫인상을 보면 호감이 생길 것 같나요?', '운동복 스타일이 건강한 매력을 잘 보여주나요?'];
+
+/** 개발용 복수 미디어 업로드 화면. 실제 저장·검토는 백엔드 단계에서 처리한다. */
 export default function UploadView({ categories, onSubmit }) {
-  const [preview, setPreview] = useState('');
-  const [fileName, setFileName] = useState('');
+  const inputRef = useRef(null);
+  const [media, setMedia] = useState([]);
   const [category, setCategory] = useState('Business');
   const [question, setQuestion] = useState('');
   const [author, setAuthor] = useState('my_look_daily');
   const [error, setError] = useState('');
 
-  function chooseFile(event) {
-    const file = event.target.files?.[0];
-    if (!file) return;
-    if (!file.type.startsWith('image/')) { setError('이미지 파일만 선택할 수 있습니다.'); return; }
-    setError('');
-    setFileName(file.name);
-    const reader = new FileReader();
-    reader.onload = () => setPreview(String(reader.result));
-    reader.readAsDataURL(file);
+  const imageCount = media.filter((item) => item.type === 'image').length;
+  const videoCount = media.filter((item) => item.type === 'video').length;
+  const selectedTheme = categories[category];
+  const canAddImage = imageCount < MAX_IMAGES;
+  const canAddVideo = videoCount < MAX_VIDEOS;
+  const canAddMedia = canAddImage || canAddVideo;
+  const acceptedTypes = [canAddImage && 'image/jpeg,image/png,image/webp,image/gif', canAddVideo && 'video/mp4,video/webm,video/quicktime'].filter(Boolean).join(',');
+
+  async function addFiles(fileList) {
+    const candidates = Array.from(fileList ?? []);
+    if (!candidates.length) return;
+    const accepted = [];
+    let nextImages = imageCount;
+    let nextVideos = videoCount;
+    for (const file of candidates) {
+      const type = file.type.startsWith('image/') ? 'image' : file.type.startsWith('video/') ? 'video' : null;
+      if (!type) { setError('이미지 또는 동영상 파일만 선택할 수 있습니다.'); continue; }
+      if (file.size > MAX_FILE_SIZE) { setError('각 파일은 15MB 이하만 선택할 수 있습니다.'); continue; }
+      if (type === 'image' && nextImages >= MAX_IMAGES) { setError(`이미지는 최대 ${MAX_IMAGES}개까지 선택할 수 있습니다.`); continue; }
+      if (type === 'video' && nextVideos >= MAX_VIDEOS) { setError('동영상은 1개만 선택할 수 있습니다.'); continue; }
+      const url = URL.createObjectURL(file);
+      if (type === 'video') {
+        const duration = await getVideoDuration(url);
+        if (!Number.isFinite(duration) || duration > 10) { URL.revokeObjectURL(url); setError('동영상은 10초 이하만 업로드할 수 있습니다.'); continue; }
+        nextVideos += 1;
+        accepted.push(makeItem(file, url, type, duration));
+      } else {
+        nextImages += 1;
+        accepted.push(makeItem(file, url, type));
+      }
+    }
+    if (accepted.length) { setMedia((items) => [...items, ...accepted]); setError(''); }
+    if (inputRef.current) inputRef.current.value = '';
   }
 
+  function removeMedia(id) { setMedia((items) => { const target = items.find((item) => item.id === id); if (target) URL.revokeObjectURL(target.url); return items.filter((item) => item.id !== id); }); }
+  function moveMedia(index, direction) { setMedia((items) => { const destination = index + direction; if (destination < 0 || destination >= items.length) return items; const next = [...items]; [next[index], next[destination]] = [next[destination], next[index]]; return next; }); }
   function submit(event) {
     event.preventDefault();
-    if (!preview || !question.trim() || !author.trim()) { setError('사진, 질문, 닉네임을 모두 입력해 주세요.'); return; }
-    onSubmit({ id: `local-${Date.now()}`, author: author.trim(), category, question: question.trim(), imageUrl: preview, yesVotes: 0, noVotes: 0, isMyUpload: true, timestamp: '방금 전', fileName });
+    if (!media.length) { setError('사진 또는 동영상을 선택해 주세요.'); inputRef.current?.click(); return; }
+    const primary = media[0];
+    onSubmit({ id: `local-${Date.now()}`, author: author.trim() || 'my_look', category, question: question.trim() || '첫인상에서 호감과 신뢰감이 느껴지나요?', subtext: '실시간 첫인상 피드백을 수집 중입니다', imageUrl: primary.url, mediaType: primary.type, media, objectPosition: 'center 20%', yesVotes: 1, noVotes: 0, timestamp: '방금 전', commentsAllowed: true, comments: [], categoryIcon: selectedTheme.icon });
   }
 
-  return <section className="view-stack">
-    <div className="section-heading"><p className="eyebrow">LOCAL PROTOTYPE</p><h2>사진 업로드</h2><p>현재 파일은 이 브라우저에만 저장되는 목업입니다.</p></div>
-    <form className="panel form-stack" onSubmit={submit}>
-      <label>사진 선택<input type="file" accept="image/png,image/jpeg,image/webp" onChange={chooseFile} /></label>
-      {preview && <img className="preview-image" src={preview} alt={`${fileName} 미리보기`} />}
-      <label>카테고리<select value={category} onChange={(event) => setCategory(event.target.value)}>{Object.entries(categories).map(([id, item]) => <option key={id} value={id}>{item.label}</option>)}</select></label>
-      <label>질문<textarea value={question} onChange={(event) => setQuestion(event.target.value)} maxLength="140" placeholder="예: 첫인상에서 신뢰감이 느껴지나요?" /></label>
-      <label>닉네임<input value={author} onChange={(event) => setAuthor(event.target.value)} maxLength="30" /></label>
-      {error && <p className="form-error" role="alert">{error}</p>}
-      <button className="button button-primary" type="submit">목업 피드에 추가</button>
+  return <section className="w-full pb-3 pt-1">
+    <div className="mb-3.5 flex items-start justify-between"><div><span className="font-mono text-[11px] font-semibold uppercase tracking-widest text-cyan-glow">New Impression Scan</span><h1 className="font-headline text-xl font-bold text-white">로컬 파일 업로드</h1><p className="mt-0.5 text-xs text-slate-400">이미지 최대 5개와 10초 이하 동영상 1개를 함께 선택할 수 있습니다.</p></div><span className="flex h-8 w-8 items-center justify-center rounded-full border border-cyan-glow/30 bg-cyan-glow/10 text-cyan-glow"><span className="material-symbols-outlined text-lg">cloud_upload</span></span></div>
+    <form className="flex flex-col gap-3.5" onSubmit={submit}>
+      <div role={canAddMedia ? 'button' : undefined} tabIndex={canAddMedia ? 0 : undefined} onClick={() => canAddMedia && inputRef.current?.click()} onKeyDown={(event) => { if (canAddMedia && (event.key === 'Enter' || event.key === ' ')) inputRef.current?.click(); }} onDragOver={(event) => canAddMedia && event.preventDefault()} onDrop={(event) => { event.preventDefault(); if (canAddMedia) addFiles(event.dataTransfer.files); }} style={{ borderColor: `${selectedTheme.color}99` }} className={`relative min-h-[190px] w-full overflow-hidden rounded-2xl border-2 border-dashed bg-surface-container/40 p-3 transition-colors ${canAddMedia ? 'cursor-pointer hover:bg-surface-container/70' : 'cursor-default'}`}>
+        <input ref={inputRef} type="file" multiple accept={acceptedTypes} className="hidden" onChange={(event) => addFiles(event.target.files)} />
+        {!media.length ? <div className="flex min-h-[164px] flex-col items-center justify-center text-center"><span className="mb-2.5 flex h-12 w-12 items-center justify-center rounded-2xl border bg-cyan-glow/10 shadow-[0_0_15px_rgba(0,240,255,.2)]" style={{ borderColor: `${selectedTheme.color}66`, color: selectedTheme.color }}><span className="material-symbols-outlined text-2xl">upload_file</span></span><p className="font-headline text-xs font-bold text-white sm:text-sm">이미지·짧은 동영상 선택 또는 드래그 앤 드롭</p><p className="mt-1 font-mono text-[10px] text-slate-400">이미지 5개 + 동영상 1개 · 동영상 최대 10초 · 파일당 15MB</p><span className="mt-2.5 rounded-full border border-outline-variant bg-surface-container-high px-3 py-1 text-[10px] font-medium" style={{ color: selectedTheme.color }}>📁 로컬 디바이스에서 파일 찾기</span></div> : <><div className="mb-2 flex items-center justify-between text-[10px] font-mono"><span className="text-slate-300">이미지 <strong style={{ color: selectedTheme.color }}>{imageCount}/{MAX_IMAGES}</strong> · 동영상 <strong style={{ color: selectedTheme.color }}>{videoCount}/{MAX_VIDEOS}</strong></span><span className="text-slate-500">{canAddMedia ? '클릭 또는 드롭하여 추가' : '최대 선택 완료'}</span></div><div className="grid grid-cols-3 gap-2 sm:grid-cols-4">{media.map((item, index) => <MediaPreview key={item.id} item={item} index={index} color={selectedTheme.color} onRemove={() => removeMedia(item.id)} onMove={(direction) => moveMedia(index, direction)} canMovePrevious={index > 0} canMoveNext={index < media.length - 1} />)}{canAddMedia && <button type="button" onClick={(event) => { event.stopPropagation(); inputRef.current?.click(); }} aria-label="미디어 추가" className="flex aspect-square items-center justify-center rounded-xl border border-dashed bg-cyan-glow/5" style={{ borderColor: `${selectedTheme.color}99`, color: selectedTheme.color }}><span className="material-symbols-outlined text-xl">add</span></button>}</div></>}
+      </div>
+      <fieldset><legend className="mb-1.5 text-[11px] font-bold uppercase tracking-wider text-slate-300">1. 카테고리 선택</legend><div className="grid grid-cols-3 gap-2">{Object.entries(categories).map(([id, item]) => <button key={id} type="button" onClick={() => setCategory(id)} className="flex items-center justify-center gap-1 rounded-xl border px-2 py-2 font-headline text-xs transition-all" style={category === id ? { borderColor: item.color, color: item.color, backgroundColor: `${item.color}26`, fontWeight: 700 } : { borderColor: '#222a3d', color: '#cbd5e1', backgroundColor: '#171f33' }}><span className="material-symbols-outlined text-sm">{item.icon}</span>{item.label}</button>)}</div></fieldset>
+      <div><label htmlFor="question-input" className="mb-1 block text-[11px] font-bold uppercase tracking-wider text-slate-300">2. 피드백 질문 문구 (YES / NO)</label><textarea id="question-input" rows="2" value={question} maxLength="140" onChange={(event) => setQuestion(event.target.value)} placeholder="예: 첫인상에서 신뢰감과 호감이 느껴지나요?" className="w-full resize-none rounded-xl border border-surface-container-high bg-surface-container p-2.5 text-xs text-white placeholder:text-slate-500 focus:border-cyan-glow focus:outline-none sm:text-sm" /><div className="mt-1.5 flex flex-wrap gap-1"><span className="self-center font-mono text-[10px] text-slate-500">추천 질문:</span>{presets.map((preset) => <button key={preset} type="button" onClick={() => setQuestion(preset)} className="rounded-md border border-slate-700 bg-surface-container-high px-2 py-0.5 text-[10px] text-slate-300">{preset}</button>)}</div></div>
+      <div><label htmlFor="author-input" className="mb-1 block text-[11px] font-bold uppercase tracking-wider text-slate-300">3. 닉네임 / 핸들</label><div className="relative"><span className="absolute left-3 top-1/2 -translate-y-1/2 text-sm text-slate-500">@</span><input id="author-input" value={author} maxLength="30" onChange={(event) => setAuthor(event.target.value)} className="w-full rounded-xl border border-surface-container-high bg-surface-container py-2 pl-8 pr-3 text-xs text-white focus:border-cyan-glow focus:outline-none sm:text-sm" /></div></div>
+      {error && <p role="alert" className="text-xs text-rose-400">{error}</p>}
+      <button type="submit" style={{ borderColor: selectedTheme.color }} className="mt-1 flex w-full items-center justify-center gap-2 rounded-2xl border-2 bg-gradient-to-r from-primary-container via-cyan-glow to-primary-container py-3 font-headline text-sm font-extrabold text-slate-900 shadow-[0_0_20px_rgba(0,240,255,.3)] active:scale-95 sm:text-base"><span className="material-symbols-outlined text-lg">rocket_launch</span>피드에 업로드 &amp; 실시간 분석 시작</button>
+      <p className="text-center text-[10px] text-slate-500">현재는 브라우저 목업입니다. 실서비스에서는 권리 동의·검토·안전한 미디어 저장 절차가 적용됩니다.</p>
     </form>
   </section>;
 }
+
+function makeItem(file, url, type, duration = 0) { return { id: `${file.name}-${file.lastModified}-${Math.random()}`, url, type, duration, name: file.name, size: `${(file.size / (1024 * 1024)).toFixed(2)} MB` }; }
+function MediaPreview({ item, index, color, onRemove, onMove, canMovePrevious, canMoveNext }) { return <div className="relative aspect-square overflow-hidden rounded-xl border bg-black/30" style={{ borderColor: `${color}66` }}>{item.type === 'video' ? <video className="h-full w-full object-cover" src={item.url} muted playsInline /> : <img className="h-full w-full object-cover" src={item.url} alt={`${index + 1}번째 선택 이미지`} />}<span className="absolute bottom-1 left-1 rounded bg-black/65 px-1.5 py-0.5 font-mono text-[9px] text-white">{item.type === 'video' ? `VIDEO ${item.duration.toFixed(1)}s` : `IMAGE ${index + 1}`}</span><div className="absolute left-1 top-1 flex gap-0.5"><button type="button" disabled={!canMovePrevious} onClick={(event) => { event.stopPropagation(); onMove(-1); }} aria-label={`${item.name} 순서 앞으로`} className="flex h-5 w-5 items-center justify-center rounded bg-black/65 text-white disabled:opacity-25"><span className="material-symbols-outlined text-[13px]">chevron_left</span></button><button type="button" disabled={!canMoveNext} onClick={(event) => { event.stopPropagation(); onMove(1); }} aria-label={`${item.name} 순서 뒤로`} className="flex h-5 w-5 items-center justify-center rounded bg-black/65 text-white disabled:opacity-25"><span className="material-symbols-outlined text-[13px]">chevron_right</span></button></div><button type="button" onClick={(event) => { event.stopPropagation(); onRemove(); }} aria-label={`${item.name} 제거`} className="absolute right-1 top-1 flex h-5 w-5 items-center justify-center rounded bg-black/65 text-white"><span className="material-symbols-outlined text-[13px]">close</span></button></div>; }
+function getVideoDuration(url) { return new Promise((resolve) => { const video = document.createElement('video'); video.preload = 'metadata'; video.onloadedmetadata = () => resolve(video.duration); video.onerror = () => resolve(Number.NaN); video.src = url; }); }

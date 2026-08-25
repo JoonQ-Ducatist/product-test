@@ -1,26 +1,62 @@
-/**
- * @param {{ categories: object, cards: object[], card: object, currentIndex: number, activeCategory: string, hasVoted: boolean, onCategoryChange: Function, onPrevious: Function, onNext: Function, onVote: Function }} props
- */
-export default function FeedView({ categories, cards, card, currentIndex, activeCategory, hasVoted, onCategoryChange, onPrevious, onNext, onVote }) {
-  if (!card) return <section className="panel empty-state"><h2>표시할 카드가 없습니다.</h2><p>다른 카테고리를 선택하거나 새 사진을 업로드해 주세요.</p></section>;
+import { useEffect, useState } from 'react';
+
+export default function FeedView({ categories, cards, card, currentIndex, activeCategory, hasVoted, onCategoryChange, onPrevious, onNext, onShuffle, onVote, onAddComment }) {
+  const [expandedComments, setExpandedComments] = useState(false);
+  const [draft, setDraft] = useState('');
+  useEffect(() => { setExpandedComments(false); setDraft(''); }, [card.id]);
+  if (!card) return <section className="mt-4 rounded-xl border border-surface-container-high bg-surface-container-low p-6 text-center text-slate-400">표시할 사진이 없습니다.</section>;
   const theme = categories[card.category];
+  const nextCard = cards[(currentIndex + 1) % cards.length];
   const total = card.yesVotes + card.noVotes;
-  const approval = total ? Math.round((card.yesVotes / total) * 100) : 0;
-  return <section className="view-stack">
-    <div className="section-heading"><p className="eyebrow">LIVE STREAM</p><h2>첫인상 피드</h2></div>
-    <div className="filter-row" aria-label="카테고리 필터">
-      <button type="button" className={activeCategory === 'ALL' ? 'chip active' : 'chip'} onClick={() => onCategoryChange('ALL')}>전체</button>
-      {Object.entries(categories).map(([id, category]) => <button type="button" key={id} className={activeCategory === id ? 'chip active' : 'chip'} onClick={() => onCategoryChange(id)}>{category.label}</button>)}
+  const yesPercent = Math.round((card.yesVotes / total) * 100);
+  const noPercent = 100 - yesPercent;
+
+  return <section className="relative flex w-full flex-col items-center">
+    <div className="mb-1 flex w-full items-center gap-1.5 overflow-x-auto px-0.5 pb-2 no-scrollbar">
+      <CategoryButton label="전체 피드" active={activeCategory === 'ALL'} color="#00f0ff" onClick={() => onCategoryChange('ALL')} />
+      {Object.entries(categories).map(([id, category]) => <CategoryButton key={id} label={category.label} active={activeCategory === id} color={category.color} onClick={() => onCategoryChange(id)} />)}
     </div>
-    <article className="feed-card" style={{ '--accent': theme.color }}>
-      <img className="feed-image" src={card.imageUrl} alt={`${card.category} 카테고리의 ${card.author} 업로드 사진`} />
-      <div className="card-body">
-        <div className="card-meta"><span>{theme.icon} {theme.label}</span><span>@{card.author}</span></div>
-        <p className="author">{card.timestamp} · {String(currentIndex + 1).padStart(2, '0')} / {String(cards.length).padStart(2, '0')}</p>
-        <h3>{card.question}</h3>
-        {hasVoted ? <div className="vote-result"><strong>현재 긍정률 {approval}%</strong><span>유효 투표 {total.toLocaleString()}표 · 결과는 참고용 피드백입니다.</span></div> : <div className="vote-actions"><button type="button" className="button button-yes" onClick={() => onVote('yes')}>YES</button><button type="button" className="button button-no" onClick={() => onVote('no')}>NO</button></div>}
+    <div className="mb-2 flex w-full items-center justify-between px-1 text-xs"><div className="flex items-center gap-1.5 font-mono text-[11px]" style={{ color: theme.color }}><span className="h-2 w-2 animate-pulse rounded-full" style={{ backgroundColor: theme.color }} />LIVE STREAM</div><div className="flex items-center gap-2"><span className="rounded-full border px-2 py-0.5 font-mono text-[10px] font-bold" style={{ color: theme.color, borderColor: `${theme.color}66`, backgroundColor: `${theme.color}1f` }}>{String(currentIndex + 1).padStart(2, '0')} / {String(cards.length).padStart(2, '0')}</span><button type="button" onClick={onShuffle} className="flex items-center gap-1 rounded-lg border border-surface-container-high bg-surface-container px-2.5 py-1 font-mono text-[10px] text-slate-300"><span className="material-symbols-outlined text-[14px]" style={{ color: theme.color }}>shuffle</span>셔플</button></div></div>
+
+    <article className="relative aspect-[9/16] max-h-[660px] w-full touch-none overflow-hidden rounded-xl border border-surface-container-high/60 bg-surface-container-lowest shadow-2xl">
+      <div className="absolute inset-0 scale-95 opacity-40"><CardMedia card={nextCard} className="h-full w-full object-cover" muted /><div className="absolute inset-0 bg-black/60" /></div>
+      <div className="absolute inset-0"><CardMedia card={card} className="h-full w-full object-cover brightness-[1.02] contrast-[1.03]" /><div className="absolute inset-x-0 top-0 h-24 bg-gradient-to-b from-black/60 via-black/10 to-transparent" /><div className="absolute inset-x-0 bottom-0 h-64 bg-gradient-to-t from-[#051424]/95 via-[#051424]/40 to-transparent" /><div className="scan-line absolute left-0 top-0 h-px w-full opacity-40" style={{ backgroundColor: theme.color, boxShadow: `0 0 12px ${theme.color}` }} /></div>
+      <div className="absolute left-0 top-0 z-10 flex w-full items-start justify-between p-4"><div className="flex items-center gap-1.5 rounded-full border border-white/20 bg-black/50 px-3 py-1 shadow-lg backdrop-blur"><span className="material-symbols-outlined text-[15px]" style={{ color: theme.color }}>{theme.icon}</span><span className="font-mono text-xs font-semibold uppercase tracking-wider text-white">{card.category}</span></div><div className="flex items-center gap-2 rounded-full border border-white/20 bg-black/50 py-1 pl-1.5 pr-3 shadow-lg backdrop-blur"><span className="flex h-5 w-5 items-center justify-center rounded-full bg-primary-container"><span className="material-symbols-outlined text-[13px] text-white">person</span></span><span className="font-headline text-xs font-semibold tracking-wide text-white">@{card.author}</span></div></div>
+      <div className="absolute right-3 top-1/2 z-30 flex -translate-y-1/2 flex-col gap-2.5"><ArrowButton label="이전 사진" icon="expand_less" onClick={onPrevious} /><ArrowButton label="다음 사진" icon="expand_more" onClick={onNext} /></div>
+      <div className="absolute bottom-0 left-0 z-20 flex w-full flex-col p-4"><div className="mb-2.5"><div className="mb-1 inline-flex items-center gap-2 rounded-full border border-white/10 bg-black/50 px-2.5 py-0.5 backdrop-blur"><span className="relative flex h-2 w-2"><span className="absolute inline-flex h-full w-full animate-ping rounded-full opacity-75" style={{ backgroundColor: theme.color }} /><span className="relative inline-flex h-1.5 w-1.5 rounded-full" style={{ backgroundColor: theme.color }} /></span><span className="font-mono text-[11px] font-bold uppercase tracking-widest" style={{ color: theme.color }}>{theme.liveTag}</span></div><h1 className="whitespace-pre-line font-headline text-lg font-bold leading-snug text-white drop-shadow-md sm:text-xl">{card.question}</h1><p className="mt-0.5 text-xs text-slate-300">{card.subtext}</p></div>
+        {hasVoted ? <Result yesPercent={yesPercent} noPercent={noPercent} total={total} color={theme.color} onNext={onNext} /> : <div className="flex w-full gap-2.5"><button type="button" onClick={() => onVote(true)} className="flex flex-1 items-center justify-center gap-1.5 rounded-xl border py-2 text-sm font-extrabold tracking-wider text-[#051424] active:scale-95" style={{ borderColor: theme.color, backgroundColor: theme.color }}>YES <span className="material-symbols-outlined text-base">check_circle</span></button><button type="button" onClick={() => onVote(false)} className="flex flex-1 items-center justify-center gap-1.5 rounded-xl border bg-surface-container-low/70 py-2 text-sm font-bold tracking-wider active:scale-95" style={{ borderColor: `${theme.color}aa`, color: theme.color }}>NO <span className="material-symbols-outlined text-base">cancel</span></button></div>}
+        {card.commentsAllowed && <CommentPreview comments={card.comments ?? []} onExpand={() => setExpandedComments(true)} />}
+        <div className="mt-2 flex items-center justify-between px-1 font-mono text-[10px] text-slate-400"><span className="flex items-center gap-1"><span className="material-symbols-outlined text-[12px]" style={{ color: theme.color }}>swipe_vertical</span>위/아래 스와이프 또는 스크롤</span><span>{card.timestamp}</span></div>
       </div>
     </article>
-    <div className="pager"><button type="button" className="button button-secondary" onClick={onPrevious}>이전</button><button type="button" className="button button-secondary" onClick={onNext}>다음</button></div>
+    {card.commentsAllowed && expandedComments && <CommentPanel comments={card.comments ?? []} draft={draft} onDraftChange={setDraft} onClose={() => setExpandedComments(false)} onSubmit={() => { onAddComment(card.id, draft); setDraft(''); }} />}
   </section>;
 }
+
+function CategoryButton({ label, active, color, onClick }) { return <button type="button" onClick={onClick} className="whitespace-nowrap rounded-full border px-3 py-1 font-mono text-[11px] transition-all" style={active ? { color, borderColor: color, backgroundColor: `${color}26`, fontWeight: 700 } : { color: '#94a3b8', borderColor: '#222a3d', backgroundColor: '#171f33' }}>{label}</button>; }
+function CardMedia({ card, className, muted = false }) { return card.mediaType === 'video' ? <video className={className} style={{ objectPosition: card.objectPosition }} src={card.imageUrl} autoPlay loop muted={muted || undefined} playsInline controls={!muted} aria-label={`${card.author}의 ${card.category} 동영상`} /> : <img className={className} style={{ objectPosition: card.objectPosition }} src={card.imageUrl} alt={`${card.author}의 ${card.category} 사진`} />; }
+function ArrowButton({ label, icon, onClick }) { return <button type="button" onClick={onClick} aria-label={label} className="flex h-9 w-9 items-center justify-center rounded-full border border-white/20 bg-black/50 text-white shadow-md backdrop-blur active:scale-90"><span className="material-symbols-outlined text-xl">{icon}</span></button>; }
+function Result({ yesPercent, noPercent, total, color, onNext }) { return <div className="mb-2.5 rounded-xl border border-surface-container-high bg-surface-container-low/95 p-2.5 backdrop-blur"><div className="mb-1 flex items-center justify-between font-mono text-xs font-bold"><span className="flex items-center gap-1" style={{ color }}><span className="material-symbols-outlined text-[14px]">thumb_up</span> YES {yesPercent}%</span><span className="text-slate-400">총 {total.toLocaleString()}명 참여</span><span className="flex items-center gap-1 text-rose-400">NO {noPercent}% <span className="material-symbols-outlined text-[14px]">thumb_down</span></span></div><div className="flex h-2 w-full overflow-hidden rounded-full bg-slate-800"><span style={{ width: `${yesPercent}%`, backgroundColor: color }} /><span className="bg-rose-500/80" style={{ width: `${noPercent}%` }} /></div><div className="mt-1.5 flex items-center justify-between"><span className="font-mono text-[10px] text-slate-400">신뢰도 지수: <strong className="text-white">96.2 / 100</strong></span><button type="button" onClick={onNext} className="flex items-center text-[11px] font-bold" style={{ color }}>다음 사진 <span className="material-symbols-outlined text-[13px]">arrow_downward</span></button></div></div>; }
+
+function CommentPreview({ comments, onExpand }) {
+  const comment = comments[0];
+  return <div className="relative mt-2 overflow-hidden bg-gradient-to-b from-transparent via-[#061225]/10 to-transparent px-1 py-1.5" aria-label="댓글 미리보기">
+    <button type="button" onClick={onExpand} aria-label="댓글 더 보기" className="absolute right-0 top-1/2 z-10 flex -translate-y-1/2 items-center gap-0.5 px-1 text-[10px] font-bold text-cyan-glow"><span>더 보기</span><span className="material-symbols-outlined text-[15px]">more_horiz</span></button>
+    {comment ? <p className="truncate pr-14 text-[11px] leading-5 text-white/90"><strong className="mr-1 text-cyan-50">@{comment.author}</strong>{comment.body}</p> : <p className="pr-14 text-[10px] text-slate-300/80">첫 번째 댓글을 남겨 보세요.</p>}
+  </div>;
+}
+
+function CommentPanel({ comments, draft, onDraftChange, onClose, onSubmit }) {
+  const [visibleCount, setVisibleCount] = useState(10);
+  useEffect(() => setVisibleCount(10), [comments.length]);
+  const visibleComments = comments.slice(0, visibleCount);
+  const hasMore = comments.length > visibleCount;
+  return <section className="mt-3 w-full bg-transparent px-1 py-2" aria-label="전체 댓글">
+    <div className="flex items-center justify-between px-2"><h2 className="flex items-center gap-1.5 font-headline text-sm font-bold text-white"><span className="material-symbols-outlined text-[18px] text-cyan-glow">chat_bubble</span>전체 댓글 <span className="font-mono text-[11px] text-slate-400">{comments.length}</span></h2><button type="button" onClick={onClose} className="text-xs font-bold text-cyan-glow">접기</button></div>
+    <div className="mt-2 space-y-3 px-2">{visibleComments.length ? visibleComments.map((comment) => <div key={comment.id}><div className="flex gap-2"><Avatar author={comment.author} /><p className="min-w-0 text-xs leading-relaxed text-slate-200"><strong className="mr-1 text-white">@{comment.author}</strong>{comment.body}<span className="ml-1.5 font-mono text-[10px] text-slate-500">{comment.createdAt}</span></p></div>{comment.replies.map((reply) => <div key={reply.id} className="ml-7 mt-2 flex gap-2 border-l border-surface-container-high pl-2"><Avatar author={reply.author} small /><p className="min-w-0 text-xs leading-relaxed text-slate-300"><strong className="mr-1 text-white">@{reply.author}</strong>{reply.body}<span className="ml-1.5 font-mono text-[10px] text-slate-500">{reply.createdAt}</span></p></div>)}</div>) : <p className="py-2 text-xs text-slate-400">첫 번째 의견을 남겨 보세요.</p>}</div>
+    {hasMore && <button type="button" onClick={() => setVisibleCount((count) => count + 10)} className="mt-3 flex w-full items-center justify-center gap-1 border-t border-surface-container-high py-3 text-xs font-bold text-cyan-glow"><span className="material-symbols-outlined text-base">expand_more</span>댓글 10개 더 보기</button>}
+    <form className="mx-2 mt-2 flex gap-2 border-t border-surface-container-high pt-3" onSubmit={(event) => { event.preventDefault(); onSubmit(); }}><label className="sr-only" htmlFor="comment-draft">댓글 작성</label><input id="comment-draft" value={draft} onChange={(event) => onDraftChange(event.target.value)} maxLength="500" placeholder="의견을 남겨보세요" className="min-w-0 flex-1 rounded-lg border border-surface-container-high bg-[#060e20] px-3 py-2 text-xs text-white placeholder:text-slate-500" /><button type="submit" disabled={!draft.trim()} className="rounded-lg bg-cyan-glow px-3 text-xs font-bold text-[#051424] disabled:cursor-not-allowed disabled:opacity-40">등록</button></form>
+  </section>;
+}
+
+function Avatar({ author, small = false }) { return <span aria-hidden="true" className={`flex shrink-0 items-center justify-center rounded-full bg-primary-container/40 font-mono font-bold text-cyan-glow ${small ? 'h-4 w-4 text-[8px]' : 'h-5 w-5 text-[9px]'}`}>{author.slice(0, 1).toUpperCase()}</span>; }
