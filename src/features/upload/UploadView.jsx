@@ -3,7 +3,21 @@ import { useRef, useState } from 'react';
 const MAX_IMAGES = 5;
 const MAX_VIDEOS = 1;
 const MAX_FILE_SIZE = 15 * 1024 * 1024;
-const presets = ['비즈니스 캐주얼 룩으로 전문성이 느껴지나요?', '소개팅에서 이 첫인상을 보면 호감이 생길 것 같나요?', '운동복 스타일이 건강한 매력을 잘 보여주나요?'];
+const questionSuggestions = {
+  Business: ['이 룩에서 신뢰감과 전문성이 느껴지나요?', '오늘의 출근 룩, 깔끔하고 센스 있어 보이나요?', '이 스타일이 제 강점을 잘 보여주는 것 같나요?'],
+  Dating: ['오늘 이 룩, 데이트에서 호감이 갈 것 같나요?', '이 스타일이 저와 잘 어울려 보이나요?', '첫 만남에 편안하고 매력적인 인상이 들까요?'],
+  Workout: ['이 운동 룩, 활동적이고 건강해 보이나요?', '운동하기에 편안하면서도 스타일 있어 보이나요?', '오늘의 운동 스타일, 자신감 있어 보이나요?'],
+  Interview: ['이 모습에서 전문성과 신뢰감이 느껴지나요?', '면접 자리에서 단정하고 준비된 인상일까요?', '이 룩이 제 역량을 잘 보여주는 데 도움이 될까요?'],
+  Style: ['오늘 제 스타일, 어떤 분위기로 보여요?', '새로 산 이 옷, 저와 잘 어울리나요?', '오늘의 룩, 자랑하고 싶을 만큼 괜찮아 보이나요?'],
+  Profile: ['이 사진, 제 SNS 프로필로 잘 어울릴까요?', '이 사진에서 제 매력이 잘 보이나요?', '처음 보는 사람에게 좋은 인상을 줄 것 같나요?'],
+};
+
+function getQuestionSuggestions(category, media) {
+  const base = questionSuggestions[category] ?? questionSuggestions.Style;
+  if (!media.length) return base;
+  const mediaHint = media.some((item) => item.type === 'video') ? '짧은 영상으로 봤을 때도' : '이 사진에서';
+  return [`${mediaHint} ${base[0]}`, ...base.slice(1)];
+}
 
 /** 개발용 복수 미디어 업로드 화면. 실제 저장·검토는 백엔드 단계에서 처리한다. */
 export default function UploadView({ categories, onSubmit }) {
@@ -17,6 +31,7 @@ export default function UploadView({ categories, onSubmit }) {
   const imageCount = media.filter((item) => item.type === 'image').length;
   const videoCount = media.filter((item) => item.type === 'video').length;
   const selectedTheme = categories[category];
+  const suggestions = getQuestionSuggestions(category, media);
   const canAddImage = imageCount < MAX_IMAGES;
   const canAddVideo = videoCount < MAX_VIDEOS;
   const canAddMedia = canAddImage || canAddVideo;
@@ -66,7 +81,7 @@ export default function UploadView({ categories, onSubmit }) {
         {!media.length ? <div className="flex min-h-[164px] flex-col items-center justify-center text-center"><span className="mb-2.5 flex h-12 w-12 items-center justify-center rounded-2xl border bg-cyan-glow/10 shadow-[0_0_15px_rgba(0,240,255,.2)]" style={{ borderColor: `${selectedTheme.color}66`, color: selectedTheme.color }}><span className="material-symbols-outlined text-2xl">upload_file</span></span><p className="font-headline text-xs font-bold text-white sm:text-sm">이미지·짧은 동영상 선택 또는 드래그 앤 드롭</p><p className="mt-1 font-mono text-[10px] text-slate-400">이미지 5개 + 동영상 1개 · 동영상 최대 10초 · 파일당 15MB</p><span className="mt-2.5 rounded-full border border-outline-variant bg-surface-container-high px-3 py-1 text-[10px] font-medium" style={{ color: selectedTheme.color }}>📁 로컬 디바이스에서 파일 찾기</span></div> : <><div className="mb-2 flex items-center justify-between text-[10px] font-mono"><span className="text-slate-300">이미지 <strong style={{ color: selectedTheme.color }}>{imageCount}/{MAX_IMAGES}</strong> · 동영상 <strong style={{ color: selectedTheme.color }}>{videoCount}/{MAX_VIDEOS}</strong></span><span className="text-slate-500">{canAddMedia ? '클릭 또는 드롭하여 추가' : '최대 선택 완료'}</span></div><div className="grid grid-cols-3 gap-2 sm:grid-cols-4">{media.map((item, index) => <MediaPreview key={item.id} item={item} index={index} color={selectedTheme.color} onRemove={() => removeMedia(item.id)} onMove={(direction) => moveMedia(index, direction)} canMovePrevious={index > 0} canMoveNext={index < media.length - 1} />)}{canAddMedia && <button type="button" onClick={(event) => { event.stopPropagation(); inputRef.current?.click(); }} aria-label="미디어 추가" className="flex aspect-square items-center justify-center rounded-xl border border-dashed bg-cyan-glow/5" style={{ borderColor: `${selectedTheme.color}99`, color: selectedTheme.color }}><span className="material-symbols-outlined text-xl">add</span></button>}</div></>}
       </div>
       <fieldset><legend className="mb-1.5 text-[11px] font-bold uppercase tracking-wider text-slate-300">1. 카테고리 선택</legend><div className="grid grid-cols-3 gap-2">{Object.entries(categories).map(([id, item]) => <button key={id} type="button" onClick={() => setCategory(id)} className="flex items-center justify-center gap-1 rounded-xl border px-2 py-2 font-headline text-xs transition-all" style={category === id ? { borderColor: item.color, color: item.color, backgroundColor: `${item.color}26`, fontWeight: 700 } : { borderColor: '#222a3d', color: '#cbd5e1', backgroundColor: '#171f33' }}><span className="material-symbols-outlined text-sm">{item.icon}</span>{item.label}</button>)}</div></fieldset>
-      <div><label htmlFor="question-input" className="mb-1 block text-[11px] font-bold uppercase tracking-wider text-slate-300">2. 피드백 질문 문구 (YES / NO)</label><textarea id="question-input" rows="2" value={question} maxLength="140" onChange={(event) => setQuestion(event.target.value)} placeholder="예: 첫인상에서 신뢰감과 호감이 느껴지나요?" className="w-full resize-none rounded-xl border border-surface-container-high bg-surface-container p-2.5 text-xs text-white placeholder:text-slate-500 focus:border-cyan-glow focus:outline-none sm:text-sm" /><div className="mt-1.5 flex flex-wrap gap-1"><span className="self-center font-mono text-[10px] text-slate-500">추천 질문:</span>{presets.map((preset) => <button key={preset} type="button" onClick={() => setQuestion(preset)} className="rounded-md border border-slate-700 bg-surface-container-high px-2 py-0.5 text-[10px] text-slate-300">{preset}</button>)}</div></div>
+      <div><label htmlFor="question-input" className="mb-1 block text-[11px] font-bold uppercase tracking-wider text-slate-300">2. 어떤 점을 평가받고 싶나요? (YES / NO)</label><div className="mb-2 rounded-xl bg-surface-container/45 p-2.5"><p className="mb-1.5 font-mono text-[10px] text-slate-400">{selectedTheme.label} · 선택한 미디어에 맞춘 추천 질문</p><div className="flex flex-wrap gap-1.5">{suggestions.map((suggestion) => <button key={suggestion} type="button" onClick={() => setQuestion(suggestion)} style={{ borderColor: `${selectedTheme.color}66`, color: question === suggestion ? selectedTheme.color : '#cbd5e1', backgroundColor: question === suggestion ? `${selectedTheme.color}1a` : '#222a3d' }} className="rounded-md border px-2 py-1 text-left text-[10px] transition-colors">{suggestion}</button>)}</div></div><textarea id="question-input" rows="2" value={question} maxLength="140" onChange={(event) => setQuestion(event.target.value)} placeholder="예: 오늘 이 룩, 저와 잘 어울리나요?" className="w-full resize-none rounded-xl border border-surface-container-high bg-surface-container p-2.5 text-xs text-white placeholder:text-slate-500 focus:border-cyan-glow focus:outline-none sm:text-sm" /></div>
       <div><label htmlFor="author-input" className="mb-1 block text-[11px] font-bold uppercase tracking-wider text-slate-300">3. 닉네임 / 핸들</label><div className="relative"><span className="absolute left-3 top-1/2 -translate-y-1/2 text-sm text-slate-500">@</span><input id="author-input" value={author} maxLength="30" onChange={(event) => setAuthor(event.target.value)} className="w-full rounded-xl border border-surface-container-high bg-surface-container py-2 pl-8 pr-3 text-xs text-white focus:border-cyan-glow focus:outline-none sm:text-sm" /></div></div>
       {error && <p role="alert" className="text-xs text-rose-400">{error}</p>}
       <button type="submit" style={{ borderColor: selectedTheme.color }} className="mt-1 flex w-full items-center justify-center gap-2 rounded-2xl border-2 bg-gradient-to-r from-primary-container via-cyan-glow to-primary-container py-3 font-headline text-sm font-extrabold text-slate-900 shadow-[0_0_20px_rgba(0,240,255,.3)] active:scale-95 sm:text-base"><span className="material-symbols-outlined text-lg">rocket_launch</span>피드에 업로드 &amp; 실시간 분석 시작</button>
