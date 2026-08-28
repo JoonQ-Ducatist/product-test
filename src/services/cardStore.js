@@ -1,6 +1,6 @@
 import { initialCards } from '../data/cards.js';
 
-const STORAGE_KEY = 'firstlook_cards_v7';
+const STORAGE_KEY = 'xcubus_cards_v7';
 
 /** @returns {Array<object>} Development-only local mock data. */
 export function loadCards() {

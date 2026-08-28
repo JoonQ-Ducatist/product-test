@@ -1,7 +1,7 @@
 import * as DialogPrimitive from '@radix-ui/react-dialog';
 
 /**
- * FirstLook의 공통 모달 기반 요소다. shadcn/ui의 Radix Dialog 패턴을
+ * xCubus의 공통 모달 기반 요소다. shadcn/ui의 Radix Dialog 패턴을
  * 현재 서비스의 다크·네온 디자인 토큰에 맞춰 최소 구성으로 적용한다.
  */
 export const Dialog = DialogPrimitive.Root;

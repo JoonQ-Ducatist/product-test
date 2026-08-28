@@ -1,9 +1,9 @@
-# FirstLook (퍼스트룩) - Quantitative Intuition & Impression Analytics
+# xCubus (퍼스트룩) - Quantitative Intuition & Impression Analytics
 
 > **"첫인상을 직관에서 데이터로"**  
 > AI와 실시간 집단 지성을 활용한 첫인상 분석 및 피드백 플랫폼
 
-![FirstLook Preview](assets/images/card1_business.jpg)
+![xCubus Preview](assets/images/card1_business.jpg)
 
 ---
 
@@ -66,7 +66,7 @@ npx serve .
 ## 📁 프로젝트 구조 (Directory Structure)
 
 ```
-product-test/
+xCubus/
 ├── assets/
 │   └── images/               # 카드 및 프로필 샘플 고해상도 이미지
 ├── index.html                # SPA 메인 HTML 구조

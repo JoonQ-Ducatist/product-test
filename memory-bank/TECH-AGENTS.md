@@ -1,6 +1,6 @@
-# FirstLook 기술 스택 및 개발 구조 규칙
+# xCubus 기술 스택 및 개발 구조 규칙
 
-> 이 문서는 FirstLook을 유지보수 가능한 웹 서비스로 개발하기 위한 기술 선택과 코드 구조의 기준이다.
+> 이 문서는 xCubus을 유지보수 가능한 웹 서비스로 개발하기 위한 기술 선택과 코드 구조의 기준이다.
 > 제품·안전 정책은 `service-design-rule.md`를 우선하며, 기술 결정은 그 정책을 침해해서는 안 된다.
 
 ## 1. service-design-rule.md 동기화 계약
@@ -64,7 +64,7 @@ src/
 - `features/<feature>/components`, `hooks`, `api.js`, `schemas.js`, `*.test.jsx`를 기능 안에 함께 둔다.
 - `pages`는 기능을 조합만 하며, 비즈니스 로직을 직접 구현하지 않는다.
 - `components/ui`는 도메인(Post, Vote 등)을 알지 못해야 한다.
-- shadcn/ui와 Material UI를 병행할 때에도 한 화면의 동일한 역할에 두 라이브러리를 섞어 쓰지 않는다. 디자인 토큰·색상·타이포그래피·여백·상태 표현은 FirstLook 기준을 우선한다.
+- shadcn/ui와 Material UI를 병행할 때에도 한 화면의 동일한 역할에 두 라이브러리를 섞어 쓰지 않는다. 디자인 토큰·색상·타이포그래피·여백·상태 표현은 xCubus 기준을 우선한다.
 - 사용자용 화면은 shadcn/ui를 우선하고, Material UI는 관리자 화면의 Data Grid·복잡한 폼처럼 도입 이점이 분명한 요소에 우선한다. 예외 도입 시에는 이유와 시각적 동등성 검증 결과를 결정 기록에 남긴다.
 - `services`만 HTTP 클라이언트를 직접 호출한다.
 - 한 파일은 하나의 명확한 책임을 갖고, 250줄을 넘기기 시작하면 분리 여부를 검토한다.

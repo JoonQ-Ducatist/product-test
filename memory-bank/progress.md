@@ -1,4 +1,4 @@
-# FirstLook 진행 현황
+# xCubus 진행 현황
 
 > 기준 계획: `plan.md`
 >

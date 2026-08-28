@@ -5,6 +5,7 @@ import UploadView from './features/upload/UploadView.jsx';
 import RankingView from './features/ranking/RankingView.jsx';
 import ProfileView from './features/profile/ProfileView.jsx';
 import SplashView from './features/auth/SplashView.jsx';
+import logoUrl from './assets/xcubus-logo.png';
 
 const tabs = [
   ['feed', 'dynamic_feed', 'Feed'],
@@ -87,9 +88,9 @@ export default function App() {
   return <div className="min-h-screen bg-background text-on-background font-body">
     <header className="fixed top-0 z-50 w-full border-b border-surface-container-high/60 bg-[#051424]/90 backdrop-blur-xl">
       <div className="mx-auto flex h-[60px] max-w-md items-center justify-between px-4">
-        <button type="button" onClick={() => setActiveTab('feed')} className="flex items-center gap-2.5 text-left" aria-label="FirstLook 피드로 이동">
-          <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-tr from-primary-container to-cyan-glow shadow-[0_0_12px_rgba(0,240,255,0.4)]"><span className="material-symbols-outlined text-xl font-bold text-black">visibility</span></span>
-          <span className="font-headline text-xl font-extrabold tracking-tight text-white">FirstLook <span className="rounded border border-cyan-glow/30 bg-cyan-glow/10 px-1.5 py-0.5 font-mono text-[10px] text-cyan-glow">AI</span></span>
+        <button type="button" onClick={() => setActiveTab('feed')} className="flex min-w-0 items-end gap-2 text-left" aria-label="XY by x.Cubus 피드로 이동">
+          <img src={logoUrl} width="32" height="32" className="h-8 w-8 shrink-0 rounded-lg" alt="XY by x.Cubus 로고" />
+          <span className="whitespace-nowrap font-headline text-[15px] font-extrabold leading-none tracking-tight text-white sm:text-xl">XY by x.Cubus</span><span aria-label="AI" className="flex h-[21px] w-[29px] shrink-0 items-center justify-center rounded-[5px] border border-cyan-glow/80 bg-[#071b2d] font-mono text-[11px] font-bold leading-none tracking-[-0.04em] text-cyan-glow shadow-[0_0_8px_rgba(0,240,255,0.2)]">AI</span><span className="hidden whitespace-nowrap font-mono text-[8px] leading-none tracking-wide text-cyan-glow sm:inline">MORE VIEWS, MORE YOU</span>
         </button>
         <div className="flex items-center gap-2">
           <button type="button" className="relative flex h-10 w-10 items-center justify-center rounded-full hover:bg-surface-container" onClick={() => setToast('새 알림은 없습니다.')} aria-label="알림"><span className="material-symbols-outlined text-[22px] text-on-surface-variant">notifications</span><span className="absolute right-2 top-2 h-2 w-2 animate-pulse rounded-full bg-cyan-glow ring-2 ring-background" /></button>

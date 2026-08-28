@@ -1,4 +1,4 @@
-# FirstLook 단계별 개발 계획
+# xCubus 단계별 개발 계획
 
 > 기준 문서: `service-design-rule.md`, `TECH-AGENTS.md`
 >

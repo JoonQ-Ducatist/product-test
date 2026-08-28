@@ -1,4 +1,4 @@
-# FirstLook 전체 기능 백로그
+# xCubus 전체 기능 백로그
 
 > 기준 문서: service-design-rule.md, TECH-AGENTS.md, plan.md, progress.md
 >
