@@ -18,31 +18,33 @@ const tabs = [
   ['profile', 'account_circle', 'Profile', '#EAAF2D'],
 ];
 
-/** 정의: 모든 화면 요소가 같은 비율로 변하는 기준 모바일 디자인 캔버스의 크기다. */
+/** 정의: 구성 비율을 보존하기 위한 기준 모바일 디자인 캔버스의 크기다. */
 const DESIGN_CANVAS = { width: 430, height: 920 };
 
-/** 정의: 브라우저의 가로·세로 제한 중 작은 비율을 반환해 레이아웃 전체를 동등하게 확대·축소한다. */
-function getCanvasScale() {
-  if (typeof window === 'undefined') return 1;
+/** 정의: 표시 영역에 맞는 단일 스케일과 모바일 세로 화면용 캔버스 너비를 계산한다. */
+function getCanvasMetrics() {
+  if (typeof window === 'undefined') return { scale: 1, width: DESIGN_CANVAS.width };
   const viewport = window.visualViewport;
   const visibleWidth = viewport?.width ?? window.innerWidth;
   const visibleHeight = viewport?.height ?? window.innerHeight;
-  return Math.min(visibleWidth / DESIGN_CANVAS.width, visibleHeight / DESIGN_CANVAS.height);
+  const scale = Math.min(visibleWidth / DESIGN_CANVAS.width, visibleHeight / DESIGN_CANVAS.height);
+  const isPortraitMobile = visibleWidth <= 600 && visibleHeight > visibleWidth;
+  return { scale, width: isPortraitMobile ? visibleWidth / scale : DESIGN_CANVAS.width };
 }
 
-/** 정의: 헤더·카드·하단 메뉴를 하나의 고정 모바일 캔버스로 렌더링하는 반응형 프레임이다. */
+/** 정의: 실제 가용 뷰포트에 맞춰 헤더·카드·하단 메뉴를 렌더링하는 반응형 프레임이다. */
 function CanvasStage({ children }) {
-  const [scale, setScale] = useState(getCanvasScale);
+  const [metrics, setMetrics] = useState(getCanvasMetrics);
   useEffect(() => {
-    const updateScale = () => setScale(getCanvasScale());
-    window.addEventListener('resize', updateScale);
-    window.visualViewport?.addEventListener('resize', updateScale);
+    const updateMetrics = () => setMetrics(getCanvasMetrics());
+    window.addEventListener('resize', updateMetrics);
+    window.visualViewport?.addEventListener('resize', updateMetrics);
     return () => {
-      window.removeEventListener('resize', updateScale);
-      window.visualViewport?.removeEventListener('resize', updateScale);
+      window.removeEventListener('resize', updateMetrics);
+      window.visualViewport?.removeEventListener('resize', updateMetrics);
     };
   }, []);
-  return <div className="app-stage"><div className="app-canvas" style={{ width: DESIGN_CANVAS.width, height: DESIGN_CANVAS.height, transform: `scale(${scale})` }}>{children}</div></div>;
+  return <div className="app-stage"><div className="app-canvas" style={{ width: metrics.width, height: DESIGN_CANVAS.height, transform: `scale(${metrics.scale})` }}>{children}</div></div>;
 }
 
 /** 정의: 인증 진입, 탭 상태, 피드 목업 데이터와 사용자 상호작용을 조합하는 루트 화면 컴포넌트다. */
@@ -129,7 +131,7 @@ export default function App() {
   return <CanvasStage><div className="editorial-app h-full bg-background text-on-background font-body">
     <SkipLink />
     <header className="fixed top-0 z-50 w-full border-b border-[#e4e2dd] bg-[#fbf9f4]/95 backdrop-blur-xl">
-      <div className="mx-auto flex h-[60px] max-w-md items-center justify-between px-4">
+      <div className="mx-auto flex h-[60px] max-w-none items-center justify-between px-4">
         <button type="button" onClick={() => setActiveTab('feed')} className="flex min-w-0 items-end gap-2 text-left" aria-label="xy by x.Cubus 피드로 이동">
           <img src={logoUrl} width="38" height="28" className="h-7 w-9 shrink-0 object-contain" alt="xy by x.Cubus 로고" />
           <span lang="en" className="whitespace-nowrap font-latin text-[17px] font-bold leading-none tracking-tight text-[#1b1c19] sm:text-xl">xy by x.Cubus</span><span aria-label="AI" className="flex h-[20px] w-[29px] shrink-0 items-center justify-center rounded-[4px] border border-[#c5a059] bg-[#fbf9f4] font-mono text-[10px] font-bold leading-none tracking-[-0.04em] text-[#735c00]">AI</span><span lang="en" className="hidden whitespace-nowrap font-mono text-[8px] leading-none tracking-wide text-[#735c00] sm:inline">MORE VIEWS, MORE YOU</span>
@@ -141,7 +143,7 @@ export default function App() {
       </div>
     </header>
 
-    <main id="main-content" tabIndex="-1" className="editorial-main mx-auto flex h-full w-full max-w-md flex-col px-4 pb-20 pt-[76px] sm:px-5">
+    <main id="main-content" tabIndex="-1" className="editorial-main mx-auto flex h-full w-full max-w-none flex-col px-4 pb-20 pt-[76px] sm:px-5">
       {previewState !== 'ready' ? <StatePanel state={previewState} pageName={tabs.find(([id]) => id === activeTab)?.[2] ?? 'xCubus'} onAction={() => { if (previewState === 'permission') setIsGuest(true); else if (previewState === 'review') setActiveTab('profile'); setPreviewState('ready'); }} /> : <>
         {activeTab === 'feed' && <FeedView categories={categories} cards={visibleCards} card={currentCard} currentIndex={safeIndex} activeCategory={activeCategory} hasVoted={currentCard && votedIds.has(currentCard.id)} onCategoryChange={changeCategory} onPrevious={() => moveCard(-1)} onNext={() => moveCard(1)} onShuffle={shuffle} onVote={vote} onAddComment={addComment} />}
         {activeTab === 'upload' && <UploadView categories={categories} onSubmit={addCard} onMessage={setToast} />}
@@ -152,6 +154,6 @@ export default function App() {
 
     {toast && <div role="status" className="fixed left-1/2 top-[72px] z-[60] w-full max-w-xs -translate-x-1/2 px-4"><div className="flex items-center gap-2 rounded-lg border border-[#e4e2dd] bg-white/95 px-3.5 py-2.5 text-xs text-[#1b1c19] shadow-lg backdrop-blur"><span className="material-symbols-outlined text-base text-cyan-glow">check_circle</span>{toast}</div></div>}
 
-    <nav className="fixed bottom-0 z-50 w-full border-t border-[#e4e2dd] bg-[#fbf9f4]/95 pb-[env(safe-area-inset-bottom)] shadow-[0_-4px_20px_rgba(0,0,0,0.03)] backdrop-blur-xl" aria-label="주요 메뉴"><div className="mx-auto flex h-[60px] max-w-md items-center justify-around px-2">{tabs.map(([id, icon, label, color]) => <button key={id} type="button" onClick={() => setActiveTab(id)} aria-current={activeTab === id ? 'page' : undefined} style={activeTab === id ? { color } : undefined} className={`flex h-[52px] w-16 flex-col items-center justify-center transition-all ${activeTab === id ? 'scale-[1.03]' : 'text-slate-400 hover:text-[#1b1c19]'}`}><span className="material-symbols-outlined text-[22px]">{icon}</span><span className="mt-0.5 font-mono text-[9px] font-bold">{label}</span></button>)}</div></nav>
+    <nav className="fixed bottom-0 z-50 w-full border-t border-[#e4e2dd] bg-[#fbf9f4]/95 pb-[env(safe-area-inset-bottom)] shadow-[0_-4px_20px_rgba(0,0,0,0.03)] backdrop-blur-xl" aria-label="주요 메뉴"><div className="mx-auto flex h-[60px] max-w-none items-center justify-around px-2">{tabs.map(([id, icon, label, color]) => <button key={id} type="button" onClick={() => setActiveTab(id)} aria-current={activeTab === id ? 'page' : undefined} style={activeTab === id ? { color } : undefined} className={`flex h-[52px] w-16 flex-col items-center justify-center transition-all ${activeTab === id ? 'scale-[1.03]' : 'text-slate-400 hover:text-[#1b1c19]'}`}><span className="material-symbols-outlined text-[22px]">{icon}</span><span className="mt-0.5 font-mono text-[11px] font-bold">{label}</span></button>)}</div></nav>
   </div></CanvasStage>;
 }

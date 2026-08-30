@@ -29,7 +29,7 @@ export default function SplashView({ cards, onEnter }) {
   const activeCard = popularCards[activeIndex] ?? cards[0];
 
   return (
-    <main className="relative mx-auto h-full w-full max-w-md overflow-hidden bg-[#051424] text-white shadow-2xl">
+    <main className="relative mx-auto h-full w-full max-w-none overflow-hidden bg-[#051424] text-white shadow-2xl">
       <div className="absolute inset-0" aria-hidden="true">
         <img key={activeCard.id} className="splash-media h-full w-full object-cover" style={{ objectPosition: activeCard.objectPosition }} src={activeCard.imageUrl} alt="" />
         <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(14,28,45,0.62)_0%,rgba(14,28,45,0.08)_35%,rgba(14,28,45,0.9)_100%)]" />
@@ -76,7 +76,7 @@ export default function SplashView({ cards, onEnter }) {
 /** 정의: 인증 제공자별 진입 행동을 일관된 크기·접근성으로 렌더링하는 버튼이다. */
 function ProviderButton({ label, icon, onClick }) {
   return (
-    <button type="button" onClick={onClick} className="mx-auto flex h-9 w-[92%] items-center justify-center gap-2 rounded-full border border-white/15 bg-white/[0.055] px-4 text-xs font-bold text-white shadow-sm backdrop-blur-[1px] transition hover:bg-white/[0.14] focus-visible:bg-white/[0.14]">
+    <button type="button" onClick={onClick} className="mx-auto flex h-10 w-[92%] items-center justify-center gap-2 rounded-full border border-white/15 bg-white/[0.055] px-4 text-sm font-bold text-white shadow-sm backdrop-blur-[1px] transition hover:bg-white/[0.14] focus-visible:bg-white/[0.14]">
       <span className="material-symbols-outlined text-[17px] text-[#ecd8a8]">{icon}</span>
       {label}
     </button>

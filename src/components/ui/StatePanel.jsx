@@ -25,7 +25,7 @@ export default function StatePanel({ state, pageName, onAction }) {
         <p className="mt-4 font-mono text-[10px] font-semibold tracking-[0.15em] text-cyan-glow">{content.eyebrow}</p>
         <h1 className="mt-2 font-headline text-2xl font-bold text-[#1b1c19]">{content.title}</h1>
         <p className="mt-2 text-sm leading-relaxed text-slate-400">{content.body}</p>
-        {content.action && <button type="button" onClick={onAction} className="ui-primary-action mt-6 rounded-lg border border-[#0e1c2d] bg-primary-container px-4 py-2 text-xs font-bold text-white">{content.action}</button>}
+        {content.action && <button type="button" onClick={onAction} className="ui-primary-action mt-6 rounded-lg border border-[#0e1c2d] bg-primary-container px-4 py-2.5 text-sm font-bold text-white">{content.action}</button>}
       </div>
     </section>
   );
