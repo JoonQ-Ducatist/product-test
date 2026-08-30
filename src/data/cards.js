@@ -9,6 +9,7 @@ export const categories = {
   Travel: { label: '여행', icon: 'travel_explore', color: '#5F9F9A', liveTag: 'Travel Look' },
   Fitness: { label: '운동', icon: 'fitness_center', color: '#8AA65B', liveTag: 'Fitness Look' },
   Work: { label: '출근', icon: 'business_center', color: '#7894B8', liveTag: 'Work Look' },
+  SocialProfile: { label: 'SNS 프로필', icon: 'account_circle', color: '#B28AA8', liveTag: 'Profile Look' },
 };
 
 export const initialCards = [
@@ -17,4 +18,5 @@ export const initialCards = [
   { id: 'card-3', author: 'workday_note', category: 'Work', question: '직장에서 좋은 첫인상을\n줄 것 같나요?', subtext: 'Would this make a great first impression at work?', imageUrl: officeImage, objectPosition: 'center 38%', yesVotes: 1430, noVotes: 190, timestamp: '1시간 전', commentsAllowed: true, comments: [{ id: 'c5', author: 'team_player', body: '차분하고 믿음직한 분위기입니다.', createdAt: '45분 전', replies: [] }] },
   { id: 'card-4', author: 'fit_queen', category: 'Fitness', question: '건강하고 매력적인 인상을\n주나요?', subtext: 'Does this look feel healthy and confident?', imageUrl: workoutImage, objectPosition: 'center 34%', yesVotes: 1105, noVotes: 95, timestamp: '2시간 전', commentsAllowed: true, comments: [{ id: 'c6', author: 'run_more', body: '활동적인 느낌이 잘 살아 있어요.', createdAt: '1시간 전', replies: [] }] },
   { id: 'card-5', author: 'travel_day', category: 'Travel', question: '이 여행 스타일,\n매력적으로 보이나요?', subtext: 'Does this travel style feel memorable and charming?', imageUrl: datingImage, objectPosition: 'center 30%', yesVotes: 782, noVotes: 86, timestamp: '3시간 전', commentsAllowed: true, comments: [] },
+  { id: 'card-6', author: 'portrait_note', category: 'SocialProfile', question: '이 사진, SNS 프로필로\n매력적으로 보이나요?', subtext: 'Would this make a memorable social profile photo?', imageUrl: datingImage, objectPosition: 'center 22%', yesVotes: 654, noVotes: 72, timestamp: '4시간 전', commentsAllowed: true, comments: [] },
 ];
