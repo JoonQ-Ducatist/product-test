@@ -5,7 +5,7 @@ import UploadView from './features/upload/UploadView.jsx';
 import RankingView from './features/ranking/RankingView.jsx';
 import ProfileView from './features/profile/ProfileView.jsx';
 import SplashView from './features/auth/SplashView.jsx';
-import logoUrl from './assets/xcubus-logo.png';
+import logoUrl from './assets/xcubus-snake-logo.png';
 
 const tabs = [
   ['feed', 'dynamic_feed', 'Feed'],
@@ -85,29 +85,29 @@ export default function App() {
 
   if (isGuest) return <SplashView cards={cards} onEnter={(provider) => { setIsGuest(false); setToast(`${provider} 로그인은 현재 목업입니다.`); }} />;
 
-  return <div className="min-h-screen bg-background text-on-background font-body">
-    <header className="fixed top-0 z-50 w-full border-b border-surface-container-high/60 bg-[#051424]/90 backdrop-blur-xl">
+  return <div className="editorial-app min-h-screen bg-background text-on-background font-body">
+    <header className="fixed top-0 z-50 w-full border-b border-[#e4e2dd] bg-[#fbf9f4]/95 backdrop-blur-xl">
       <div className="mx-auto flex h-[60px] max-w-md items-center justify-between px-4">
         <button type="button" onClick={() => setActiveTab('feed')} className="flex min-w-0 items-end gap-2 text-left" aria-label="XY by x.Cubus 피드로 이동">
-          <img src={logoUrl} width="32" height="32" className="h-8 w-8 shrink-0 rounded-lg" alt="XY by x.Cubus 로고" />
-          <span className="whitespace-nowrap font-headline text-[15px] font-extrabold leading-none tracking-tight text-white sm:text-xl">XY by x.Cubus</span><span aria-label="AI" className="flex h-[21px] w-[29px] shrink-0 items-center justify-center rounded-[5px] border border-cyan-glow/80 bg-[#071b2d] font-mono text-[11px] font-bold leading-none tracking-[-0.04em] text-cyan-glow shadow-[0_0_8px_rgba(0,240,255,0.2)]">AI</span><span className="hidden whitespace-nowrap font-mono text-[8px] leading-none tracking-wide text-cyan-glow sm:inline">MORE VIEWS, MORE YOU</span>
+          <img src={logoUrl} width="38" height="28" className="h-7 w-9 shrink-0 object-contain" alt="XY by x.Cubus 로고" />
+          <span className="whitespace-nowrap font-headline text-[17px] font-bold leading-none tracking-tight text-[#1b1c19] sm:text-xl">XY by x.Cubus</span><span aria-label="AI" className="flex h-[20px] w-[29px] shrink-0 items-center justify-center rounded-[4px] border border-[#c5a059] bg-[#fbf9f4] font-mono text-[10px] font-bold leading-none tracking-[-0.04em] text-[#735c00]">AI</span><span className="hidden whitespace-nowrap font-mono text-[8px] leading-none tracking-wide text-[#735c00] sm:inline">MORE VIEWS, MORE YOU</span>
         </button>
         <div className="flex items-center gap-2">
-          <button type="button" className="relative flex h-10 w-10 items-center justify-center rounded-full hover:bg-surface-container" onClick={() => setToast('새 알림은 없습니다.')} aria-label="알림"><span className="material-symbols-outlined text-[22px] text-on-surface-variant">notifications</span><span className="absolute right-2 top-2 h-2 w-2 animate-pulse rounded-full bg-cyan-glow ring-2 ring-background" /></button>
-          <button type="button" onClick={() => setActiveTab('profile')} className="h-9 w-9 overflow-hidden rounded-full border border-cyan-glow/40 p-0.5" aria-label="프로필"><img className="h-full w-full rounded-full object-cover" src={initialCards[0].imageUrl} alt="내 프로필" /></button>
+          <button type="button" className="relative flex h-10 w-10 items-center justify-center rounded-full hover:bg-surface-container" onClick={() => setToast('새 알림은 없습니다.')} aria-label="알림"><span className="material-symbols-outlined text-[22px] text-on-surface-variant">notifications</span><span className="absolute right-2 top-2 h-2 w-2 animate-pulse rounded-full bg-[#c5a059] ring-2 ring-background" /></button>
+          <button type="button" onClick={() => setActiveTab('profile')} className="h-9 w-9 overflow-hidden rounded-full border border-[#c5a059]/60 p-0.5" aria-label="프로필"><img className="h-full w-full rounded-full object-cover" src={initialCards[0].imageUrl} alt="내 프로필" /></button>
         </div>
       </div>
     </header>
 
-    <main className="mx-auto flex min-h-screen w-full max-w-md flex-col px-3 pb-20 pt-[68px] sm:px-4">
+    <main className="editorial-main mx-auto flex min-h-screen w-full max-w-md flex-col px-4 pb-20 pt-[76px] sm:px-5">
       {activeTab === 'feed' && <FeedView categories={categories} cards={visibleCards} card={currentCard} currentIndex={safeIndex} activeCategory={activeCategory} hasVoted={currentCard && votedIds.has(currentCard.id)} onCategoryChange={changeCategory} onPrevious={() => moveCard(-1)} onNext={() => moveCard(1)} onShuffle={shuffle} onVote={vote} onAddComment={addComment} />}
       {activeTab === 'upload' && <UploadView categories={categories} onSubmit={addCard} />}
       {activeTab === 'ranking' && <RankingView cards={cards} categories={categories} onOpen={openRankingCard} />}
       {activeTab === 'profile' && <ProfileView cards={cards} categories={categories} onDelete={deleteCard} onUpload={() => setActiveTab('upload')} />}
     </main>
 
-    {toast && <div role="status" className="fixed left-1/2 top-[72px] z-[60] w-full max-w-xs -translate-x-1/2 px-4"><div className="flex items-center gap-2 rounded-xl border border-cyan-glow/50 bg-surface-container-high/95 px-3.5 py-2.5 text-xs text-white shadow-2xl backdrop-blur"><span className="material-symbols-outlined text-base text-cyan-glow">check_circle</span>{toast}</div></div>}
+    {toast && <div role="status" className="fixed left-1/2 top-[72px] z-[60] w-full max-w-xs -translate-x-1/2 px-4"><div className="flex items-center gap-2 rounded-lg border border-[#e4e2dd] bg-white/95 px-3.5 py-2.5 text-xs text-[#1b1c19] shadow-lg backdrop-blur"><span className="material-symbols-outlined text-base text-cyan-glow">check_circle</span>{toast}</div></div>}
 
-    <nav className="fixed bottom-0 z-50 w-full border-t border-surface-container-high/70 bg-[#051424]/90 pb-[env(safe-area-inset-bottom)] shadow-2xl backdrop-blur-xl" aria-label="주요 메뉴"><div className="mx-auto flex h-[60px] max-w-md items-center justify-around px-2">{tabs.map(([id, icon, label]) => <button key={id} type="button" onClick={() => setActiveTab(id)} className={`flex h-[52px] w-16 flex-col items-center justify-center transition-all ${activeTab === id ? 'text-cyan-glow' : 'text-slate-400 hover:text-white'}`}><span className="material-symbols-outlined text-[22px]">{icon}</span><span className="mt-0.5 font-mono text-[9px] font-bold">{label}</span></button>)}</div></nav>
+    <nav className="fixed bottom-0 z-50 w-full border-t border-[#e4e2dd] bg-[#fbf9f4]/95 pb-[env(safe-area-inset-bottom)] shadow-[0_-4px_20px_rgba(0,0,0,0.03)] backdrop-blur-xl" aria-label="주요 메뉴"><div className="mx-auto flex h-[60px] max-w-md items-center justify-around px-2">{tabs.map(([id, icon, label]) => <button key={id} type="button" onClick={() => setActiveTab(id)} className={`flex h-[52px] w-16 flex-col items-center justify-center transition-all ${activeTab === id ? 'text-cyan-glow' : 'text-slate-400 hover:text-[#1b1c19]'}`}><span className="material-symbols-outlined text-[22px]">{icon}</span><span className="mt-0.5 font-mono text-[9px] font-bold">{label}</span></button>)}</div></nav>
   </div>;
 }

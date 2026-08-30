@@ -113,13 +113,13 @@
 
 ### 작업
 
-1. Node.js + Fastify 서버, 환경 변수 검증, 공통 오류 형식을 구성한다.
-2. PostgreSQL + Prisma로 User, Post, Media, Follow, Vote, Comment, Aggregate, Report/ModerationCase, AuditLog 스키마를 만든다.
-3. Apple·Google·Kakao·이메일 인증, 계정 연결, 역할(일반 사용자·운영자·관리자), 보호 API, 세션 만료 처리를 구현한다.
-4. 개인 계정 설정 API(프로필 사진·핸들, 알림, 기본 공개·댓글 설정, 차단 목록, 탈퇴·데이터 요청)를 구현하고 민감한 변경에 재인증·감사 로그를 적용한다.
-5. S3 호환 저장소와 짧은 수명 서명 URL 기반 업로드 흐름을 구현한다.
+1. Supabase 프로젝트, 환경 변수 검증, Postgres·Auth·Storage·Edge Functions의 개발·스테이징·운영 환경을 구성한다.
+2. Supabase CLI SQL 마이그레이션과 RLS 정책으로 User, Post, Media, Follow, Vote, Comment, Aggregate, Report/ModerationCase, AuditLog 스키마를 만든다.
+3. Supabase Auth로 Apple·Google·Kakao·이메일 인증, 계정 연결, 역할(일반 사용자·운영자·관리자), 보호 라우트, 세션 만료 처리를 구현한다.
+4. 개인 계정 설정 Edge Function(프로필 사진·핸들, 알림, 기본 공개·댓글 설정, 차단 목록, 탈퇴·데이터 요청)을 구현하고 민감한 변경에 재인증·감사 로그를 적용한다.
+5. Supabase Storage와 짧은 수명 signed upload URL 기반 업로드 흐름을 구현한다.
 6. 이미지 형식·크기·EXIF 처리·접근 제어·삭제 작업을 구현한다.
-7. Redis 기반 속도 제한과 비동기 작업 큐의 기반을 둔다.
+7. Edge Function 기반 속도 제한을 구성하고, 미디어 변환·재계산은 별도 비동기 워커와 큐를 연동할 수 있는 기반을 둔다.
 8. 개발·스테이징·운영 환경, 비밀 관리, 로그·오류 추적을 분리한다.
 9. 원본 업로드 후 모바일 최적화 파생본을 생성하는 이미지 압축·리사이즈 작업과 관리자 정책 설정을 구현한다.
 10. 초기 Google 최고 관리자 1명과 하위 관리자 추가·비활성화 API, 별도 관리자 도메인의 인가 경계를 구현한다.
