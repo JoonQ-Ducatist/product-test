@@ -1,19 +1,19 @@
 import { useRef, useState } from 'react';
+import PageHeading from '../../components/ui/PageHeading.jsx';
 
 const MAX_IMAGES = 5;
 const MAX_VIDEOS = 1;
 const MAX_FILE_SIZE = 15 * 1024 * 1024;
 const questionSuggestions = {
-  Business: ['이 룩에서 신뢰감과 전문성이 느껴지나요?', '오늘의 출근 룩, 깔끔하고 센스 있어 보이나요?', '이 스타일이 제 강점을 잘 보여주는 것 같나요?'],
-  Dating: ['오늘 이 룩, 데이트에서 호감이 갈 것 같나요?', '이 스타일이 저와 잘 어울려 보이나요?', '첫 만남에 편안하고 매력적인 인상이 들까요?'],
-  Workout: ['이 운동 룩, 활동적이고 건강해 보이나요?', '운동하기에 편안하면서도 스타일 있어 보이나요?', '오늘의 운동 스타일, 자신감 있어 보이나요?'],
-  Interview: ['이 모습에서 전문성과 신뢰감이 느껴지나요?', '면접 자리에서 단정하고 준비된 인상일까요?', '이 룩이 제 역량을 잘 보여주는 데 도움이 될까요?'],
-  Style: ['오늘 제 스타일, 어떤 분위기로 보여요?', '새로 산 이 옷, 저와 잘 어울리나요?', '오늘의 룩, 자랑하고 싶을 만큼 괜찮아 보이나요?'],
-  Profile: ['이 사진, 제 SNS 프로필로 잘 어울릴까요?', '이 사진에서 제 매력이 잘 보이나요?', '처음 보는 사람에게 좋은 인상을 줄 것 같나요?'],
+  Outfit: ['오늘 이 스타일, 괜찮아 보여요?', '새로 산 이 옷, 저와 잘 어울리나요?', '오늘의 룩, 어떤 분위기로 보여요?'],
+  Date: ['첫 만남이라면 호감이 가나요?', '데이트에서 편안하고 매력적인 인상이 들까요?', '이 스타일이 저와 잘 어울려 보이나요?'],
+  Travel: ['이 여행 스타일, 매력적으로 보이나요?', '여행지 분위기와 잘 어울리는 룩인가요?', '사진으로 남기고 싶은 여행 룩인가요?'],
+  Fitness: ['건강하고 매력적인 인상을 주나요?', '운동하기에 편안하면서도 스타일 있어 보이나요?', '오늘의 운동 스타일, 자신감 있어 보이나요?'],
+  Work: ['직장에서 좋은 첫인상을 줄 것 같나요?', '오늘의 출근 룩, 깔끔하고 센스 있어 보이나요?', '이 룩에서 신뢰감이 느껴지나요?'],
 };
 
 function getQuestionSuggestions(category, media) {
-  const base = questionSuggestions[category] ?? questionSuggestions.Style;
+  const base = questionSuggestions[category] ?? questionSuggestions.Outfit;
   if (!media.length) return base;
   const mediaHint = media.some((item) => item.type === 'video') ? '짧은 영상으로 봤을 때도' : '이 사진에서';
   return [`${mediaHint} ${base[0]}`, ...base.slice(1)];
@@ -23,7 +23,7 @@ function getQuestionSuggestions(category, media) {
 export default function UploadView({ categories, onSubmit }) {
   const inputRef = useRef(null);
   const [media, setMedia] = useState([]);
-  const [category, setCategory] = useState('Business');
+  const [category, setCategory] = useState('Outfit');
   const [question, setQuestion] = useState('');
   const [author, setAuthor] = useState('my_look_daily');
   const [error, setError] = useState('');
@@ -74,7 +74,7 @@ export default function UploadView({ categories, onSubmit }) {
   }
 
   return <section className="editorial-upload w-full pb-3 pt-1">
-    <div className="mb-5 flex items-start justify-between"><div><span className="font-mono text-[11px] font-semibold uppercase tracking-[0.14em] text-cyan-glow">CREATE A LOOKBOOK</span><h1 className="font-headline text-2xl font-bold text-white">새로운 룩 공유하기</h1><p className="mt-1 text-xs text-slate-400">사진 최대 5개와 10초 이하 동영상 1개를 함께 선택할 수 있습니다.</p></div><span className="flex h-9 w-9 items-center justify-center rounded-lg border border-[#c5a059]/50 bg-[#fbf9f4] text-cyan-glow"><span className="material-symbols-outlined text-lg">add_a_photo</span></span></div>
+    <PageHeading eyebrow="CREATE A LOOKBOOK" title="새로운 룩 공유하기" description="사진 최대 5개와 10초 이하 동영상 1개를 함께 선택할 수 있습니다." action={<span className="flex h-9 w-9 items-center justify-center rounded-lg border border-[#c5a059]/50 bg-[#fbf9f4] text-cyan-glow"><span className="material-symbols-outlined text-lg">add_a_photo</span></span>} />
     <form className="flex flex-col gap-3.5" onSubmit={submit}>
       <div role={canAddMedia ? 'button' : undefined} tabIndex={canAddMedia ? 0 : undefined} onClick={() => canAddMedia && inputRef.current?.click()} onKeyDown={(event) => { if (canAddMedia && (event.key === 'Enter' || event.key === ' ')) inputRef.current?.click(); }} onDragOver={(event) => canAddMedia && event.preventDefault()} onDrop={(event) => { event.preventDefault(); if (canAddMedia) addFiles(event.dataTransfer.files); }} className={`relative min-h-[190px] w-full overflow-hidden rounded-lg border border-dashed border-[#c5a059]/60 bg-white p-4 transition-colors ${canAddMedia ? 'cursor-pointer hover:bg-[#f5f3ee]' : 'cursor-default'}`}>
         <input ref={inputRef} type="file" multiple accept={acceptedTypes} className="hidden" onChange={(event) => addFiles(event.target.files)} />
