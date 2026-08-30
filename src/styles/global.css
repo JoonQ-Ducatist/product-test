@@ -1,9 +1,23 @@
-html { background: #051424; }
+:root {
+  --xc-surface: #f9f7f2;
+  --xc-surface-low: #f5f3ee;
+  --xc-surface-card: #ffffff;
+  --xc-text: #1b1c19;
+  --xc-text-muted: #74777d;
+  --xc-outline: #e4e2dd;
+  --xc-accent: #735c00;
+  --xc-accent-soft: #c5a059;
+  --xc-primary: #0e1c2d;
+}
+
+html { background: var(--xc-surface); }
 html, body { scrollbar-width: none; }
 html::-webkit-scrollbar, body::-webkit-scrollbar { display: none; }
 body { margin: 0; min-width: 320px; }
 button { font: inherit; }
-button:focus-visible { outline: 2px solid #00f0ff; outline-offset: 3px; }
+button:focus-visible { outline: 2px solid #735c00; outline-offset: 3px; }
+.skip-link { position: fixed; left: 1rem; top: -4rem; z-index: 100; border-radius: .375rem; background: #0e1c2d; color: #fff; padding: .6rem .9rem; font-size: .75rem; font-weight: 700; transition: top .15s ease; }
+.skip-link:focus { top: 1rem; outline: 2px solid #c5a059; outline-offset: 2px; }
 .no-scrollbar { scrollbar-width: none; }
 .no-scrollbar::-webkit-scrollbar { display: none; }
 .scan-line { animation: scan 3s ease-in-out infinite; }
@@ -12,8 +26,33 @@ button:focus-visible { outline: 2px solid #00f0ff; outline-offset: 3px; }
 @keyframes splash-media { 0% { opacity: 0; transform: translateX(24%) scale(1.06); } 16% { opacity: 1; transform: translateX(0) scale(1); } 80% { opacity: 1; transform: translateX(0) scale(1); } 100% { opacity: 0; transform: translateX(-16%) scale(1.03); } }
 @media (prefers-reduced-motion: reduce) { .scan-line, .splash-media { animation: none; } }
 
-/* Splash 인증 수단: Google → Apple → Kakao → Email 순서 */
-.grid.grid-cols-2 > :nth-child(1) { order: 2; }
-.grid.grid-cols-2 > :nth-child(2) { order: 1; }
-.grid.grid-cols-2 > :nth-child(3) { order: 3; }
-.grid.grid-cols-2 > :nth-child(4) { order: 4; }
+/* Couture Intelligence: 전 화면에 적용하는 에디토리얼 표면·텍스트 규칙 */
+.editorial-app { background: var(--xc-surface); color: var(--xc-text); }
+.editorial-main .bg-surface-container-lowest { background-color: var(--xc-surface-card) !important; }
+.editorial-main .bg-surface-container-low { background-color: var(--xc-surface-low) !important; }
+.editorial-main .bg-surface-container { background-color: #f0eee9 !important; }
+.editorial-main .bg-surface-container-high { background-color: #eae8e3 !important; }
+.editorial-main .border-surface-container-high { border-color: var(--xc-outline) !important; }
+.editorial-main .text-white { color: var(--xc-text) !important; }
+.editorial-main .text-slate-200, .editorial-main .text-slate-300 { color: #44474c !important; }
+.editorial-main .text-slate-400 { color: #74777d !important; }
+.editorial-main .text-slate-500 { color: #8d8d87 !important; }
+.editorial-main .bg-slate-800 { background-color: #e4e2dd !important; }
+.editorial-main .rounded-2xl { border-radius: .5rem; }
+.editorial-main .rounded-xl { border-radius: .375rem; }
+.editorial-main input, .editorial-main textarea { background: #fff !important; color: #1b1c19 !important; border-color: #c4c6cd !important; }
+.editorial-main input:focus, .editorial-main textarea:focus { border-color: #c5a059 !important; }
+.editorial-main .text-cyan-glow { color: var(--xc-accent) !important; }
+.editorial-main .bg-cyan-glow { background-color: var(--xc-accent-soft) !important; }
+.editorial-main .border-cyan-glow { border-color: var(--xc-accent-soft) !important; }
+.editorial-main .ui-primary-action { color: #fff !important; }
+
+/* 이미지 위의 피드 정보는 선명한 흰색으로 유지한다. */
+.editorial-feed .text-white { color: #fff !important; }
+.editorial-feed .text-slate-200, .editorial-feed .text-slate-300 { color: #f5f3ee !important; }
+.editorial-feed .text-slate-400, .editorial-feed .text-slate-500 { color: #d7d4cd !important; }
+.editorial-feed article { border-radius: .375rem; border-color: rgba(255,255,255,.25); box-shadow: 0 12px 30px rgba(0,0,0,.12); }
+
+.editorial-ranking > ol > li > button,
+.editorial-profile article,
+.editorial-upload [class*="bg-surface-container"] { box-shadow: 0 4px 20px rgba(0,0,0,.03); }

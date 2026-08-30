@@ -1,27 +1,82 @@
 import { useEffect, useMemo, useState } from 'react';
-import logoUrl from '../../assets/xcubus-logo.png';
+import logoUrl from '../../assets/xcubus-snake-logo.png';
 
 const splashCopies = [
-  { title: <>오늘 내 모습,<br />어떻게 보여요?</>, body: <>외출 전 내 모습을 가볍게 점검하고,<br />새로 산 옷의 반응도 확인해 보세요.</>, english: 'How do I look today? Check your look before you head out.' },
-  { title: <>이 룩, 오늘의 나를<br />더 빛나게 할까요?</>, body: <>거울 속 나를 한 번 더 보고 싶을 때,<br />솔직하고 다정한 반응을 만나보세요.</>, english: 'Will this look make you shine a little brighter today?' },
-  { title: <>새로 산 이 옷,<br />나랑 잘 어울릴까?</>, body: <>설레는 새 옷을 입기 전,<br />가볍게 의견을 확인해 보세요.</>, english: 'Does this new outfit feel like you?' },
-  { title: <>오늘의 분위기,<br />내가 원하는 느낌일까?</>, body: <>꾸안꾸부터 특별한 약속 룩까지,<br />오늘의 무드를 함께 점검해요.</>, english: 'Is today’s vibe exactly what you wanted?' },
-  { title: <>나답게 예쁜 날,<br />지금 시작해요.</>, body: <>정답 대신 다양한 시선으로<br />내 스타일을 더 즐겨 보세요.</>, english: 'Start a day that feels beautifully you.' },
-  { title: <>친구에게 묻기 전,<br />여기서 먼저 확인해요.</>, body: <>외출 직전의 작은 고민도<br />가볍고 편하게 나눌 수 있어요.</>, english: 'A quick style check before you step out.' },
-  { title: <>오늘 이 조합,<br />사진 남기고 싶을 만큼 좋아?</>, body: <>내가 느끼는 설렘과 다른 시선의 반응을<br />함께 확인해 보세요.</>, english: 'Is this look photo-worthy today?' },
-  { title: <>평범한 하루도,<br />내 스타일로 특별하게.</>, body: <>출근길, 약속, 카페 가는 날까지<br />오늘의 나를 가볍게 체크해요.</>, english: 'Make an ordinary day feel like your own.' },
-  { title: <>오늘의 나에게<br />가장 잘 어울리는 건 뭘까?</>, body: <>작은 변화가 궁금할 때,<br />나를 위한 스타일 체크를 시작해요.</>, english: 'What suits today’s version of you best?' },
-  { title: <>거울 앞 3초,<br />오늘은 자신감 있게.</>, body: <>내가 좋아하는 모습에<br />한 번 더 확신을 더해 보세요.</>, english: 'Three seconds in the mirror, then step out with confidence.' },
+  { title: <>오늘 내 모습,<br />어떻게 보여요?</>, english: 'How do I look today?' },
+  { title: <>이 룩, 오늘의 나를<br />더 빛나게 할까요?</>, english: 'Will this look make you shine today?' },
+  { title: <>새로 산 이 옷,<br />나랑 잘 어울릴까?</>, english: 'Does this new outfit feel like you?' },
+  { title: <>오늘의 분위기,<br />내가 원하는 느낌일까?</>, english: 'Is today’s vibe exactly what you wanted?' },
+  { title: <>나답게 예쁜 날,<br />지금 시작해요.</>, english: 'Start a day that feels beautifully you.' },
+  { title: <>거울 앞 3초,<br />오늘은 자신감 있게.</>, english: 'Three seconds in the mirror, then step out with confidence.' },
 ];
 
-/** 비로그인 방문자의 서비스 가치 소개와 인증 진입점 목업이다. */
+/** 비로그인 방문자에게 인기 콘텐츠와 인증 진입점을 보여준다. */
 export default function SplashView({ cards, onEnter }) {
-  const popularCards = useMemo(() => [...cards].sort((a, b) => (b.yesVotes + b.noVotes) - (a.yesVotes + a.noVotes)).slice(0, 5), [cards]);
+  const popularCards = useMemo(
+    () => [...cards].sort((a, b) => (b.yesVotes + b.noVotes) - (a.yesVotes + a.noVotes)).slice(0, 5),
+    [cards],
+  );
   const [activeIndex, setActiveIndex] = useState(0);
   const [copy] = useState(() => splashCopies[Math.floor(Math.random() * splashCopies.length)]);
-  useEffect(() => { if (popularCards.length < 2) return undefined; const timer = window.setInterval(() => setActiveIndex((index) => (index + 1) % popularCards.length), 3600); return () => window.clearInterval(timer); }, [popularCards.length]);
+
+  useEffect(() => {
+    if (popularCards.length < 2) return undefined;
+    const timer = window.setInterval(() => setActiveIndex((index) => (index + 1) % popularCards.length), 3600);
+    return () => window.clearInterval(timer);
+  }, [popularCards.length]);
+
   const activeCard = popularCards[activeIndex] ?? cards[0];
-  return <main className="relative mx-auto flex min-h-screen w-full max-w-md flex-col overflow-hidden border-x border-white/5 bg-[#051424] px-5 pb-7 pt-8 text-white shadow-2xl"><div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top,#153860_0%,transparent_42%)]" /><header className="relative flex items-end gap-2"><img src={logoUrl} width="36" height="36" className="h-9 w-9 shrink-0 rounded-lg" alt="XY by x.Cubus 로고" /><span className="font-headline text-2xl font-extrabold leading-none tracking-tight">XY by x.Cubus</span><span aria-label="AI" className="flex h-6 w-[33px] shrink-0 items-center justify-center rounded-[6px] border border-cyan-glow/80 bg-[#071b2d] font-mono text-xs font-bold leading-none tracking-[-0.04em] text-cyan-glow shadow-[0_0_8px_rgba(0,240,255,0.2)]">AI</span><span className="font-mono text-[9px] leading-none tracking-wide text-cyan-glow">MORE VIEWS, MORE YOU</span></header><section className="relative mt-7 overflow-hidden rounded-2xl border border-white/10 bg-surface-container-lowest shadow-2xl"><div className="aspect-[4/3] overflow-hidden"><img key={activeCard.id} className="splash-media h-full w-full object-cover" style={{ objectPosition: activeCard.objectPosition }} src={activeCard.imageUrl} alt="공개 인기 콘텐츠 미리보기" /><div className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-black/75 to-transparent" /><span className="absolute bottom-3 left-3 rounded-full border border-white/15 bg-black/40 px-2 py-1 font-mono text-[10px] text-white">오늘 인기 있는 룩 · {Math.round(activeCard.yesVotes / (activeCard.yesVotes + activeCard.noVotes) * 100)}%</span></div><div className="absolute bottom-2 right-3 flex gap-1">{popularCards.map((card, index) => <span key={card.id} className={`h-1.5 rounded-full transition-all ${index === activeIndex ? 'w-4 bg-cyan-glow' : 'w-1.5 bg-white/40'}`} />)}</div></section><section className="relative mt-6"><p className="font-mono text-[11px] font-bold tracking-[.2em] text-cyan-glow">TODAY'S LOOK CHECK</p><h1 className="mt-2 font-headline text-[31px] font-extrabold leading-tight tracking-tight">{copy.title}</h1><p className="mt-3 max-w-sm text-sm leading-relaxed text-slate-300">{copy.body}<br /><span className="text-slate-400">{copy.english}</span></p></section><section className="relative mt-auto pt-6"><p className="mb-3 text-center text-xs text-slate-400">가입하고 오늘의 내 모습을 확인해 보세요.<br /><span className="text-slate-500">Join to check how you look today.</span></p><div className="grid grid-cols-2 gap-2"><ProviderButton label="Apple로 계속하기" icon="apple" onClick={() => onEnter('Apple')} /><ProviderButton label="Google로 계속하기" icon="G" onClick={() => onEnter('Google')} /><ProviderButton label="카카오로 계속하기" icon="chat_bubble" onClick={() => onEnter('Kakao')} /><ProviderButton label="이메일로 계속하기" icon="mail" onClick={() => onEnter('이메일')} /></div><p className="mt-4 text-center text-[10px] leading-relaxed text-slate-500">계속하면 이용약관 및 개인정보 처리방침에 동의하게 됩니다.</p></section></main>;
+
+  return (
+    <main className="relative mx-auto min-h-[100svh] w-full max-w-md overflow-hidden bg-[#051424] text-white shadow-2xl">
+      <div className="absolute inset-0" aria-hidden="true">
+        <img key={activeCard.id} className="splash-media h-full w-full object-cover" style={{ objectPosition: activeCard.objectPosition }} src={activeCard.imageUrl} alt="" />
+        <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(3,14,27,0.56)_0%,rgba(3,14,27,0.08)_35%,rgba(3,14,27,0.9)_100%)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_18%_10%,rgba(0,240,255,0.16),transparent_30%),radial-gradient(circle_at_84%_30%,rgba(248,201,120,0.12),transparent_26%)]" />
+      </div>
+
+      <div className="relative z-10 flex min-h-[100svh] flex-col px-5 pb-6 pt-10">
+        <header className="flex flex-col items-center text-center">
+          <img src={logoUrl} width="96" height="64" className="h-16 w-24 object-contain drop-shadow-[0_3px_12px_rgba(0,0,0,0.5)]" alt="xCubus 뱀 로고" />
+          <p className="mt-3 font-headline text-[25px] font-extrabold leading-none tracking-tight">XY by x.Cubus</p>
+          <div className="mt-2 flex items-center gap-2">
+            <span className="h-px w-5 bg-cyan-glow/60" />
+            <p className="font-mono text-[9px] font-bold tracking-[0.22em] text-cyan-glow">MORE VIEWS, MORE YOU</p>
+            <span className="h-px w-5 bg-cyan-glow/60" />
+          </div>
+        </header>
+
+        <div className="flex-1" />
+
+        <section className="mb-4 text-center drop-shadow-md" aria-live="polite">
+          <p className="font-mono text-[10px] font-bold tracking-[0.2em] text-cyan-glow">TODAY&apos;S LOOK CHECK</p>
+          <h1 className="mt-2 font-headline text-[28px] font-extrabold leading-tight tracking-tight text-white">{copy.title}</h1>
+          <p className="mt-2 text-xs text-white/75">{copy.english}</p>
+        </section>
+
+        <section className="mx-auto w-[86%] max-w-[330px] rounded-2xl border border-white/10 bg-white/[0.025] p-3 shadow-[0_14px_38px_rgba(0,0,0,0.08)] backdrop-blur-[1px]">
+          <p className="mb-3 text-center text-[11px] leading-relaxed text-white/75">
+            가입하고 오늘의 내 모습을 확인해 보세요.
+            <span className="block text-white/55">Join to see yourself through more views.</span>
+          </p>
+          <div className="flex flex-col gap-2">
+            <ProviderButton label="Google로 계속하기" icon="G" onClick={() => onEnter('Google')} />
+            <ProviderButton label="Apple로 계속하기" icon="apple" onClick={() => onEnter('Apple')} />
+            <ProviderButton label="카카오로 계속하기" icon="chat_bubble" onClick={() => onEnter('Kakao')} />
+            <ProviderButton label="이메일로 계속하기" icon="mail" onClick={() => onEnter('이메일')} />
+          </div>
+          <p className="mt-3 text-center text-[9px] leading-relaxed text-white/45">계속하면 이용약관 및 개인정보 처리방침에 동의하게 됩니다.</p>
+        </section>
+      </div>
+    </main>
+  );
 }
 
-function ProviderButton({ label, icon, onClick }) { return <button type="button" onClick={onClick} className="flex h-11 items-center justify-center gap-1.5 rounded-xl border border-surface-container-high bg-surface-container/90 px-2 text-xs font-bold text-white transition-colors hover:border-cyan-glow/50"><span className="material-symbols-outlined text-[17px] text-cyan-glow">{icon}</span>{label}</button>; }
+function ProviderButton({ label, icon, onClick }) {
+  return (
+    <button type="button" onClick={onClick} className="mx-auto flex h-9 w-[92%] items-center justify-center gap-2 rounded-full border border-white/15 bg-white/[0.055] px-4 text-xs font-bold text-white shadow-sm backdrop-blur-[1px] transition hover:bg-white/[0.14] focus-visible:bg-white/[0.14]">
+      <span className="material-symbols-outlined text-[17px] text-cyan-glow">{icon}</span>
+      {label}
+    </button>
+  );
+}
