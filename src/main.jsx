@@ -1,3 +1,4 @@
+/** 정의: React StrictMode와 BrowserRouter를 연결해 xCubus SPA를 DOM에 마운트하는 진입점이다. */
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { BrowserRouter } from 'react-router-dom';

@@ -1,5 +1,5 @@
 /**
- * 에디토리얼 화면에서 반복되는 상단 소개 영역이다.
+ * 정의: 화면의 eyebrow, 제목, 설명, 선택적 행동을 같은 정보 위계로 렌더링하는 상단 소개 영역이다.
  *
  * @param {{ eyebrow: string, title: string, description: string, action?: React.ReactNode }} props
  */
