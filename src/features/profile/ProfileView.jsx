@@ -1,6 +1,6 @@
 import SurfaceCard from '../../components/ui/SurfaceCard.jsx';
 
-/** 기존 프로토타입의 프로필 요약과 내 게시물 목록을 React로 구현한다. */
+/** 정의: 개인 업로드 요약, 투표 지표, 내 게시물 관리 행동을 제공하는 프로필 화면이다. */
 export default function ProfileView({ cards, categories, onDelete, onUpload }) {
   const mine = cards.filter((card) => card.isMyUpload);
   const votes = mine.reduce((sum, card) => sum + card.yesVotes + card.noVotes, 0);
@@ -13,6 +13,9 @@ export default function ProfileView({ cards, categories, onDelete, onUpload }) {
   </section>;
 }
 
+/** 정의: 프로필 요약에 표시되는 하나의 수치와 레이블 단위다. */
 function Metric({ value, label, color = 'text-white' }) { return <div className="rounded-md bg-[#f5f3ee] p-2 text-center"><strong className={`block font-headline text-base font-bold ${color}`}>{value}</strong><span className="font-mono text-[9px] uppercase text-slate-400">{label}</span></div>; }
+/** 정의: 내 게시물의 카테고리·호감도·삭제 행동을 요약하는 프로필 목록 행이다. */
 function PostRow({ card, category, onDelete }) { const total = card.yesVotes + card.noVotes; const yesRate = Math.round((card.yesVotes / Math.max(total, 1)) * 100); const noRate = 100 - yesRate; return <SurfaceCard as="article" className="flex items-center gap-3 p-2.5"><Media card={card} /><div className="min-w-0 flex-1"><div className="flex items-center justify-between gap-2 text-[10px]"><span style={{ color: category.color }}>{category.label}</span><span className="truncate text-slate-400">@{card.author}</span></div><strong className="mt-1 block truncate font-headline text-sm text-white">{card.question.replace('\n', ' ')}</strong><div className="mt-1.5"><div className="mb-1 flex items-center justify-between font-mono text-[9px]"><span style={{ color: category.color }}>호감 {yesRate}%</span><span className="text-[#9b5c55]">비호감 {noRate}%</span></div><div className="flex h-1 overflow-hidden rounded-full bg-slate-800"><span style={{ width: `${yesRate}%`, backgroundColor: category.color }} /><span className="bg-[#b6847c]" style={{ width: `${noRate}%` }} /></div></div><small className="mt-1 block text-[10px] text-slate-500">유효 투표 {total.toLocaleString()}표</small></div><button type="button" onClick={onDelete} className="text-xs font-bold text-[#9b5c55]">삭제</button></SurfaceCard>; }
+/** 정의: 프로필 목록에서 사진·동영상 미디어를 공통 썸네일로 렌더링한다. */
 function Media({ card }) { return card.mediaType === 'video' ? <video className="h-14 w-14 shrink-0 rounded-md object-cover" src={card.imageUrl} muted playsInline /> : <img className="h-14 w-14 shrink-0 rounded-md object-cover" src={card.imageUrl} alt="" />; }

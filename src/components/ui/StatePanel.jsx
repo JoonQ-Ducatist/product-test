@@ -1,3 +1,4 @@
+/** 정의: 공통 상태 화면이 사용하는 상태별 아이콘·문구·다음 행동의 정적 사전이다. */
 const stateContent = {
   loading: { icon: 'progress_activity', eyebrow: 'PLEASE WAIT', title: '룩을 준비하고 있어요.', body: '잠시만 기다리면 새로운 콘텐츠를 보여드릴게요.', action: null },
   empty: { icon: 'auto_awesome', eyebrow: 'NOTHING HERE YET', title: '아직 보여드릴 룩이 없어요.', body: '조금 뒤 다시 확인하거나, 오늘의 첫 룩을 직접 공유해 보세요.', action: '새로고침' },
@@ -7,7 +8,7 @@ const stateContent = {
 };
 
 /**
- * API 연결 전후에 동일한 문구·동작 원칙으로 쓰는 상태 패널이다.
+ * 정의: API 연결 전후에 동일한 문구·동작 원칙으로 쓰는 상태 패널이다.
  *
  * @param {{ state: keyof typeof stateContent, pageName: string, onAction?: () => void }} props
  */

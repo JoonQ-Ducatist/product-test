@@ -1,3 +1,4 @@
+/* 정의: xCubus 전 화면이 공유하는 표면·텍스트·강조 색상 토큰이다. */
 :root {
   --xc-surface: #f9f7f2;
   --xc-surface-low: #f5f3ee;
@@ -11,9 +12,12 @@
 }
 
 html { background: var(--xc-surface); }
+html, body, #root { width: 100%; height: 100%; min-height: 0; overflow: hidden; }
 html, body { scrollbar-width: none; }
 html::-webkit-scrollbar, body::-webkit-scrollbar { display: none; }
 body { margin: 0; min-width: 320px; }
+body, button, input, textarea { font-family: 'Pretendard Variable', Pretendard, sans-serif; }
+:lang(en), .font-latin { font-family: Inter, sans-serif; }
 button { font: inherit; }
 button:focus-visible { outline: 2px solid #735c00; outline-offset: 3px; }
 .skip-link { position: fixed; left: 1rem; top: -4rem; z-index: 100; border-radius: .375rem; background: #0e1c2d; color: #fff; padding: .6rem .9rem; font-size: .75rem; font-weight: 700; transition: top .15s ease; }
@@ -26,8 +30,13 @@ button:focus-visible { outline: 2px solid #735c00; outline-offset: 3px; }
 @keyframes splash-media { 0% { opacity: 0; transform: translateX(24%) scale(1.06); } 16% { opacity: 1; transform: translateX(0) scale(1); } 80% { opacity: 1; transform: translateX(0) scale(1); } 100% { opacity: 0; transform: translateX(-16%) scale(1.03); } }
 @media (prefers-reduced-motion: reduce) { .scan-line, .splash-media { animation: none; } }
 
-/* Couture Intelligence: 전 화면에 적용하는 에디토리얼 표면·텍스트 규칙 */
-.editorial-app { background: var(--xc-surface); color: var(--xc-text); }
+/* 정의: 기준 모바일 캔버스를 화면의 작은 축 비율로 통째로 확대·축소하는 반응형 규칙이다. */
+.app-stage { display: flex; height: 100dvh; min-height: 0; width: 100%; align-items: center; justify-content: center; overflow: hidden; background: var(--xc-surface); }
+.app-canvas { position: relative; flex: 0 0 auto; transform-origin: center; overflow: hidden; box-shadow: 0 0 48px rgba(14,28,45,.09); }
+
+/* 정의: 전 화면에 적용하는 Neutral Sans Serif·에디토리얼 표면·텍스트 규칙이다. */
+.editorial-app { position: relative; height: 920px; overflow: hidden; background: var(--xc-surface); color: var(--xc-text); }
+.editorial-main { height: 920px; min-height: 0; padding-bottom: 60px !important; }
 .editorial-main .bg-surface-container-lowest { background-color: var(--xc-surface-card) !important; }
 .editorial-main .bg-surface-container-low { background-color: var(--xc-surface-low) !important; }
 .editorial-main .bg-surface-container { background-color: #f0eee9 !important; }
@@ -47,11 +56,13 @@ button:focus-visible { outline: 2px solid #735c00; outline-offset: 3px; }
 .editorial-main .border-cyan-glow { border-color: var(--xc-accent-soft) !important; }
 .editorial-main .ui-primary-action { color: #fff !important; }
 
-/* 이미지 위의 피드 정보는 선명한 흰색으로 유지한다. */
+/* 정의: 이미지 위 피드 정보의 대비와 고정 캔버스 안 카드 비율을 보장하는 규칙이다. */
 .editorial-feed .text-white { color: #fff !important; }
 .editorial-feed .text-slate-200, .editorial-feed .text-slate-300 { color: #f5f3ee !important; }
 .editorial-feed .text-slate-400, .editorial-feed .text-slate-500 { color: #d7d4cd !important; }
 .editorial-feed article { border-radius: .375rem; border-color: rgba(255,255,255,.25); box-shadow: 0 12px 30px rgba(0,0,0,.12); }
+.editorial-feed article { aspect-ratio: auto; height: auto; max-height: none; }
+.editorial-feed article button { -webkit-tap-highlight-color: transparent; }
 
 .editorial-ranking > ol > li > button,
 .editorial-profile article,

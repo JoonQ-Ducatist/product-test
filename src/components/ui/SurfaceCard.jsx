@@ -1,5 +1,5 @@
 /**
- * Couture Intelligence 표면 규칙을 따르는 기본 카드 컨테이너다.
+ * 정의: Couture Intelligence 표면 규칙을 따르는 기본 카드 컨테이너다.
  * section, article, button 등 의미에 맞는 요소로 렌더링할 수 있다.
  *
  * @param {{ as?: React.ElementType, className?: string, children: React.ReactNode } & React.HTMLAttributes<HTMLElement>} props
