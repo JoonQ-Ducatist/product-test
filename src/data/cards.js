@@ -4,7 +4,7 @@ import officeImage from '../../assets/images/card3_office.png';
 import workoutImage from '../../assets/images/card4_workout.png';
 
 export const categories = {
-  Outfit: { label: '오늘의 룩', icon: 'checkroom', color: '#B8795F', liveTag: 'Today’s Outfit' },
+  Outfit: { label: '오늘의 룩', icon: 'checkroom', color: '#72CDB5', liveTag: 'Today’s Outfit' },
   Date: { label: '데이트', icon: 'favorite', color: '#C97B91', liveTag: 'Date Look' },
   Travel: { label: '여행', icon: 'travel_explore', color: '#5F9F9A', liveTag: 'Travel Look' },
   Fitness: { label: '운동', icon: 'fitness_center', color: '#8AA65B', liveTag: 'Fitness Look' },
