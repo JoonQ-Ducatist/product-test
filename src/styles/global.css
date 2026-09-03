@@ -30,13 +30,16 @@ button:focus-visible { outline: 2px solid #735c00; outline-offset: 3px; }
 @keyframes splash-media { 0% { opacity: 0; transform: translateX(24%) scale(1.06); } 16% { opacity: 1; transform: translateX(0) scale(1); } 80% { opacity: 1; transform: translateX(0) scale(1); } 100% { opacity: 0; transform: translateX(-16%) scale(1.03); } }
 @media (prefers-reduced-motion: reduce) { .scan-line, .splash-media { animation: none; } }
 
-/* 정의: 기준 모바일 캔버스를 화면의 작은 축 비율로 통째로 확대·축소하는 반응형 규칙이다. */
-.app-stage { display: flex; height: 100dvh; min-height: 0; width: 100%; align-items: center; justify-content: center; overflow: hidden; background: var(--xc-surface); }
-.app-canvas { position: relative; flex: 0 0 auto; transform-origin: center; overflow: hidden; box-shadow: 0 0 48px rgba(14,28,45,.09); }
+/* 정의: 모바일 전체 폭과 PC·태블릿 중앙 콘텐츠 컬럼을 구분하는 반응형 레이아웃 규칙이다. */
+.app-stage { display: flex; height: 100dvh; min-height: 0; width: 100%; align-items: stretch; justify-content: center; overflow: hidden; background: var(--xc-surface); }
+.app-canvas { position: relative; width: 100%; height: 100dvh; overflow: hidden; transform: translateZ(0); background: var(--xc-surface); }
 
 /* 정의: 전 화면에 적용하는 Neutral Sans Serif·에디토리얼 표면·텍스트 규칙이다. */
-.editorial-app { position: relative; height: 920px; overflow: hidden; background: var(--xc-surface); color: var(--xc-text); }
-.editorial-main { height: 920px; min-height: 0; padding-bottom: 60px !important; }
+.editorial-app { position: relative; height: 100%; overflow: hidden; background: var(--xc-surface); color: var(--xc-text); }
+.editorial-main { height: 100%; min-height: 0; padding-bottom: calc(60px + env(safe-area-inset-bottom)) !important; }
+.editorial-main--feed { overflow: hidden; }
+.editorial-main--scroll { overflow-y: auto; overscroll-behavior-y: contain; scrollbar-width: none; }
+.editorial-main--scroll::-webkit-scrollbar { display: none; }
 .editorial-main .bg-surface-container-lowest { background-color: var(--xc-surface-card) !important; }
 .editorial-main .bg-surface-container-low { background-color: var(--xc-surface-low) !important; }
 .editorial-main .bg-surface-container { background-color: #f0eee9 !important; }
@@ -56,14 +59,64 @@ button:focus-visible { outline: 2px solid #735c00; outline-offset: 3px; }
 .editorial-main .border-cyan-glow { border-color: var(--xc-accent-soft) !important; }
 .editorial-main .ui-primary-action { color: #fff !important; }
 
-/* 정의: 이미지 위 피드 정보의 대비와 고정 캔버스 안 카드 비율을 보장하는 규칙이다. */
+/* 정의: 이미지 전체 위에 피드 정보·투표·첫 댓글을 겹쳐 카드가 사진 중심으로 유지되게 한다. */
 .editorial-feed .text-white { color: #fff !important; }
 .editorial-feed .text-slate-200, .editorial-feed .text-slate-300 { color: #f5f3ee !important; }
 .editorial-feed .text-slate-400, .editorial-feed .text-slate-500 { color: #d7d4cd !important; }
 .editorial-feed article { border-radius: .375rem; border-color: rgba(255,255,255,.25); box-shadow: 0 12px 30px rgba(0,0,0,.12); }
-.editorial-feed article { aspect-ratio: auto; height: auto; max-height: none; }
+.editorial-feed article { width: 100%; aspect-ratio: auto; height: 100%; max-height: none; }
 .editorial-feed article button { -webkit-tap-highlight-color: transparent; }
+/* 정의: 작은 모바일 뷰포트에서도 투표 뒤 첫 댓글까지 사진 오버레이 위에서 읽을 수 있게 한다. */
+.editorial-feed .card-details { min-height: 176px; background: linear-gradient(180deg, transparent 0%, rgba(1,8,17,.24) 16%, rgba(1,8,17,.9) 100%); }
+.media-peek { position: absolute; top: 4%; z-index: 5; height: 92%; width: 28px; overflow: hidden; border: 0; border-radius: .35rem; opacity: .52; filter: saturate(.8) brightness(.68); transition: opacity .18s ease, transform .22s ease; }
+.media-peek--left { left: 0; }
+.media-peek--right { right: 0; }
+.media-primary { transition: transform .24s cubic-bezier(.18,.72,.28,1); will-change: transform; }
+.media-primary--dragging { transition: none; }
+.media-carousel--kick-left { animation: carousel-kick-left .28s cubic-bezier(.18,.7,.32,1); }
+.media-carousel--kick-right { animation: carousel-kick-right .28s cubic-bezier(.18,.7,.32,1); }
+@keyframes carousel-kick-left { 0% { transform: translateX(0); } 42% { transform: translateX(-10px); } 100% { transform: translateX(0); } }
+@keyframes carousel-kick-right { 0% { transform: translateX(0); } 42% { transform: translateX(10px); } 100% { transform: translateX(0); } }
+.desktop-nav-brand { display: none; }
 
 .editorial-ranking > ol > li > button,
 .editorial-profile article,
 .editorial-upload [class*="bg-surface-container"] { box-shadow: 0 4px 20px rgba(0,0,0,.03); }
+
+/* 정의: 태블릿에서는 스마트폰에 맞춘 카드 크기를 유지하되, 화면 중앙에서 안정적으로 보여 준다. */
+@media (min-width: 600px) and (max-width: 1023px) {
+  .app-stage { padding: 0; }
+  .app-canvas { width: min(100%, 430px); box-shadow: 0 0 36px rgba(14,28,45,.12); }
+}
+
+/* 정의: 데스크톱 스플래시는 모바일과 같은 집중형 캔버스를 유지해 배경 사진 확대를 막는다. */
+.splash-screen { width: 100%; height: 100%; }
+@media (min-width: 600px) {
+  .app-stage:has(.splash-screen) { background: #051424; }
+  .splash-screen { width: min(430px, 100%); margin: 0 auto; box-shadow: 0 0 42px rgba(0,0,0,.3); }
+}
+
+/* 정의: PC에서는 일반 SNS처럼 좌측 탐색과 스크롤 가능한 중앙 피드 컬럼을 사용한다. */
+@media (min-width: 1024px) {
+  .app-stage { align-items: stretch; padding: 0; }
+  .app-canvas { width: 100%; height: 100dvh; border: 0; box-shadow: none; }
+  .editorial-app { display: grid; grid-template-columns: 76px minmax(0, 1fr); }
+  .editorial-app > header { display: none; }
+  .editorial-main { grid-column: 2; grid-row: 1; width: min(700px, calc(100% - 56px)); justify-self: center; padding-top: 28px; padding-bottom: 28px !important; }
+  .editorial-main--feed { overflow: hidden; }
+  .editorial-app > nav { position: static; grid-column: 1; grid-row: 1; z-index: 50; width: 76px; height: 100%; overflow: hidden; border: 0; border-right: 1px solid var(--xc-outline); padding: 24px 14px; box-shadow: none; transition: width .2s ease, box-shadow .2s ease; }
+  .editorial-app > nav:hover, .editorial-app > nav:focus-within { width: 216px; box-shadow: 12px 0 28px rgba(14,28,45,.10); }
+  .desktop-nav-brand { display: flex; align-items: center; gap: 9px; width: max-content; margin: 0 0 28px; padding: 4px 8px; color: var(--xc-text); font-family: Inter, 'Pretendard Variable', sans-serif; font-size: 15px; font-weight: 750; letter-spacing: -.04em; text-align: left; white-space: nowrap; }
+  .desktop-nav-brand img { width: 30px; height: 24px; object-fit: contain; }
+  .desktop-nav-brand span { max-width: 0; overflow: hidden; opacity: 0; transform: translateX(-6px); transition: max-width .2s ease, opacity .16s ease, transform .2s ease; }
+  .editorial-app > nav:hover .desktop-nav-brand span, .editorial-app > nav:focus-within .desktop-nav-brand span { max-width: 160px; opacity: 1; transform: translateX(0); }
+  .editorial-app > nav > .desktop-nav-items { height: auto; flex-direction: column; align-items: stretch; justify-content: flex-start; gap: 10px; padding: 0; }
+  .editorial-app > nav button { width: 48px; height: 48px; flex-direction: row; justify-content: center; gap: 0; padding: 0; overflow: hidden; transition: width .2s ease, padding .2s ease, gap .2s ease, background-color .15s ease; }
+  .editorial-app > nav:hover button, .editorial-app > nav:focus-within button { width: 100%; justify-content: flex-start; gap: 12px; padding: 0 14px; }
+  .editorial-app > nav button span:last-child { max-width: 0; margin: 0; overflow: hidden; opacity: 0; font-size: 13px; white-space: nowrap; transition: max-width .2s ease, opacity .16s ease; }
+  .editorial-app > nav:hover button span:last-child, .editorial-app > nav:focus-within button span:last-child { max-width: 88px; opacity: 1; }
+  .editorial-feed { height: 100%; min-height: 0; }
+  .media-carousel { flex: 1 1 0%; width: min(480px, 100%, calc((100dvh - 182px) * .5625)); min-height: 0; }
+  .editorial-feed article { align-self: center; width: 100%; height: 100%; max-width: none; aspect-ratio: auto; }
+  .media-peek { width: 32px; }
+}

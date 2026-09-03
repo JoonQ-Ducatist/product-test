@@ -29,7 +29,7 @@ export default function SplashView({ cards, onEnter }) {
   const activeCard = popularCards[activeIndex] ?? cards[0];
 
   return (
-    <main className="relative mx-auto h-full w-full max-w-none overflow-hidden bg-[#051424] text-white shadow-2xl">
+    <main className="splash-screen relative mx-auto h-full max-w-none overflow-hidden bg-[#051424] text-white shadow-2xl">
       <div className="absolute inset-0" aria-hidden="true">
         <img key={activeCard.id} className="splash-media h-full w-full object-cover" style={{ objectPosition: activeCard.objectPosition }} src={activeCard.imageUrl} alt="" />
         <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(14,28,45,0.62)_0%,rgba(14,28,45,0.08)_35%,rgba(14,28,45,0.9)_100%)]" />
