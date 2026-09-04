@@ -1,7 +1,7 @@
 # xCubus 서비스 설계 규칙 (Memory Bank)
 
 > 이 문서는 xCubus의 제품 의도, 서비스 원칙, 기술 경계를 기록하는 기준 문서다.
-> 기능·데이터 모델·API·UI를 변경하기 전에 확인하고, 합의된 결정이 생기면 이 문서를 함께 갱신한다.
+> 기능·데이터 모델·API·UI를 변경하기 전에 확인하고, 합의된 결정이 생기면 이 문서를 함께 갱신한다. 단, 제품의 최상위 판단 기준은 [Product Philosophy](./product-philosophy.md)이며, 수익화·Growth·일정 판단은 [90-day Cash Loop Plan](./90-day-cash-loop-plan.md)과 [Monetization](./monetization.md)을 따른다. 본 문서와 충돌할 경우 해당 문서를 우선한다.
 
 ## 1. 서비스 정의
 

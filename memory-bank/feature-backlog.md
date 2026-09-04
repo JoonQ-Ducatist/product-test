@@ -1,6 +1,6 @@
 # xCubus 전체 기능 백로그
 
-> 기준 문서: service-design-rule.md, TECH-AGENTS.md, plan.md, progress.md
+> 기준 문서: product-philosophy.md, monetization.md, 90-day-cash-loop-plan.md, service-design-rule.md, TECH-AGENTS.md, progress.md
 >
 > 이 문서는 사용자 기능과 관리자 기능을 한 목록에서 관리한다. 새 기능을 발견하거나 범위가 바뀌면 이 문서를 먼저 갱신한다.
 
@@ -32,7 +32,66 @@
 | 비로그인 스플래시 | 없음 | 인기 콘텐츠 미리보기, 한·영 가입 문구, 회원가입·로그인 CTA |
 | 관리자 | 없음 | 회원·콘텐츠·카테고리·이미지·운영 설정 |
 
-## 3. 기능 백로그
+## 3. 90일 Cash Loop 실행 백로그 (현재 기준)
+
+> 아래 목록이 기존 화면·운영 기능보다 우선한다. 각 항목은 `Acquisition → Engagement → Data → Monetization → Referral` 중 적어도 하나를 명확히 개선해야 한다.
+
+### Day 1–14 — P0 Core MVP
+
+| ID | 기능·결정 | Cash Loop 영향 | 완료 기준 | 상태 |
+| --- | --- | --- | --- | --- |
+| CL-01 | MVP 카테고리 Cash Loop 최종 선정 | Acquisition·Data·Monetization | 5~7개 카테고리를 8개 평가 기준으로 점수화하고 최종 목록·질문·평가 방식 확정 | 진행 중 |
+| CL-02 | 무료 경계와 Result 계약 | Engagement·Data | 기본 결과, 유효 표본, 표본 부족, 유료 전환 조건을 문서·UI 계약으로 확정 | 대기 |
+| CL-03 | Signup/Auth → Feed → Vote → Upload → Result 흐름 | Engagement | 가입 뒤 30초 이내 핵심 가치 경험, 프로필 강제 입력 없음 | 대기 |
+| CL-04 | 실제 유효 투표·기본 Result | Data | 1인 1표·서버 집계·기본 YES/NO·표본 수 결과 제공 | 대기 |
+| CL-05 | 초기 Analytics | Acquisition·Engagement·Data | Visitor→Signup→First Vote→Upload→Result 이벤트와 Weekly Valid Votes 수집 | 대기 |
+
+### Day 15–30 — Closed Beta 기반
+
+| ID | 기능·결정 | Cash Loop 영향 | 완료 기준 | 상태 |
+| --- | --- | --- | --- | --- |
+| CL-06 | Supabase Auth·DB·Storage·RLS | Engagement·Data | 실제 사용자·미디어·권한·투표 데이터를 안전하게 영구 저장 | 대기 |
+| CL-07 | 검토·신고·미디어 안전 흐름 | Data | 게시물 공개 전 상태·신고·예외 사람 검토·감사 기록 제공 | 대기 |
+| CL-08 | Closed Beta Seed Group 운영 | Acquisition·Engagement | 100명+ 실제 사용자와 Vote→Upload→Result 행동 검증 | 대기 |
+
+### Day 31–45 — P0 Growth Loop
+
+| ID | 기능·결정 | Cash Loop 영향 | 완료 기준 | 상태 |
+| --- | --- | --- | --- | --- |
+| CL-09 | Result Card 생성 | Referral | 카테고리·유효 표본·결과가 담긴 공유 가능한 결과 카드 생성 | 대기 |
+| CL-10 | Result Share URL·채널 공유 | Referral·Acquisition | 공유 URL과 Instagram·TikTok·KakaoTalk·X 등의 플랫폼 공유 진입 제공 | 대기 |
+| CL-11 | Guest Vote → Signup → Upload | Acquisition·Engagement | 공유 방문자는 가입 전 투표 가능, 투표 뒤 가입·업로드 전환을 측정 | 대기 |
+
+### Day 46–60 — P0 First Revenue
+
+| ID | 기능·결정 | Cash Loop 영향 | 완료 기준 | 상태 |
+| --- | --- | --- | --- | --- |
+| CL-12 | Boost 제안·표본 증가 처리 | Monetization·Data | ₩1,900 가설, 노출·속도·표본만 증가, 결과·랭킹 불변 | 대기 |
+| CL-13 | Payment·결제 상태·환불 정책 | Monetization | 실제 결제, 영수증·실패·취소·환불·감사 처리와 구매 퍼널 측정 | 대기 |
+| CL-14 | Boost 가격 A/B 테스트 | Monetization | ₩1,500/₩1,900/₩2,900/₩3,900 가설을 안전하게 비교 | 대기 |
+
+### Day 61–75 — Report
+
+| ID | 기능·결정 | Cash Loop 영향 | 완료 기준 | 상태 |
+| --- | --- | --- | --- | --- |
+| CL-15 | First Impression Report | Monetization·Data | 실제 최소 표본 기반 카테고리·사진 A/B·기간별 분석 제공 | 대기 |
+| CL-16 | Report 구성·가격 A/B 테스트 | Monetization | ₩5,900 시작 가설, ₩4,900~₩9,900 범위와 전환율 검증 | 대기 |
+
+### Day 76–90 — Recurring Revenue
+
+| ID | 기능·결정 | Cash Loop 영향 | 완료 기준 | 상태 |
+| --- | --- | --- | --- | --- |
+| CL-17 | xCubus+ 구독 | Monetization·Retention | ₩7,900/월 가설, 월 Boost·Premium Report·변화 추적 제공 | 대기 |
+| CL-18 | 재구매·구독 갱신 분석 | Retention·Monetization | 첫 결제→두 번째 결제, 구독 전환·갱신, ARPPU·MRR 측정 | 대기 |
+
+### Cash Loop 이후 — P1/P2 보류 기능
+
+| 등급 | 기존 기능군 | 착수 조건 |
+| --- | --- | --- |
+| P1 | Profile, Comments, Ranking Top 5, Notification | Closed Beta에서 Cash Loop 행동이 확인된 뒤 |
+| P2 | Follow, Relationship, 24시간 Chat, Advanced AI Analysis, Visual Commerce/Affiliate, Ads | 첫 결제·재구매와 신뢰 가능한 데이터·트래픽이 확인된 뒤 |
+
+## 4. 기존 기능·운영 백로그 (이력 및 종속 과제)
 
 ### 단계 0 — 제품·안전 정책
 
@@ -134,7 +193,7 @@
 | REL-03 | 약관·개인정보·콘텐츠 정책 | 사용자에게 필요한 정책과 삭제 경로 제공 | 대기 |
 | REL-04 | CI·스테이징·베타 | 테스트·롤백·복구·제한 베타 검증 완료 | 대기 |
 
-## 4. 단계별 사용자 검증 기록
+## 5. 단계별 사용자 검증 기록
 
 | 단계 | 검증 대상 | 사용자 결과 | 확인 날짜 | 다음 단계 진행 |
 | --- | --- | --- | --- | --- |
@@ -148,7 +207,7 @@
 | 1 (현재 프로토타입 UI) | Feed, Upload, Ranking, Profile 및 카드·투표·업로드 미리보기 | 적합 | 2026-08-23 | React 전환 자체는 별도 검증 필요 |
 | 이후 단계 | 해당 단계 완료 기준 | 대기 | - | 사용자 적합 확인 전 금지 |
 
-## 5. 유지 규칙
+## 6. 유지 규칙
 
 - 새 기능 요청은 이 백로그에서 해당 ID를 찾거나 새 ID를 추가한 뒤 계획에 반영한다.
 - 사용자 기능을 새로 정의하거나 변경하면, 같은 작업에서 관리자 기능 영향을 반드시 검토한다: 설정값 관리, 대상 조회·검색, 상태 변경·제어, 운영 지표·작업 모니터링, 권한, 감사 로그.

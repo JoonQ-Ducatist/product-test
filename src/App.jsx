@@ -105,7 +105,7 @@ export default function App() {
   return <CanvasStage><div className="editorial-app h-full bg-background text-on-background font-body">
     <SkipLink />
     <header className="fixed top-0 z-50 w-full border-b border-[#e4e2dd] bg-[#fbf9f4]/95 backdrop-blur-xl">
-      <div className="mx-auto flex h-[52px] max-w-none items-center justify-between px-4">
+      <div className="mx-auto flex h-[48px] max-w-none items-center justify-between px-4">
         <button type="button" onClick={() => setActiveTab('feed')} className="flex min-w-0 items-end gap-2 text-left" aria-label="xy by x.Cubus 피드로 이동">
           <img src={logoUrl} width="38" height="28" className="h-7 w-9 shrink-0 object-contain" alt="xy by x.Cubus 로고" />
           <span lang="en" className="whitespace-nowrap font-latin text-[17px] font-bold leading-none tracking-tight text-[#1b1c19] sm:text-xl">xy by x.Cubus</span><span aria-label="AI" className="flex h-[20px] w-[29px] shrink-0 items-center justify-center rounded-[4px] border border-[#c5a059] bg-[#fbf9f4] font-mono text-[10px] font-bold leading-none tracking-[-0.04em] text-[#735c00]">AI</span><span lang="en" className="hidden whitespace-nowrap font-mono text-[8px] leading-none tracking-wide text-[#735c00] sm:inline">MORE VIEWS, MORE YOU</span>
@@ -117,7 +117,7 @@ export default function App() {
       </div>
     </header>
 
-    <main id="main-content" tabIndex="-1" className={`editorial-main mx-auto flex h-full w-full max-w-none flex-col px-4 pb-16 pt-[64px] sm:px-5 ${activeTab === 'feed' ? 'editorial-main--feed' : 'editorial-main--scroll'}`}>
+    <main id="main-content" tabIndex="-1" className={`editorial-main mx-auto flex h-full w-full max-w-none flex-col px-4 pb-11 pt-[56px] sm:px-5 ${activeTab === 'feed' ? 'editorial-main--feed' : 'editorial-main--scroll'}`}>
       {previewState !== 'ready' ? <StatePanel state={previewState} pageName={tabs.find(([id]) => id === activeTab)?.[2] ?? 'xCubus'} onAction={() => { if (previewState === 'permission') setIsGuest(true); else if (previewState === 'review') setActiveTab('profile'); setPreviewState('ready'); }} /> : <>
         {activeTab === 'feed' && <FeedView categories={categories} cards={visibleCards} card={currentCard} currentIndex={safeIndex} activeCategory={activeCategory} hasVoted={currentCard && votedIds.has(currentCard.id)} onCategoryChange={changeCategory} onPrevious={() => moveCard(-1)} onNext={() => moveCard(1)} onShuffle={shuffle} onVote={vote} onAddComment={addComment} />}
         {activeTab === 'upload' && <UploadView categories={categories} onSubmit={addCard} onMessage={setToast} />}
@@ -126,11 +126,29 @@ export default function App() {
       </>}
     </main>
 
+    <DesktopRecommendationAside cards={cards} onProfile={() => setActiveTab('profile')} />
+
     {toast && <div role="status" className="fixed left-1/2 top-[60px] z-[60] w-full max-w-xs -translate-x-1/2 px-4"><div className="flex items-center gap-2 rounded-lg border border-[#e4e2dd] bg-white/95 px-3.5 py-2.5 text-xs text-[#1b1c19] shadow-lg backdrop-blur"><span className="material-symbols-outlined text-base text-cyan-glow">check_circle</span>{toast}</div></div>}
 
     <nav className="fixed bottom-0 z-50 w-full border-t border-[#e4e2dd] bg-[#fbf9f4]/95 pb-[env(safe-area-inset-bottom)] shadow-[0_-4px_20px_rgba(0,0,0,0.03)] backdrop-blur-xl" aria-label="주요 메뉴">
       <button type="button" onClick={() => setActiveTab('feed')} className="desktop-nav-brand" aria-label="xy by x.Cubus 피드로 이동"><img src={logoUrl} width="30" height="24" alt="" /><span lang="en">xy by x.Cubus</span></button>
-      <div className="desktop-nav-items mx-auto flex h-[48px] max-w-none items-center justify-around px-2">{tabs.map(([id, icon, label, color]) => <button key={id} type="button" onClick={() => setActiveTab(id)} aria-current={activeTab === id ? 'page' : undefined} style={activeTab === id ? { color } : undefined} className={`flex h-[42px] w-16 flex-col items-center justify-center transition-all ${activeTab === id ? 'scale-[1.03]' : 'text-slate-400 hover:text-[#1b1c19]'}`}><span className="material-symbols-outlined text-[20px]">{icon}</span><span className="mt-px font-mono text-[10px] font-bold">{label}</span></button>)}</div>
+      <div className="desktop-nav-items mx-auto flex h-[44px] max-w-none items-center justify-around px-2">{tabs.map(([id, icon, label, color]) => <button key={id} type="button" onClick={() => setActiveTab(id)} aria-current={activeTab === id ? 'page' : undefined} style={activeTab === id ? { color } : undefined} className={`flex h-[38px] w-16 flex-col items-center justify-center transition-all ${activeTab === id ? 'scale-[1.03]' : 'text-slate-400 hover:text-[#1b1c19]'}`}><span className="material-symbols-outlined text-[20px]">{icon}</span><span className="mt-px font-mono text-[10px] font-bold">{label}</span></button>)}</div>
     </nav>
   </div></CanvasStage>;
+}
+
+/** 정의: 넓은 PC 화면에서 중앙 피드와 병렬로 표시하는 Instagram형 사용자·추천 콘텐츠 영역이다. */
+function DesktopRecommendationAside({ cards, onProfile }) {
+  const suggestions = cards.slice(1, 6);
+  return <aside className="desktop-recommendations" aria-label="회원님을 위한 추천">
+    <button type="button" onClick={onProfile} className="mb-7 flex w-full items-center gap-3 text-left">
+      <img className="h-11 w-11 rounded-full border border-[#c5a059]/60 object-cover p-0.5" src={cards[0]?.imageUrl} alt="내 프로필" />
+      <span className="min-w-0 flex-1"><strong className="block truncate text-[13px] text-[#1b1c19]">my_look_daily</strong><span className="block truncate text-[12px] text-[#74777d]">나의 Look Book</span></span>
+      <span className="font-mono text-[11px] font-bold text-[#5865F2]">전환</span>
+    </button>
+    <div className="mb-3 flex items-center justify-between"><h2 className="text-[13px] font-bold text-[#44474c]">회원님을 위한 추천</h2><button type="button" className="text-[11px] font-bold text-[#1b1c19]">모두 보기</button></div>
+    <div className="space-y-3">{suggestions.map((item) => <div key={item.id} className="flex items-center gap-2.5"><img className="h-8 w-8 rounded-full object-cover" src={item.imageUrl} alt="" /><div className="min-w-0 flex-1"><strong className="block truncate text-[12px] text-[#1b1c19]">@{item.author}</strong><span className="block truncate text-[10px] text-[#74777d]">{item.subtext}</span></div><button type="button" className="text-[11px] font-bold text-[#5865F2]">팔로우</button></div>)}</div>
+    <p className="mt-8 text-[10px] leading-relaxed text-[#9a9a95]">소개 · 도움말 · 안전 · 개인정보처리방침 · 약관 · 위치 · 언어</p>
+    <p className="mt-3 font-mono text-[10px] text-[#9a9a95]">© 2026 xCUBUS</p>
+  </aside>;
 }

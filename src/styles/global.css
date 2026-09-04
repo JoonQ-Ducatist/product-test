@@ -36,7 +36,7 @@ button:focus-visible { outline: 2px solid #735c00; outline-offset: 3px; }
 
 /* 정의: 전 화면에 적용하는 Neutral Sans Serif·에디토리얼 표면·텍스트 규칙이다. */
 .editorial-app { position: relative; height: 100%; overflow: hidden; background: var(--xc-surface); color: var(--xc-text); }
-.editorial-main { height: 100%; min-height: 0; padding-bottom: calc(60px + env(safe-area-inset-bottom)) !important; }
+.editorial-main { height: 100%; min-height: 0; padding-bottom: calc(44px + env(safe-area-inset-bottom)) !important; }
 .editorial-main--feed { overflow: hidden; }
 .editorial-main--scroll { overflow-y: auto; overscroll-behavior-y: contain; scrollbar-width: none; }
 .editorial-main--scroll::-webkit-scrollbar { display: none; }
@@ -68,7 +68,8 @@ button:focus-visible { outline: 2px solid #735c00; outline-offset: 3px; }
 .editorial-feed article button { -webkit-tap-highlight-color: transparent; }
 /* 정의: 작은 모바일 뷰포트에서도 투표 뒤 첫 댓글까지 사진 오버레이 위에서 읽을 수 있게 한다. */
 .editorial-feed .card-details { min-height: 176px; background: linear-gradient(180deg, transparent 0%, rgba(1,8,17,.24) 16%, rgba(1,8,17,.9) 100%); }
-.media-peek { position: absolute; top: 4%; z-index: 5; height: 92%; width: 28px; overflow: hidden; border: 0; border-radius: .35rem; opacity: .52; filter: saturate(.8) brightness(.68); transition: opacity .18s ease, transform .22s ease; }
+/* 정의: 좌우 미리보기는 중앙 사진보다 위·아래가 모두 짧아 밝은 카드 배경을 드러내며 뒤 레이어임을 알린다. */
+.media-peek { position: absolute; top: 5%; bottom: 5%; z-index: 5; height: auto; width: 28px; overflow: hidden; border: 0; border-radius: .35rem; background: #fbfaf7; opacity: .52; filter: saturate(.8) brightness(.68); transition: opacity .18s ease, transform .22s ease; }
 .media-peek--left { left: 0; }
 .media-peek--right { right: 0; }
 .media-primary { transition: transform .24s cubic-bezier(.18,.72,.28,1); will-change: transform; }
@@ -78,6 +79,27 @@ button:focus-visible { outline: 2px solid #735c00; outline-offset: 3px; }
 @keyframes carousel-kick-left { 0% { transform: translateX(0); } 42% { transform: translateX(-10px); } 100% { transform: translateX(0); } }
 @keyframes carousel-kick-right { 0% { transform: translateX(0); } 42% { transform: translateX(10px); } 100% { transform: translateX(0); } }
 .desktop-nav-brand { display: none; }
+.desktop-recommendations { display: none; }
+
+/* 정의: 모바일·태블릿 피드는 카드가 화면 가장자리와 하단 메뉴에 맞닿아 콘텐츠 면적을 최대로 쓴다. */
+@media (max-width: 1023px) {
+  .editorial-main--feed { padding-right: 0 !important; padding-bottom: calc(48px + env(safe-area-inset-bottom)) !important; padding-left: 0 !important; }
+  .editorial-feed article { border-right: 0; border-bottom: 0; border-left: 0; border-radius: 0; }
+}
+
+/* 정의: 모바일 댓글 상세는 카드 위를 덮고 아래에서 올라오는 바텀 시트로 제공한다. */
+.comment-panel { position: fixed; inset: 0; z-index: 100; display: flex; align-items: flex-end; width: 100%; margin: 0; background: rgba(1,8,17,.5); animation: comment-backdrop-in .22s ease-out both; }
+.comment-panel__dialog { position: relative; display: flex; width: 100%; height: min(78dvh, 760px); min-height: 420px; flex-direction: column; overflow: hidden; border-radius: 1.25rem 1.25rem 0 0; background: var(--xc-surface-card); animation: comment-sheet-up .3s cubic-bezier(.2,.78,.24,1) both; }
+.comment-panel__media { display: none; }
+.comment-panel__content { display: flex; min-height: 0; flex: 1; flex-direction: column; }
+.comment-panel__sheet-heading { position: relative; display: flex; height: 52px; flex-shrink: 0; flex-direction: column; align-items: center; justify-content: flex-end; gap: 7px; padding-bottom: 9px; color: var(--xc-text); font-size: 15px; }
+.comment-panel__handle { display: block; width: 38px; height: 4px; border-radius: 999px; background: #73777d; }
+.comment-panel__comments { flex: 1; overflow-y: auto; padding: .9rem 1rem; scrollbar-width: none; }
+.comment-panel__comments::-webkit-scrollbar { display: none; }
+.comment-panel__form { display: flex; flex-shrink: 0; align-items: center; gap: .5rem; border-top: 1px solid var(--xc-outline); padding: .65rem .9rem calc(.65rem + env(safe-area-inset-bottom)); }
+.comment-panel__close { position: absolute; right: .5rem; top: 13px; z-index: 2; display: inline-flex; align-items: center; justify-content: center; width: 2rem; height: 2rem; border-radius: 999px; color: #44474c; }
+@keyframes comment-backdrop-in { from { opacity: 0; } to { opacity: 1; } }
+@keyframes comment-sheet-up { from { transform: translateY(100%); } to { transform: translateY(0); } }
 
 .editorial-ranking > ol > li > button,
 .editorial-profile article,
@@ -102,7 +124,7 @@ button:focus-visible { outline: 2px solid #735c00; outline-offset: 3px; }
   .app-canvas { width: 100%; height: 100dvh; border: 0; box-shadow: none; }
   .editorial-app { display: grid; grid-template-columns: 76px minmax(0, 1fr); }
   .editorial-app > header { display: none; }
-  .editorial-main { grid-column: 2; grid-row: 1; width: min(700px, calc(100% - 56px)); justify-self: center; padding-top: 28px; padding-bottom: 28px !important; }
+  .editorial-main { grid-column: 2; grid-row: 1; width: min(700px, calc(100% - 56px)); justify-self: center; padding-top: 20px; padding-bottom: 20px !important; }
   .editorial-main--feed { overflow: hidden; }
   .editorial-app > nav { position: static; grid-column: 1; grid-row: 1; z-index: 50; width: 76px; height: 100%; overflow: hidden; border: 0; border-right: 1px solid var(--xc-outline); padding: 24px 14px; box-shadow: none; transition: width .2s ease, box-shadow .2s ease; }
   .editorial-app > nav:hover, .editorial-app > nav:focus-within { width: 216px; box-shadow: 12px 0 28px rgba(14,28,45,.10); }
@@ -111,12 +133,33 @@ button:focus-visible { outline: 2px solid #735c00; outline-offset: 3px; }
   .desktop-nav-brand span { max-width: 0; overflow: hidden; opacity: 0; transform: translateX(-6px); transition: max-width .2s ease, opacity .16s ease, transform .2s ease; }
   .editorial-app > nav:hover .desktop-nav-brand span, .editorial-app > nav:focus-within .desktop-nav-brand span { max-width: 160px; opacity: 1; transform: translateX(0); }
   .editorial-app > nav > .desktop-nav-items { height: auto; flex-direction: column; align-items: stretch; justify-content: flex-start; gap: 10px; padding: 0; }
-  .editorial-app > nav button { width: 48px; height: 48px; flex-direction: row; justify-content: center; gap: 0; padding: 0; overflow: hidden; transition: width .2s ease, padding .2s ease, gap .2s ease, background-color .15s ease; }
+  .editorial-app > nav button { width: 52px; height: 52px; flex-direction: row; justify-content: center; gap: 0; padding: 0; overflow: hidden; transition: width .2s ease, padding .2s ease, gap .2s ease, background-color .15s ease; }
+  .editorial-app > nav button .material-symbols-outlined { font-size: 28px; }
   .editorial-app > nav:hover button, .editorial-app > nav:focus-within button { width: 100%; justify-content: flex-start; gap: 12px; padding: 0 14px; }
   .editorial-app > nav button span:last-child { max-width: 0; margin: 0; overflow: hidden; opacity: 0; font-size: 13px; white-space: nowrap; transition: max-width .2s ease, opacity .16s ease; }
   .editorial-app > nav:hover button span:last-child, .editorial-app > nav:focus-within button span:last-child { max-width: 88px; opacity: 1; }
   .editorial-feed { height: 100%; min-height: 0; }
+  /* 정의: PC의 필터·스트림 제어를 카드 폭에 맞춰 상단에 조밀하게 묶는다. */
+  .editorial-feed > div:first-child, .editorial-feed > div:nth-child(2) { width: min(480px, 100%, calc((100dvh - 160px) * .5625)); align-self: center; }
+  .editorial-feed > div:first-child { padding-bottom: 2px; }
+  .editorial-feed > div:nth-child(2) { margin-bottom: 4px; }
   .media-carousel { flex: 1 1 0%; width: min(480px, 100%, calc((100dvh - 182px) * .5625)); min-height: 0; }
   .editorial-feed article { align-self: center; width: 100%; height: 100%; max-width: none; aspect-ratio: auto; }
   .media-peek { width: 32px; }
+  .comment-panel { position: fixed; inset: 0; z-index: 100; display: flex; align-items: center; justify-content: center; margin: 0; padding: 36px 72px; background: rgba(0,0,0,.62); }
+  .comment-panel__dialog { display: grid; grid-template-columns: minmax(0, 1.35fr) minmax(340px, .85fr); width: min(1120px, calc(100vw - 170px)); height: min(720px, calc(100dvh - 100px)); overflow: hidden; border-radius: .5rem; box-shadow: 0 28px 90px rgba(0,0,0,.38); }
+  .comment-panel__sheet-heading { display: none; }
+  .comment-panel__media { display: block; min-width: 0; height: 100%; overflow: hidden; background: #05080c; }
+  .comment-panel__media > img, .comment-panel__media > video { display: block; width: 100%; height: 100%; max-width: 100%; max-height: 100%; object-fit: contain !important; }
+  .comment-panel__content { height: 100%; min-height: 0; background: #fff; }
+  .comment-panel__comments { flex: 1; overflow-y: auto; padding: 1.35rem 1.5rem; scrollbar-width: none; }
+  .comment-panel__comments::-webkit-scrollbar { display: none; }
+  .comment-panel__form { flex-shrink: 0; min-height: 58px; padding: .75rem 1.25rem; }
+  .comment-panel__close { position: fixed; right: 22px; top: 20px; width: 42px; height: 42px; border: 1px solid rgba(255,255,255,.7); border-radius: .35rem; background: rgba(0,0,0,.18); color: #fff; }
+}
+/* 정의: 넓은 데스크톱에서는 Instagram처럼 좌측 아이콘 메뉴·중앙 피드·우측 추천 정보를 동시에 배치한다. */
+@media (min-width: 1200px) {
+  .editorial-app { grid-template-columns: 76px minmax(460px, 560px) minmax(260px, 330px) minmax(24px, 1fr); column-gap: 48px; }
+  .editorial-main { grid-column: 2; width: min(520px, 100%); justify-self: end; }
+  .desktop-recommendations { display: block; grid-column: 3; grid-row: 1; align-self: start; width: 100%; padding-top: 72px; color: var(--xc-text); }
 }

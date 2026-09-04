@@ -1,5 +1,7 @@
-# xCubus 단계별 개발 계획
+# xCubus 단계별 개발 계획 (이전 계획 보관)
 
+> **현재 실행 기준은 [90-day-cash-loop-plan.md](./90-day-cash-loop-plan.md)다.** 이 문서는 기존 단계형 개발 계획의 이력 보관용이며, 일정·우선순위 판단에는 사용하지 않는다.
+>
 > 기준 문서: `service-design-rule.md`, `TECH-AGENTS.md`
 >
 > 전체 기능 목록과 단계별 사용자 검증 기록은 `feature-backlog.md`에서 관리한다.

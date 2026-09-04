@@ -1,9 +1,9 @@
 /** 정의: 화면 목업에서 사용하는 카테고리 토큰과 카드 샘플 데이터의 단일 출처다. */
 const selfieAssets = import.meta.glob('../../assets/generated/selfies/*.jpg', { eager: true, import: 'default' });
+const seriesAssets = import.meta.glob('../../assets/generated/feed-series/*.jpg', { eager: true, import: 'default' });
 
 /** 정의: 세트·합성 이미지를 배제하고 카드마다 한 명의 단독 인물만 쓰는 대표 사진 인덱스다. */
 const categorySelfieIndex = { Outfit: 1, Date: 3, Travel: 4, Fitness: 1, Work: 5, SocialProfile: 6 };
-const categoryAlternateSelfieIndex = { Outfit: 3, Date: 6, Travel: 1, Fitness: 2, Work: 4, SocialProfile: 2 };
 
 /** 정의: 거울 앞 스마트폰 셀피와 여성 운동 셀피의 프로젝트 자산 URL을 반환한다. @param {number} index 1~6 사진 순번 @param {boolean} fitness 여성 운동 셀피 여부 */
 function getSelfieImage(index, fitness = false) {
@@ -11,6 +11,9 @@ function getSelfieImage(index, fitness = false) {
   const prefix = fitness ? 'fitness-selfie' : 'selfie';
   return selfieAssets[`../../assets/generated/selfies/${prefix}-${safeIndex}.jpg`];
 }
+
+/** 정의: 동일 인물의 복장·포즈·장소가 달라진 단독 세로 셀피 시리즈 URL을 반환한다. @param {string} name 시리즈 파일명 */
+function getSeriesImage(name) { return seriesAssets[`../../assets/generated/feed-series/${name}.jpg`]; }
 
 /** 정의: 사용자·관리 화면이 공유하는 카테고리의 표시명, 아이콘, 색상과 피드 표기 토큰이다. */
 export const categories = {
@@ -22,15 +25,25 @@ export const categories = {
   SocialProfile: { label: 'SNS 프로필', icon: 'account_circle', color: '#F2C94C', liveTag: 'Profile Look' },
 };
 
-/** 정의: 다중 사진 카드도 단독 인물 한 명의 사진만 유지하도록 동일 인물 대표 사진으로 구성한다. @param {string} prefix 카드 ID 접두어 @param {string} imageUrl 단독 인물 대표 사진 URL */
-function createAlbum(prefix, imageUrl) {
-  return Array.from({ length: 5 }, (_, index) => ({
+/** 정의: 다중 사진 카드에 동일 인물의 서로 다른 단독 셀피만 순서대로 담는다. @param {string} prefix 카드 ID 접두어 @param {string[]} imageUrls 단독 인물 사진 URL 목록 */
+function createAlbum(prefix, imageUrls) {
+  return imageUrls.map((url, index) => ({
     id: `${prefix}-media-${index + 1}`,
     type: 'image',
-    url: imageUrl,
+    url,
     objectPosition: 'center center',
   }));
 }
+
+/** 정의: 카테고리마다 1~5장의 서로 다른 단독 인물 셀피를 제공하는 피드용 미디어 시리즈다. */
+const mediaByCategory = {
+  Outfit: [getSelfieImage(1), getSeriesImage('outfit-02'), getSeriesImage('outfit-03'), getSeriesImage('outfit-04'), getSeriesImage('outfit-05')],
+  Date: [getSelfieImage(3), getSeriesImage('date-02'), getSeriesImage('date-03'), getSeriesImage('date-04')],
+  Travel: [getSelfieImage(4), getSeriesImage('travel-02'), getSeriesImage('travel-03')],
+  Fitness: [getSelfieImage(1, true), getSeriesImage('fitness-02')],
+  Work: [getSelfieImage(5)],
+  SocialProfile: [getSelfieImage(6)],
+};
 
 /** 정의: 카테고리별로 생성한 서울 생활권 사진과 대표 질문을 정의한 목업 시드다. */
 const mockCardSeeds = [
@@ -42,8 +55,8 @@ const mockCardSeeds = [
   { category: 'SocialProfile', author: 'portrait_note', question: '이 사진, SNS 프로필로\n매력적으로 보이나요?', subtext: 'Would this make a memorable social profile photo?', imageUrl: getSelfieImage(categorySelfieIndex.SocialProfile), yesVotes: 654, noVotes: 72, comments: [] },
 ];
 
-/** 정의: 각 카테고리에서 두 카드와 카드별 5개 미디어 상태를 제공하는 초기 목업 피드다. */
-export const initialCards = mockCardSeeds.flatMap((seed, seedIndex) => [
-  { ...seed, id: `card-${seedIndex + 1}-a`, media: createAlbum(`card-${seedIndex + 1}-a`, seed.imageUrl), objectPosition: 'center center', timestamp: `${seedIndex * 20 + 10}분 전`, isMyUpload: seedIndex === 0, commentsAllowed: true },
-  { ...seed, id: `card-${seedIndex + 1}-b`, author: `${seed.author}_daily`, imageUrl: getSelfieImage(categoryAlternateSelfieIndex[seed.category], seed.category === 'Fitness'), media: createAlbum(`card-${seedIndex + 1}-b`, getSelfieImage(categoryAlternateSelfieIndex[seed.category], seed.category === 'Fitness')), objectPosition: 'center center', timestamp: `${seedIndex + 2}시간 전`, yesVotes: seed.yesVotes - 87, noVotes: seed.noVotes + 14, commentsAllowed: true },
-]);
+/** 정의: 카테고리별 1~5장의 현실적인 단독 인물 미디어 수를 가진 초기 목업 피드다. */
+export const initialCards = mockCardSeeds.map((seed, seedIndex) => {
+  const mediaUrls = mediaByCategory[seed.category];
+  return { ...seed, id: `card-${seedIndex + 1}`, imageUrl: mediaUrls[0], media: createAlbum(`card-${seedIndex + 1}`, mediaUrls), objectPosition: 'center center', timestamp: `${seedIndex * 20 + 10}분 전`, isMyUpload: seedIndex === 0, commentsAllowed: true };
+});
