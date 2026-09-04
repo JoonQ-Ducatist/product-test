@@ -18,6 +18,11 @@ html::-webkit-scrollbar, body::-webkit-scrollbar { display: none; }
 body { margin: 0; min-width: 320px; }
 body, button, input, textarea { font-family: 'Pretendard Variable', Pretendard, sans-serif; }
 :lang(en), .font-latin { font-family: Inter, sans-serif; }
+/* 정의: 한글·영문 모두에서 콘텐츠 성격에 맞는 줄바꿈을 제공해 좁은 화면의 어색한 단어 분할을 막는다. */
+:where(.editorial-app, .comment-panel, [role="dialog"]) :where(h1, h2, h3, p, span, strong, small, button, label) { min-width: 0; }
+:where(.editorial-app, .comment-panel, [role="dialog"]) :where(h1, h2, h3) { overflow-wrap: break-word; text-wrap: balance; word-break: keep-all; }
+:where(.editorial-app, .comment-panel, [role="dialog"]) :where(p, label, button) { word-break: keep-all; }
+:lang(en) :where(.editorial-app, .comment-panel, [role="dialog"]) :where(h1, h2, h3, p, label, button) { hyphens: auto; overflow-wrap: break-word; word-break: normal; }
 /* 정의: 문서 언어가 영어여도 아이콘 이름이 본문 글자로 렌더링되지 않게 Material Symbols 서체를 고정한다. */
 .material-symbols-outlined { font-family: 'Material Symbols Outlined' !important; font-weight: normal; font-style: normal; line-height: 1; letter-spacing: normal; text-transform: none; white-space: nowrap; word-wrap: normal; direction: ltr; -webkit-font-feature-settings: 'liga'; -webkit-font-smoothing: antialiased; font-feature-settings: 'liga'; }
 button { font: inherit; }
@@ -66,10 +71,17 @@ button:focus-visible { outline: 2px solid #735c00; outline-offset: 3px; }
 .editorial-feed .text-slate-200, .editorial-feed .text-slate-300 { color: #f5f3ee !important; }
 .editorial-feed .text-slate-400, .editorial-feed .text-slate-500 { color: #d7d4cd !important; }
 .editorial-feed article { border-radius: .375rem; border-color: rgba(255,255,255,.25); box-shadow: 0 12px 30px rgba(0,0,0,.12); }
-.editorial-feed article { width: 100%; aspect-ratio: auto; height: 100%; max-height: none; }
+.editorial-feed article { width: 100%; aspect-ratio: auto; height: 100%; max-height: none; container-type: inline-size; }
 .editorial-feed article button { -webkit-tap-highlight-color: transparent; }
 /* 정의: 작은 모바일 뷰포트에서도 투표 뒤 첫 댓글까지 사진 오버레이 위에서 읽을 수 있게 한다. */
 .editorial-feed .card-details { min-height: 176px; background: linear-gradient(180deg, transparent 0%, rgba(1,8,17,.24) 16%, rgba(1,8,17,.9) 100%); }
+.feed-card__question { max-inline-size: 100%; font-size: clamp(1.125rem, 6cqi, 1.5rem); line-height: 1.22; letter-spacing: -.025em; text-wrap: balance; }
+.feed-card__subtext { overflow-wrap: break-word; text-wrap: pretty; }
+.feed-result__meta > * { min-width: 0; white-space: nowrap; }
+.feed-result__actions, .feed-result__secondary { min-width: 0; }
+.feed-result__boost, .feed-result__self, .feed-result__next { white-space: nowrap; }
+.feed-result__boost { font-size: clamp(9px, 2.55vw, 10px); }
+.age-vote-panel { min-width: 0; }
 /* 정의: 좌우 미리보기는 중앙 사진보다 위·아래가 모두 짧아 밝은 카드 배경을 드러내며 뒤 레이어임을 알린다. */
 .media-peek { position: absolute; top: 5%; bottom: 5%; z-index: 5; height: auto; width: 28px; overflow: hidden; border: 0; border-radius: .35rem; background: #fbfaf7; opacity: .52; filter: saturate(.8) brightness(.68); transition: opacity .18s ease, transform .22s ease; }
 .media-peek--left { left: 0; }
@@ -125,6 +137,18 @@ button:focus-visible { outline: 2px solid #735c00; outline-offset: 3px; }
 .editorial-ranking > ol > li > button,
 .editorial-profile article,
 .editorial-upload [class*="bg-surface-container"] { box-shadow: 0 4px 20px rgba(0,0,0,.03); }
+.editorial-upload :where(h1, h2, p, label, legend) { overflow-wrap: break-word; }
+.upload-category-grid > button { line-height: 1.2; text-align: center; text-wrap: balance; word-break: keep-all; }
+
+/* 정의: 가장 좁은 스마트폰에서는 영문 카테고리와 Boost 제어를 두 열 규칙으로 재배치해 의미 단위가 깨지지 않게 한다. */
+@media (max-width: 480px) {
+  .upload-category-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .upload-category-grid > button { min-height: 42px; padding-right: .45rem; padding-left: .45rem; font-size: clamp(10px, 3.1vw, 12px); }
+  .feed-result__actions { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; column-gap: .5rem; row-gap: .2rem; }
+  .feed-result__secondary { display: grid; gap: .2rem; }
+  .feed-result__boost, .feed-result__self { justify-self: start; }
+  .feed-result__next { grid-column: 2; grid-row: 1 / span 2; align-self: center; }
+}
 
 /* 정의: 태블릿에서는 스마트폰에 맞춘 카드 크기를 유지하되, 화면 중앙에서 안정적으로 보여 준다. */
 @media (min-width: 600px) and (max-width: 1023px) {
