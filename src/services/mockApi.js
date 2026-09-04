@@ -68,7 +68,9 @@ export async function submitVote(post, value, votedIds) {
   if (!post) return apiFailure(API_ERROR.NOT_FOUND, '게시물을 찾을 수 없어요.');
   if (votedIds.has(post.id)) return apiFailure(API_ERROR.ALREADY_VOTED, '이미 의견을 남긴 게시물이에요.');
   if (post.evaluationType === 'NUMERIC_AGE') {
-    if (value?.type !== 'age' || !Number.isInteger(value.value) || value.value < 18 || value.value > 99) return apiFailure(API_ERROR.VALIDATION_FAILED, '18세부터 99세 사이의 예상 나이를 선택해 주세요.', { value: 'invalid_age_vote' });
+    const min = post.ageMin ?? 18;
+    const max = post.ageMax ?? 99;
+    if (value?.type !== 'age' || !Number.isInteger(value.value) || value.value < min || value.value > max) return apiFailure(API_ERROR.VALIDATION_FAILED, `${min}세부터 ${max}세 사이의 예상 나이를 선택해 주세요.`, { value: 'invalid_age_vote' });
     const previousCount = post.ageVoteCount ?? 0;
     const previousAverage = post.ageEstimate ?? value.value;
     const nextCount = previousCount + 1;

@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { categories, initialCards } from './data/cards.js';
 import FeedView from './features/feed/FeedView.jsx';
 import UploadView from './features/upload/UploadView.jsx';
@@ -32,6 +32,7 @@ export default function App() {
   const [toast, setToast] = useState('');
   const [previewState, setPreviewState] = useState(() => new URLSearchParams(window.location.search).get('state') ?? 'ready');
   const tabGestureStart = useRef(null);
+  const mainRef = useRef(null);
 
   const visibleCards = useMemo(() => activeCategory === 'ALL' ? cards : cards.filter((card) => card.category === activeCategory), [activeCategory, cards]);
   const safeIndex = visibleCards.length ? currentIndex % visibleCards.length : 0;
@@ -42,6 +43,13 @@ export default function App() {
     const timer = window.setTimeout(() => setToast(''), 1800);
     return () => window.clearTimeout(timer);
   }, [toast]);
+
+  /** 정의: 메뉴 전환마다 이전 화면의 스크롤 위치를 0으로 초기화해 상단 헤더·본문이 잘린 채 렌더링되는 것을 막는다. */
+  useLayoutEffect(() => {
+    const main = mainRef.current;
+    if (main) main.scrollTop = 0;
+    window.scrollTo(0, 0);
+  }, [activeTab]);
 
   /** 정의: 피드 카테고리를 변경하고 새 목록의 첫 카드로 이동한다. @param {string} category 카테고리 식별자 */
   function changeCategory(category) {
@@ -138,7 +146,7 @@ export default function App() {
       </div>
     </header>
 
-    <main id="main-content" tabIndex="-1" onPointerDown={startTabGesture} onPointerUp={finishTabGesture} onPointerCancel={() => { tabGestureStart.current = null; }} className={`editorial-main mx-auto flex h-full w-full max-w-none flex-col px-4 pb-11 pt-[56px] sm:px-5 ${activeTab === 'feed' ? 'editorial-main--feed' : 'editorial-main--scroll'}`}>
+    <main key={`main-${activeTab}`} ref={mainRef} id="main-content" tabIndex="-1" onPointerDown={startTabGesture} onPointerUp={finishTabGesture} onPointerCancel={() => { tabGestureStart.current = null; }} className={`editorial-main mx-auto flex h-full w-full max-w-none flex-col px-4 pb-11 pt-[56px] sm:px-5 ${activeTab === 'feed' ? 'editorial-main--feed' : 'editorial-main--scroll'}`}>
       {previewState !== 'ready' ? <StatePanel state={previewState} pageName={tabs.find(([id]) => id === activeTab)?.[2] ?? 'xCubus'} onAction={() => { if (previewState === 'permission') setIsGuest(true); else if (previewState === 'review') setActiveTab('profile'); setPreviewState('ready'); }} /> : <>
         {activeTab === 'feed' && <FeedView categories={categories} cards={visibleCards} card={currentCard} currentIndex={safeIndex} activeCategory={activeCategory} hasVoted={currentCard && votedIds.has(currentCard.id)} onCategoryChange={changeCategory} onPrevious={() => moveCard(-1)} onNext={() => moveCard(1)} onShuffle={shuffle} onVote={vote} onAddComment={addComment} />}
         {activeTab === 'upload' && <UploadView categories={categories} onSubmit={addCard} onMessage={setToast} />}

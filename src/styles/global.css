@@ -74,6 +74,13 @@ button:focus-visible { outline: 2px solid #735c00; outline-offset: 3px; }
 .media-peek--right { right: 0; }
 .media-primary { transition: transform .24s cubic-bezier(.18,.72,.28,1); will-change: transform; }
 .media-primary--dragging { transition: none; }
+.age-vote-slider { height: 3px; cursor: pointer; border-radius: 999px; background: rgba(255,255,255,.38); }
+.age-vote-slider::-webkit-slider-thumb { width: 14px; height: 14px; cursor: grab; border: 1.5px solid #fff; border-radius: 999px; background: var(--xc-accent-soft); box-shadow: 0 1px 5px rgba(0,0,0,.35); -webkit-appearance: none; }
+.age-vote-slider::-moz-range-thumb { width: 13px; height: 13px; cursor: grab; border: 1.5px solid #fff; border-radius: 999px; background: var(--xc-accent-soft); box-shadow: 0 1px 5px rgba(0,0,0,.35); }
+.result-bar--yes { transform-origin: left center; animation: result-fill-from-left .48s cubic-bezier(.16,1,.3,1) both; }
+.result-bar--no { transform-origin: right center; border-left: 1px solid #101828; animation: result-fill-from-right .48s cubic-bezier(.16,1,.3,1) both; }
+@keyframes result-fill-from-left { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+@keyframes result-fill-from-right { from { transform: scaleX(0); } to { transform: scaleX(1); } }
 .media-carousel--kick-left { animation: carousel-kick-left .28s cubic-bezier(.18,.7,.32,1); }
 .media-carousel--kick-right { animation: carousel-kick-right .28s cubic-bezier(.18,.7,.32,1); }
 @keyframes carousel-kick-left { 0% { transform: translateX(0); } 42% { transform: translateX(-10px); } 100% { transform: translateX(0); } }
@@ -99,6 +106,7 @@ button:focus-visible { outline: 2px solid #735c00; outline-offset: 3px; }
 .comment-panel { position: fixed; inset: 0; z-index: 100; display: flex; align-items: flex-end; width: 100%; margin: 0; background: rgba(1,8,17,.5); animation: comment-backdrop-in .22s ease-out both; }
 .comment-panel__dialog { position: relative; display: flex; width: 100%; height: min(78dvh, 760px); min-height: 420px; flex-direction: column; overflow: hidden; border-radius: 1.25rem 1.25rem 0 0; background: var(--xc-surface-card); animation: comment-sheet-up .3s cubic-bezier(.2,.78,.24,1) both; }
 .comment-panel__media { display: none; }
+.comment-panel__media-nav, .comment-panel__media-count { display: none; }
 .comment-panel__content { display: flex; min-height: 0; flex: 1; flex-direction: column; }
 .comment-panel__sheet-heading { position: relative; display: flex; height: 52px; flex-shrink: 0; flex-direction: column; align-items: center; justify-content: flex-end; gap: 7px; padding-bottom: 9px; color: var(--xc-text); font-size: 15px; }
 .comment-panel__handle { display: block; width: 38px; height: 4px; border-radius: 999px; background: #73777d; }
@@ -147,18 +155,22 @@ button:focus-visible { outline: 2px solid #735c00; outline-offset: 3px; }
   .editorial-app > nav button span:last-child { max-width: 0; margin: 0; overflow: hidden; opacity: 0; font-size: 13px; white-space: nowrap; transition: max-width .2s ease, opacity .16s ease; }
   .editorial-app > nav:hover button span:last-child, .editorial-app > nav:focus-within button span:last-child { max-width: 88px; opacity: 1; }
   .editorial-feed { height: 100%; min-height: 0; }
-  /* 정의: PC의 필터·스트림 제어를 카드 폭에 맞춰 상단에 조밀하게 묶는다. */
-  .editorial-feed > div:first-child, .editorial-feed > div:nth-child(2) { width: min(480px, 100%, calc((100dvh - 160px) * .5625)); align-self: center; }
+  /* 정의: PC의 카테고리 제어를 카드 폭에 맞춰 상단에 조밀하게 묶고, 카드 내부로 옮긴 스트림 정보를 위한 높이를 본문에 돌려준다. */
+  .editorial-feed > div:first-child { width: min(480px, 100%, calc((100dvh - 132px) * .5625)); align-self: center; }
   .editorial-feed > div:first-child { padding-bottom: 2px; }
-  .editorial-feed > div:nth-child(2) { margin-bottom: 4px; }
-  .media-carousel { flex: 1 1 0%; width: min(480px, 100%, calc((100dvh - 182px) * .5625)); min-height: 0; }
+  .media-carousel { flex: 1 1 0%; width: min(480px, 100%, calc((100dvh - 150px) * .5625)); min-height: 0; }
   .editorial-feed article { align-self: center; width: 100%; height: 100%; max-width: none; aspect-ratio: auto; }
   .media-peek { width: 32px; }
   .comment-panel { position: fixed; inset: 0; z-index: 100; display: flex; align-items: center; justify-content: center; margin: 0; padding: 36px 72px; background: rgba(0,0,0,.62); }
   .comment-panel__dialog { display: grid; grid-template-columns: minmax(0, 1.35fr) minmax(340px, .85fr); width: min(1120px, calc(100vw - 170px)); height: min(720px, calc(100dvh - 100px)); overflow: hidden; border-radius: .5rem; box-shadow: 0 28px 90px rgba(0,0,0,.38); }
   .comment-panel__sheet-heading { display: none; }
-  .comment-panel__media { display: block; min-width: 0; height: 100%; overflow: hidden; background: #05080c; }
+  .comment-panel__media { position: relative; display: block; min-width: 0; height: 100%; overflow: hidden; background: #05080c; }
   .comment-panel__media > img, .comment-panel__media > video { display: block; width: 100%; height: 100%; max-width: 100%; max-height: 100%; object-fit: contain !important; }
+  .comment-panel__media-nav { position: absolute; top: 50%; z-index: 2; display: inline-flex; align-items: center; justify-content: center; width: 36px; height: 36px; transform: translateY(-50%); border: 1px solid rgba(255,255,255,.35); border-radius: 999px; background: rgba(0,0,0,.34); color: rgba(255,255,255,.86); opacity: .72; transition: opacity .15s ease, background .15s ease; }
+  .comment-panel__media-nav:hover { background: rgba(0,0,0,.62); opacity: 1; }
+  .comment-panel__media-nav--left { left: 14px; }
+  .comment-panel__media-nav--right { right: 14px; }
+  .comment-panel__media-count { position: absolute; left: 50%; bottom: 14px; display: block; transform: translateX(-50%); border-radius: 999px; background: rgba(0,0,0,.42); padding: 3px 8px; color: rgba(255,255,255,.85); font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 10px; }
   .comment-panel__content { height: 100%; min-height: 0; background: #fff; }
   .comment-panel__comments { flex: 1; overflow-y: auto; padding: 1.35rem 1.5rem; scrollbar-width: none; }
   .comment-panel__comments::-webkit-scrollbar { display: none; }
