@@ -135,7 +135,7 @@ export default function App() {
     <SkipLink />
     <header className="fixed top-0 z-50 w-full border-b border-[#e4e2dd] bg-[#fbf9f4]/95 backdrop-blur-xl">
       <div className="mx-auto flex h-[48px] max-w-none items-center justify-between px-4">
-        <button type="button" onClick={() => setActiveTab('feed')} className="flex min-w-0 items-end gap-2 text-left" aria-label="xy by x.Cubus 피드로 이동">
+        <button type="button" onClick={() => setActiveTab('feed')} className="flex min-w-0 items-end gap-1 text-left" aria-label="xy by x.Cubus 피드로 이동">
           <img src={logoUrl} width="38" height="28" className="h-7 w-9 shrink-0 object-contain" alt="xy by x.Cubus 로고" />
           <span lang="en" className="whitespace-nowrap font-latin text-[17px] font-bold leading-none tracking-tight text-[#1b1c19] sm:text-xl">xy by x.Cubus</span><span aria-label="AI" className="flex h-[20px] w-[29px] shrink-0 items-center justify-center rounded-[4px] border border-[#c5a059] bg-[#fbf9f4] font-mono text-[10px] font-bold leading-none tracking-[-0.04em] text-[#735c00]">AI</span><span lang="en" className="hidden whitespace-nowrap font-mono text-[8px] leading-none tracking-wide text-[#735c00] sm:inline">MORE VIEWS, MORE YOU</span>
         </button>

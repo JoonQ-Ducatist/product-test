@@ -74,6 +74,7 @@ button:focus-visible { outline: 2px solid #735c00; outline-offset: 3px; }
 .media-peek--right { right: 0; }
 .media-primary { transition: transform .24s cubic-bezier(.18,.72,.28,1); will-change: transform; }
 .media-primary--dragging { transition: none; }
+.media-card-photo-nav { display: none; }
 .age-vote-slider { height: 3px; cursor: pointer; border-radius: 999px; background: rgba(255,255,255,.38); }
 .age-vote-slider::-webkit-slider-thumb { width: 14px; height: 14px; cursor: grab; border: 1.5px solid #fff; border-radius: 999px; background: var(--xc-accent-soft); box-shadow: 0 1px 5px rgba(0,0,0,.35); -webkit-appearance: none; }
 .age-vote-slider::-moz-range-thumb { width: 13px; height: 13px; cursor: grab; border: 1.5px solid #fff; border-radius: 999px; background: var(--xc-accent-soft); box-shadow: 0 1px 5px rgba(0,0,0,.35); }
@@ -162,13 +163,23 @@ button:focus-visible { outline: 2px solid #735c00; outline-offset: 3px; }
   .media-carousel { flex: 1 1 0%; width: min(480px, 100%, calc((100dvh - 150px) * .5625)); min-height: 0; }
   .editorial-feed article { align-self: center; width: 100%; height: 100%; max-width: none; aspect-ratio: auto; }
   .media-peek { width: 32px; }
+  /* 정의: PC 다중 사진 카드에서만 마우스 오버 시 존재하는 방향의 사진 이동 화살표를 부드럽게 드러낸다. */
+  .media-card-photo-nav { position: absolute; inset: 0; z-index: 31; display: block; pointer-events: none; }
+  .media-card-photo-nav__button { position: absolute; top: 50%; display: inline-flex; align-items: center; justify-content: center; width: 34px; height: 34px; transform: translateY(-50%) scale(.9); border: 1px solid rgba(255,255,255,.32); border-radius: 999px; background: rgba(1,8,17,.34); color: #fff; opacity: 0; pointer-events: auto; transition: opacity .2s ease, transform .22s cubic-bezier(.16,1,.3,1), background .15s ease; }
+  .media-card-photo-nav__button:hover { background: rgba(1,8,17,.62); }
+  .media-card-photo-nav__button--left { left: 16px; }
+  /* 우측 48px은 위·아래 피드 이동 제어의 안전 영역으로 비워, 사진 다음 화살표와 겹치지 않게 한다. */
+  .media-card-photo-nav__button--right { right: 60px; }
+  .editorial-feed article:hover .media-card-photo-nav__button, .editorial-feed article:focus-within .media-card-photo-nav__button { opacity: .76; transform: translateY(-50%) scale(1); }
+  .editorial-feed article:hover .media-card-photo-nav__button:hover, .editorial-feed article:focus-within .media-card-photo-nav__button:hover { opacity: 1; }
   .comment-panel { position: fixed; inset: 0; z-index: 100; display: flex; align-items: center; justify-content: center; margin: 0; padding: 36px 72px; background: rgba(0,0,0,.62); }
   .comment-panel__dialog { display: grid; grid-template-columns: minmax(0, 1.35fr) minmax(340px, .85fr); width: min(1120px, calc(100vw - 170px)); height: min(720px, calc(100dvh - 100px)); overflow: hidden; border-radius: .5rem; box-shadow: 0 28px 90px rgba(0,0,0,.38); }
   .comment-panel__sheet-heading { display: none; }
   .comment-panel__media { position: relative; display: block; min-width: 0; height: 100%; overflow: hidden; background: #05080c; }
   .comment-panel__media > img, .comment-panel__media > video { display: block; width: 100%; height: 100%; max-width: 100%; max-height: 100%; object-fit: contain !important; }
-  .comment-panel__media-nav { position: absolute; top: 50%; z-index: 2; display: inline-flex; align-items: center; justify-content: center; width: 36px; height: 36px; transform: translateY(-50%); border: 1px solid rgba(255,255,255,.35); border-radius: 999px; background: rgba(0,0,0,.34); color: rgba(255,255,255,.86); opacity: .72; transition: opacity .15s ease, background .15s ease; }
-  .comment-panel__media-nav:hover { background: rgba(0,0,0,.62); opacity: 1; }
+  .comment-panel__media-nav { position: absolute; top: 50%; z-index: 2; display: inline-flex; align-items: center; justify-content: center; width: 36px; height: 36px; transform: translateY(-50%) scale(.9); border: 1px solid rgba(255,255,255,.35); border-radius: 999px; background: rgba(0,0,0,.34); color: rgba(255,255,255,.86); opacity: 0; transition: opacity .2s ease, transform .22s cubic-bezier(.16,1,.3,1), background .15s ease; }
+  .comment-panel__media:hover .comment-panel__media-nav, .comment-panel__media:focus-within .comment-panel__media-nav { opacity: .72; transform: translateY(-50%) scale(1); }
+  .comment-panel__media-nav:hover { background: rgba(0,0,0,.62); opacity: 1 !important; }
   .comment-panel__media-nav--left { left: 14px; }
   .comment-panel__media-nav--right { right: 14px; }
   .comment-panel__media-count { position: absolute; left: 50%; bottom: 14px; display: block; transform: translateX(-50%); border-radius: 999px; background: rgba(0,0,0,.42); padding: 3px 8px; color: rgba(255,255,255,.85); font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 10px; }
