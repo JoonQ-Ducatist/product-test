@@ -81,11 +81,13 @@
   "noCount": 39,
   "totalVotes": 223,
   "approvalRate": 83,
-  "sampleStatus": "sufficient"
+  "sampleStatus": "BASE_RESULT"
 }
 ```
 
-- 표본 기준은 아직 운영 수치가 확정되지 않았으므로 `sampleStatus`로만 표현하고 확정적 품질 판단을 하지 않는다.
+- `sampleStatus`는 `INSUFFICIENT`(0–9), `EARLY_SIGNAL`(10–29), `BASE_RESULT`(30–99), `EXPANDED_SAMPLE`(100+) 중 하나다. 수치는 Closed Beta에서 재검증하는 초기 가설이며, 상태는 결과의 절대적 품질을 보장하지 않는다.
+- `INSUFFICIENT` 상태에서는 결과값·긍정률·평균 나이를 확정적으로 노출하지 않으며 Boost를 제안하지 않는다.
+- `EARLY_SIGNAL`과 `BASE_RESULT`에서만 Boost를 제안할 수 있다. Boost는 추가 노출·응답 기회·표본만 바꾸고 결과를 보장하거나 조정하지 않는다.
 - `NUMERIC_AGE` Aggregate는 `averageAge`, `totalVotes`, `sampleStatus`를 반환하며 YES/NO 집계 필드를 사용하지 않는다.
 
 ### Report
@@ -111,7 +113,8 @@
 /** @typedef {'draft'|'submitted'|'under_review'|'published'|'archived'|'deleted'} PostStatus */
 /** @typedef {'yes'|'no'} VoteValue */
 /** @typedef {{ id: string, author: string, category: string, question: string, visibility: Visibility, status: PostStatus, media: Array<{ assetId: string, position: number }>, createdAt: string, updatedAt: string }} Post */
-/** @typedef {{ postId: string, yesCount: number, noCount: number, totalVotes: number, approvalRate: number, sampleStatus: 'insufficient'|'sufficient' }} Aggregate */
+/** @typedef {'INSUFFICIENT'|'EARLY_SIGNAL'|'BASE_RESULT'|'EXPANDED_SAMPLE'} SampleStatus */
+/** @typedef {{ postId: string, yesCount: number, noCount: number, totalVotes: number, approvalRate: number, sampleStatus: SampleStatus }} Aggregate */
 ```
 
 ## Supabase 전환 경계

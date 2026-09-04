@@ -33,7 +33,7 @@ Feed → Vote → Upload → Result → Share → Boost → Report → xCubus+ �
 |---|---|---:|---|---|
 | FREE | 기본 Feed / Vote / Upload / Result | ₩0 | 첫인상 결과 경험 | Acquisition |
 | BOOST | 추가 노출 / 더 많은 평가 표본 | ₩1,500~3,900/회 | 더 빠르고 많은 응답 | First Purchase |
-| BOOST Test | 우선 가격 테스트 | **₩1,900/회** | 1회 저마찰 결제 | First Revenue |
+| BOOST Test | 우선 가격 테스트 | **₩1,000/회** | 1회 저마찰 결제 | First Revenue |
 | REPORT | First Impression 상세 Report | ₩4,900~9,900/회 | 충분한 표본 기반 심화 분석 | ARPPU Expansion |
 | REPORT Test | 우선 가격 테스트 | **₩5,900/회** | 고급 결과/비교 | Second Purchase |
 | xCubus+ | 반복 사용자 Subscription | ₩6,900~9,900/월 | 반복 Boost/Report 혜택 및 Premium 기능 | MRR |
@@ -88,8 +88,9 @@ Boost는 xCubus의 첫 번째 유료상품으로 우선 검증한다.
 
 ### Initial Hypothesis
 
-- Price test: ₩1,900
-- 향후 ₩1,500 / ₩1,900 / ₩2,900 / ₩3,900 등 가격 실험 가능
+- Price test: ₩1,000
+- 초기 가격은 사용자가 늘기 전까지 유지한다. 가격 인상은 단순 트래픽 증가가 아니라, 충분한 유효 평가 밀도·목표 표본 달성률·낮은 불만/환불률·재구매 의향이 함께 확인된 뒤에만 검토한다.
+- 향후 ₩1,000 / ₩1,500 / ₩1,900 / ₩2,900 / ₩3,900 등 가격 실험 가능
 - 평가 목표 표본 기반 패키지 테스트 가능
 - 구매 전 예상 추가 노출/표본 범위를 명확하게 표시
 
@@ -345,7 +346,7 @@ AI는 사용자에게 보여주기 위한 기능 자체보다 개발, 운영, �
 
 1. MVP 카테고리 7개를 Cash Loop 관점에서 최종 평가/압축한다.
 2. 무료 Result와 Boost/Report 사이의 정확한 Paywall 경계를 정의한다.
-3. Boost 상품의 표본 단위와 ₩1,900 가격 가설을 설계한다.
+3. Boost 상품의 표본 단위와 ₩1,000 가격 가설을 설계한다.
 4. Result Share → Guest Vote → Signup Funnel을 UX에 반영한다.
 5. Analytics Event Schema를 결제 Funnel 중심으로 정의한다.
 

@@ -6,6 +6,22 @@
 /** @typedef {'yes'|'no'} VoteValue */
 /** @typedef {{ type: 'age', value: number }} AgeVoteValue */
 
+/** 정의: Result의 표본 상태를 UI와 API에서 동일하게 해석하기 위한 고정 enum이다. */
+export const SAMPLE_STATUS = {
+  INSUFFICIENT: 'INSUFFICIENT',
+  EARLY_SIGNAL: 'EARLY_SIGNAL',
+  BASE_RESULT: 'BASE_RESULT',
+  EXPANDED_SAMPLE: 'EXPANDED_SAMPLE',
+};
+
+/** 정의: 유효 투표 수를 Cash Loop Result 계약의 네 표본 상태로 변환한다. */
+export function getSampleStatus(totalVotes = 0) {
+  if (totalVotes < 10) return SAMPLE_STATUS.INSUFFICIENT;
+  if (totalVotes < 30) return SAMPLE_STATUS.EARLY_SIGNAL;
+  if (totalVotes < 100) return SAMPLE_STATUS.BASE_RESULT;
+  return SAMPLE_STATUS.EXPANDED_SAMPLE;
+}
+
 /** 정의: UI가 기능별로 임의 해석하지 않도록 고정한 목업 API 오류 코드 집합이다. */
 export const API_ERROR = {
   VALIDATION_FAILED: 'VALIDATION_FAILED',
@@ -35,7 +51,7 @@ export function toAggregate(post) {
       evaluationType: 'NUMERIC_AGE',
       averageAge: post.ageEstimate ?? null,
       totalVotes,
-      sampleStatus: totalVotes >= 20 ? 'sufficient' : 'insufficient',
+      sampleStatus: getSampleStatus(totalVotes),
     };
   }
   const yesCount = post.yesVotes ?? 0;
@@ -46,7 +62,7 @@ export function toAggregate(post) {
     noCount,
     totalVotes,
     approvalRate: totalVotes ? Math.round((yesCount / totalVotes) * 100) : 0,
-    sampleStatus: totalVotes >= 20 ? 'sufficient' : 'insufficient',
+    sampleStatus: getSampleStatus(totalVotes),
   };
 }
 

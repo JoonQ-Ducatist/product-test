@@ -40,9 +40,9 @@
 
 | ID | 기능·결정 | Cash Loop 영향 | 완료 기준 | 상태 |
 | --- | --- | --- | --- | --- |
-| CL-01 | MVP 카테고리 Cash Loop 최종 선정 | Acquisition·Data·Monetization | 7개 후보(Outfit, Perceived Age, Date, Travel, Fitness, Work, Profile)를 8개 평가 기준으로 점수화하고 최종 목록·질문·평가 방식 확정 | 진행 중 — `PERCEIVED_AGE / NUMERIC_AGE` 프로토타입 반영 |
-| CL-02 | 무료 경계와 Result 계약 | Engagement·Data | 기본 결과, 유효 표본, 표본 부족, 유료 전환 조건을 문서·UI 계약으로 확정 | 대기 |
-| CL-03 | Signup/Auth → Feed → Vote → Upload → Result 흐름 | Engagement | 가입 뒤 30초 이내 핵심 가치 경험, 프로필 강제 입력 없음 | 대기 |
+| CL-01 | MVP 카테고리 Cash Loop 최종 선정 | Acquisition·Data·Monetization | 7개 후보(Outfit, Perceived Age, Date, Travel, Fitness, Work, Profile)를 8개 평가 기준으로 점수화하고 최종 목록·질문·평가 방식 확정 | **완료(승인)** — 핵심: Perceived Age → 오늘의 룩 → SNS 프로필 → 데이트 / 비교군: 운동 → 출근 → 여행. Closed Beta 전환 지표로 재평가 예정 |
+| CL-02 | 무료 경계와 Result 계약 | Engagement·Data | 기본 결과, 유효 표본, 표본 부족, 유료 전환 조건을 문서·UI 계약으로 확정 | **완료(승인)** — 4단계 표본 상태, 투명 Result 오버레이, 100명 Boost ₩1,000 가설을 목업 API·UI·계약에 반영 |
+| CL-03 | Signup/Auth → Feed → Vote → Upload → Result 흐름 | Engagement | 가입 뒤 30초 이내 핵심 가치 경험, 프로필 강제 입력 없음 | 목업 동선 구현 완료 — Splash 가입 → Feed → Vote Result → 나도 평가받기 → Upload. 실제 Auth·서버 Result는 CL-04/CL-06에서 연결, 사용자 승인 대기 |
 | CL-04 | 실제 유효 투표·기본 Result | Data | 1인 1표·서버 집계·BINARY YES/NO 또는 NUMERIC_AGE·표본 수 결과 제공 | 대기 |
 | CL-05 | 초기 Analytics | Acquisition·Engagement·Data | Visitor→Signup→First Vote→Upload→Result 이벤트와 Weekly Valid Votes 수집 | 대기 |
 
