@@ -14,7 +14,7 @@ const splashCopies = [
 /** 정의: 비로그인 방문자에게 인기 콘텐츠와 인증 진입점을 보여 주는 전체 화면 스플래시다. */
 export default function SplashView({ cards, onEnter }) {
   const popularCards = useMemo(
-    () => [...cards].sort((a, b) => (b.yesVotes + b.noVotes) - (a.yesVotes + a.noVotes)).slice(0, 5),
+    () => [...cards].sort((a, b) => participationCount(b) - participationCount(a)).slice(0, 5),
     [cards],
   );
   const [activeIndex, setActiveIndex] = useState(0);
@@ -72,6 +72,9 @@ export default function SplashView({ cards, onEnter }) {
     </main>
   );
 }
+
+/** 정의: 평가 방식이 달라도 스플래시 인기 콘텐츠를 일관되게 정렬하는 참여 수 계산기다. */
+function participationCount(card) { return card.evaluationType === 'NUMERIC_AGE' ? card.ageVoteCount ?? 0 : (card.yesVotes ?? 0) + (card.noVotes ?? 0); }
 
 /** 정의: 인증 제공자별 진입 행동을 일관된 크기·접근성으로 렌더링하는 버튼이다. */
 function ProviderButton({ label, icon, onClick }) {

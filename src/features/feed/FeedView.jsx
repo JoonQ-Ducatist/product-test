@@ -10,13 +10,16 @@ export default function FeedView({ categories, cards, card, currentIndex, active
   const [carouselKick, setCarouselKick] = useState('');
   const [dragOffset, setDragOffset] = useState(0);
   const [isDraggingMedia, setIsDraggingMedia] = useState(false);
+  const [feedMotion, setFeedMotion] = useState('');
+  const feedLocked = useRef(false);
   useEffect(() => { setExpandedComments(false); setDraft(''); setMediaIndex(0); }, [card.id]);
   if (!card) return <section className="mt-4 rounded-xl border border-surface-container-high bg-surface-container-low p-6 text-center text-slate-400">표시할 사진이 없습니다.</section>;
   const theme = categories[card.category];
   const cardMedia = card.media?.length ? card.media : [{ id: `${card.id}-main`, type: card.mediaType ?? 'image', url: card.imageUrl, objectPosition: card.objectPosition }];
   const activeMedia = cardMedia[mediaIndex];
-  const total = card.yesVotes + card.noVotes;
-  const yesPercent = Math.round((card.yesVotes / total) * 100);
+  const isAgeEvaluation = card.evaluationType === 'NUMERIC_AGE';
+  const total = isAgeEvaluation ? card.ageVoteCount : card.yesVotes + card.noVotes;
+  const yesPercent = isAgeEvaluation ? 0 : Math.round((card.yesVotes / total) * 100);
   const noPercent = 100 - yesPercent;
 
   /** 정의: 카드 표면의 시작 좌표를 기록해 가로 앨범·세로 피드 제스처를 구분한다. @param {PointerEvent} event 포인터 이벤트 */
@@ -58,7 +61,7 @@ export default function FeedView({ categories, cards, card, currentIndex, active
     }
     resetDrag();
     if (start.pointerType !== 'mouse') {
-      if (deltaY < 0) onNext(); else onPrevious();
+      navigateFeed(deltaY < 0 ? 1 : -1);
     }
   }
   /** 정의: 데스크톱 휠의 세로 이동으로 피드를 한 장씩 안전하게 순환한다. @param {WheelEvent} event 마우스 휠 이벤트 */
@@ -66,8 +69,20 @@ export default function FeedView({ categories, cards, card, currentIndex, active
     if (Math.abs(event.deltaY) < 12 || wheelLocked.current) return;
     event.preventDefault();
     wheelLocked.current = true;
-    if (event.deltaY > 0) onNext(); else onPrevious();
+    navigateFeed(event.deltaY > 0 ? 1 : -1);
     window.setTimeout(() => { wheelLocked.current = false; }, 420);
+  }
+
+  /** 정의: 현재 피드를 먼저 부드럽게 밀어낸 뒤 다음 또는 이전 카드를 진입시키는 세로 탐색 전환 제어다. @param {1|-1} direction 1은 다음, -1은 이전 */
+  function navigateFeed(direction) {
+    if (feedLocked.current) return;
+    feedLocked.current = true;
+    setFeedMotion(direction === 1 ? 'feed-card--exit-up' : 'feed-card--exit-down');
+    window.setTimeout(() => {
+      if (direction === 1) onNext(); else onPrevious();
+      setFeedMotion(direction === 1 ? 'feed-card--enter-up' : 'feed-card--enter-down');
+      window.setTimeout(() => { setFeedMotion(''); feedLocked.current = false; }, 310);
+    }, 150);
   }
 
   return <section className="editorial-feed relative flex h-full w-full min-h-0 flex-col items-center">
@@ -78,7 +93,7 @@ export default function FeedView({ categories, cards, card, currentIndex, active
     <div className="mb-0.5 flex w-full items-center justify-between px-4 text-xs"><div className="flex items-center gap-1 font-mono text-[10px]" style={{ color: theme.color }}>LIVE STREAM <span className="ml-0.5 text-[9px] opacity-75">{card.timestamp}</span></div><div className="flex items-center gap-1"><span className="flex h-5 items-center rounded-full border px-1.5 font-mono text-[10px] font-bold" style={{ color: theme.color, borderColor: `${theme.color}66`, backgroundColor: `${theme.color}1f` }}>{String(currentIndex + 1).padStart(2, '0')} / {String(cards.length).padStart(2, '0')}</span><button type="button" onClick={onShuffle} style={{ color: theme.color, borderColor: `${theme.color}80` }} className="flex h-5 items-center gap-0.5 rounded-md border bg-surface-container px-1.5 font-mono text-[10px] font-bold"><span className="material-symbols-outlined text-[13px]">shuffle</span>셔플</button></div></div>
 
     <div className={`media-carousel relative flex min-h-0 w-full flex-1 items-center ${carouselKick}`}>
-    <article onPointerDown={startCardGesture} onPointerMove={moveCardGesture} onPointerUp={finishCardGesture} onPointerCancel={() => { gestureStart.current = null; setIsDraggingMedia(false); setDragOffset(0); }} onWheel={moveCardByWheel} className="relative z-10 h-full min-h-0 w-full touch-none overflow-hidden rounded-xl border border-surface-container-high/60 bg-[#fbfaf7] shadow-2xl">
+    <article onPointerDown={startCardGesture} onPointerMove={moveCardGesture} onPointerUp={finishCardGesture} onPointerCancel={() => { gestureStart.current = null; setIsDraggingMedia(false); setDragOffset(0); }} onWheel={moveCardByWheel} className={`relative z-10 h-full min-h-0 w-full touch-none overflow-hidden rounded-xl border border-surface-container-high/60 bg-[#fbfaf7] shadow-2xl ${feedMotion}`}>
       {cardMedia.length > 1 && <MediaPeek side="left" card={card} media={cardMedia[(mediaIndex - 1 + cardMedia.length) % cardMedia.length]} onClick={() => setMediaIndex((index) => (index - 1 + cardMedia.length) % cardMedia.length)} />}
       {cardMedia.length > 1 && <MediaPeek side="right" card={card} media={cardMedia[(mediaIndex + 1) % cardMedia.length]} onClick={() => setMediaIndex((index) => (index + 1) % cardMedia.length)} />}
       <div className={`media-primary absolute ${cardMedia.length > 1 ? 'inset-y-0 left-3 right-3' : 'inset-0'} z-10 overflow-hidden ${isDraggingMedia ? 'media-primary--dragging' : ''}`} style={{ transform: `translateX(${dragOffset}px)` }}><CardMedia card={card} media={activeMedia} className="h-full w-full object-cover object-center brightness-[1.02] contrast-[1.03]" /></div>
@@ -88,9 +103,9 @@ export default function FeedView({ categories, cards, card, currentIndex, active
         {cardMedia.map((media, index) => <button key={media.id} type="button" aria-label={`${index + 1}번째 사진 보기`} aria-current={mediaIndex === index ? 'true' : undefined} onClick={() => setMediaIndex(index)} className="flex-1 rounded-full bg-white/35 p-0 shadow-sm"><span className="block h-full rounded-full transition-all" style={{ backgroundColor: mediaIndex === index ? theme.color : 'transparent' }} /></button>)}
       </div>}
       <div className="absolute left-0 top-0 z-30 flex w-full items-start justify-between px-4 pt-7"><div className="flex items-center gap-1 rounded-full border border-white/20 bg-black/50 px-2.5 py-0.5 shadow-lg backdrop-blur"><span className="material-symbols-outlined text-[14px]" style={{ color: theme.color }}>{theme.icon}</span><span className="font-mono text-[11px] font-semibold uppercase tracking-wider text-white">{theme.feedLabel ?? card.category}</span></div><div className="flex items-center gap-1.5 rounded-full border border-white/20 bg-black/50 py-0.5 pl-1 pr-2.5 shadow-lg backdrop-blur"><span className="flex h-4.5 w-4.5 items-center justify-center rounded-full bg-primary-container"><span className="material-symbols-outlined text-[12px] text-white">person</span></span><span className="font-headline text-[11px] font-semibold tracking-wide text-white">@{card.author}</span></div></div>
-      <div className="absolute right-3 top-1/2 z-30 flex -translate-y-1/2 flex-col gap-2.5"><ArrowButton label="이전 카드" icon="expand_less" onClick={onPrevious} /><ArrowButton label="다음 카드" icon="expand_more" onClick={onNext} /></div>
+      <div className="absolute right-3 top-1/2 z-30 flex -translate-y-1/2 flex-col gap-2.5"><ArrowButton label="이전 카드" icon="expand_less" onClick={() => navigateFeed(-1)} /><ArrowButton label="다음 카드" icon="expand_more" onClick={() => navigateFeed(1)} /></div>
       <div className="card-details absolute bottom-0 left-0 z-20 flex w-full flex-col px-4 pb-2 pt-9"><div className="mb-2"><h1 className="whitespace-pre-line font-headline text-lg font-bold leading-snug text-white sm:text-xl">{card.question}</h1><p className="mt-0.5 text-xs text-slate-300">{card.subtext}</p></div>
-        {hasVoted ? <Result yesPercent={yesPercent} noPercent={noPercent} total={total} color={theme.color} onNext={onNext} /> : <div className="flex w-full gap-2.5"><button type="button" onClick={() => onVote(true)} className="flex flex-1 items-center justify-center gap-1.5 rounded-xl border py-1 text-[13px] font-extrabold tracking-wider text-[#051424] active:scale-95" style={{ borderColor: theme.color, backgroundColor: theme.color }}>YES <span className="material-symbols-outlined text-[15px]">check_circle</span></button><button type="button" onClick={() => onVote(false)} className="flex flex-1 items-center justify-center gap-1.5 rounded-xl border bg-surface-container-low/70 py-1 text-[13px] font-bold tracking-wider active:scale-95" style={{ borderColor: `${theme.color}aa`, color: theme.color }}>NO <span className="material-symbols-outlined text-[15px]">cancel</span></button></div>}
+        {hasVoted ? isAgeEvaluation ? <AgeResult card={card} color={theme.color} onNext={() => navigateFeed(1)} /> : <Result yesPercent={yesPercent} noPercent={noPercent} total={total} color={theme.color} onNext={() => navigateFeed(1)} /> : isAgeEvaluation ? <AgeVotePanel color={theme.color} onVote={onVote} /> : <div className="flex w-full gap-2.5"><button type="button" onClick={() => onVote(true)} className="flex flex-1 items-center justify-center gap-1.5 rounded-xl border py-1 text-[13px] font-extrabold tracking-wider text-[#051424] active:scale-95" style={{ borderColor: theme.color, backgroundColor: theme.color }}>YES <span className="material-symbols-outlined text-[15px]">check_circle</span></button><button type="button" onClick={() => onVote(false)} className="flex flex-1 items-center justify-center gap-1.5 rounded-xl border bg-surface-container-low/70 py-1 text-[13px] font-bold tracking-wider active:scale-95" style={{ borderColor: `${theme.color}aa`, color: theme.color }}>NO <span className="material-symbols-outlined text-[15px]">cancel</span></button></div>}
         {card.commentsAllowed && <CommentPreview comments={card.comments ?? []} onExpand={() => setExpandedComments(true)} />}
       </div>
     </article></div>
@@ -108,6 +123,12 @@ function MediaPeek({ side, card, media, onClick }) { return <button type="button
 function ArrowButton({ label, icon, onClick }) { return <button type="button" onClick={onClick} aria-label={label} className="flex h-9 w-9 items-center justify-center rounded-full border border-white/20 bg-black/50 text-white shadow-md backdrop-blur active:scale-90"><span className="material-symbols-outlined text-xl">{icon}</span></button>; }
 /** 정의: 투표 완료 뒤 YES/NO 비율과 다음 카드 행동을 보여 주는 결과 패널이다. */
 function Result({ yesPercent, noPercent, total, color, onNext }) { return <div className="mb-2.5 rounded-xl border border-surface-container-high bg-surface-container-low/95 p-2.5 backdrop-blur"><div className="mb-1 flex items-center justify-between font-mono text-xs font-bold"><span className="flex items-center gap-1" style={{ color }}><span className="material-symbols-outlined text-[14px]">thumb_up</span> YES {yesPercent}%</span><span className="text-slate-400">총 {total.toLocaleString()}명 참여</span><span className="flex items-center gap-1 text-rose-400">NO {noPercent}% <span className="material-symbols-outlined text-[14px]">thumb_down</span></span></div><div className="flex h-2 w-full overflow-hidden rounded-full bg-slate-800"><span style={{ width: `${yesPercent}%`, backgroundColor: color }} /><span className="bg-rose-500/80" style={{ width: `${noPercent}%` }} /></div><div className="mt-1.5 flex items-center justify-between"><span className="font-mono text-[10px] text-slate-400">신뢰도 지수: <strong className="text-white">96.2 / 100</strong></span><button type="button" onClick={onNext} className="flex items-center text-[11px] font-bold" style={{ color }}>다음 사진 <span className="material-symbols-outlined text-[13px]">arrow_downward</span></button></div></div>; }
+
+/** 정의: PERCEIVED_AGE에만 제공하는 빠른 숫자 나이 평가 선택지다. */
+function AgeVotePanel({ color, onVote }) { const ages = [25, 28, 31, 34, 37, 40]; return <div className="rounded-xl border border-white/25 bg-[#061225]/80 p-2.5 backdrop-blur"><p className="mb-2 text-center text-[11px] font-semibold text-white">사진만 보고 몇 살로 보이나요?</p><div className="grid grid-cols-6 gap-1.5">{ages.map((age) => <button key={age} type="button" onClick={() => onVote(age)} className="rounded-lg border py-1.5 font-mono text-xs font-bold text-white transition-transform active:scale-95" style={{ borderColor: `${color}99`, backgroundColor: `${color}2b` }}>{age}</button>)}</div><p className="mt-1.5 text-center text-[9px] text-slate-300">참여자의 주관적인 첫인상이며 실제 나이는 공개되지 않아요.</p></div>; }
+
+/** 정의: 숫자 평가 뒤 평균 예상 나이와 표본 수만 보여 주어 업로더의 실제 나이를 평가자에게 노출하지 않는 결과 패널이다. */
+function AgeResult({ card, color, onNext }) { return <div className="mb-2.5 rounded-xl border border-white/25 bg-[#061225]/90 p-2.5 backdrop-blur"><div className="flex items-end justify-between"><span><span className="block text-[10px] text-slate-300">평균 예상 나이</span><strong className="font-mono text-2xl" style={{ color }}>{card.ageEstimate.toFixed(1)}<small className="ml-0.5 text-xs">세</small></strong></span><span className="text-right text-[10px] text-slate-300">{card.ageVoteCount.toLocaleString()}명이 평가<br />실제 나이는 비공개</span></div><div className="mt-2 flex items-center justify-between border-t border-white/15 pt-1.5"><span className="text-[9px] text-slate-400">주관적인 첫인상에 기반한 결과예요.</span><button type="button" onClick={onNext} className="text-[11px] font-bold" style={{ color }}>다음 사진 <span className="material-symbols-outlined align-middle text-[13px]">arrow_downward</span></button></div></div>; }
 
 /** 정의: 카드 위에 첫 댓글만 간결하게 보여 주고 전체 댓글 열기를 제공하는 요약 영역이다. */
 function CommentPreview({ comments, onExpand }) {

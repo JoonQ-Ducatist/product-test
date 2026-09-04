@@ -23,7 +23,7 @@
 
 | 등급 | 범위 | 이유 |
 | --- | --- | --- |
-| P0 | Signup/Auth, Feed, YES/NO, Upload, Category, Result, Result Share, Guest Vote, Analytics, Boost, Payment | 유입·참여·데이터·결제·추천의 닫힌 루프 |
+| P0 | Signup/Auth, Feed, BINARY YES/NO·NUMERIC_AGE, Upload, Category, Result, Result Share, Guest Vote, Analytics, Boost, Payment | 유입·참여·데이터·결제·추천의 닫힌 루프 |
 | P1 | Profile, Comments, Ranking Top 5, Notification | Cash Loop 검증 뒤 전환·재방문 보강 |
 | P2 | Follow, Relationship, 24시간 Chat, Advanced AI Analysis, Visual Commerce/Affiliate, 광고 | 트래픽·신뢰 데이터 축적 후 확장 |
 
@@ -31,7 +31,7 @@
 
 | 기간 | 목표 | 완료해야 할 Vertical Slice | Gate |
 | --- | --- | --- | --- |
-| Day 1–14 | Core MVP | Signup/Auth, Feed, YES/NO, Upload, Category, 기본 Result | 가입 → Vote → Upload → Result를 30초 내 경험 |
+| Day 1–14 | Core MVP | Signup/Auth, Feed, BINARY YES/NO·NUMERIC_AGE, Upload, Category, 기본 Result | 가입 → Vote → Upload → Result를 30초 내 경험 |
 | Day 15–30 | Closed Beta | 실제 DB·Storage·투표 집계, 초기 Analytics, Seed Group 운영 | 실제 사용자 100명+, Vote → Upload → Result 발생 |
 | Day 31–45 | Growth Loop | Result Card, Share URL, Guest Vote, Signup 전환 | Share → Guest Vote → Signup 실제 유입 |
 | Day 46–60 | First Revenue | Boost Paywall·결제·표본 증가 처리 | 관계없는 사용자의 첫 Boost 결제 |
@@ -42,7 +42,8 @@
 
 ### Day 1–14 — Product Core와 Core UX
 
-- 카테고리 5~7개를 Traffic Potential, Repeat Usage, Result Curiosity, Virality, Boost Purchase Intent, Report Expandability, Global Scalability, Safety/Risk로 평가해 확정한다.
+- 카테고리 5~7개를 Traffic Potential, Repeat Usage, Result Curiosity, Virality, Boost Purchase Intent, Report Expandability, Global Scalability, Safety/Risk로 평가해 확정한다. 현재 후보는 Outfit, **Perceived Age**, Date, Travel, Fitness, Work, Profile 7개다.
+- Perceived Age는 `Upload → 숫자 나이 평가 → 평균 예상 나이 Result → 더 큰 표본 Boost → Report/A·B 비교 → Share`의 별도 Cash Loop 가설로 측정한다. 실제 나이 비교는 업로더 선택 기능이며 평가자에게 비공개다.
 - 기본 Feed·Vote·Upload·기본 Result의 무료 경계를 확정한다.
 - 유효 표본·긍정률·표본 부족 안내로 Result 계약을 정의한다.
 - `Splash → Feed → Vote → Upload → Result` 한 개의 흐름을 최우선으로 완성한다.

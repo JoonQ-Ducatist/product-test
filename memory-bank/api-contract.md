@@ -49,6 +49,8 @@
 
 - 생성 결과는 `draft` 또는 `under_review` 상태이며, 게시 승인 API와 분리한다.
 - `media`는 서명 URL 업로드와 검사 완료 뒤에 발급된 `assetId`만 참조한다.
+- `category`와 `evaluationType`을 분리한다. 기본 6개 카테고리는 `BINARY`, `PERCEIVED_AGE`는 `NUMERIC_AGE`를 사용한다.
+- `PERCEIVED_AGE`의 실제 나이(`actualAge`)는 선택 입력이며 평가자·공개 피드·프로필에는 절대 포함하지 않는다. 결과 비교를 선택한 업로더에게만 권한 있는 결과 API로 제공한다.
 
 ### Vote
 
@@ -58,9 +60,16 @@
 { "value": "yes" }
 ```
 
+`PERCEIVED_AGE`의 숫자 평가 요청은 다음 계약을 사용한다.
+
+```json
+{ "type": "age", "value": 28 }
+```
+
 - `(postId, voterId)`는 한 번만 허용한다.
 - 기본 정책은 수정·취소 불가다.
 - 성공 결과에는 갱신된 `aggregate`를 포함한다.
+- `NUMERIC_AGE` 값은 18~99의 정수로 검증하며, 결과는 참여자의 주관적 첫인상이라는 설명을 함께 제공한다.
 
 ### Aggregate
 
@@ -77,6 +86,7 @@
 ```
 
 - 표본 기준은 아직 운영 수치가 확정되지 않았으므로 `sampleStatus`로만 표현하고 확정적 품질 판단을 하지 않는다.
+- `NUMERIC_AGE` Aggregate는 `averageAge`, `totalVotes`, `sampleStatus`를 반환하며 YES/NO 집계 필드를 사용하지 않는다.
 
 ### Report
 

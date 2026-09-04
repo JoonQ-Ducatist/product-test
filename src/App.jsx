@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { categories, initialCards } from './data/cards.js';
 import FeedView from './features/feed/FeedView.jsx';
 import UploadView from './features/upload/UploadView.jsx';
@@ -31,6 +31,7 @@ export default function App() {
   const [votedIds, setVotedIds] = useState(() => new Set());
   const [toast, setToast] = useState('');
   const [previewState, setPreviewState] = useState(() => new URLSearchParams(window.location.search).get('state') ?? 'ready');
+  const tabGestureStart = useRef(null);
 
   const visibleCards = useMemo(() => activeCategory === 'ALL' ? cards : cards.filter((card) => card.category === activeCategory), [activeCategory, cards]);
   const safeIndex = visibleCards.length ? currentIndex % visibleCards.length : 0;
@@ -61,13 +62,14 @@ export default function App() {
     setToast('새로운 사진을 보여드릴게요');
   }
 
-  /** 정의: 목업 API 계약을 통해 YES/NO 투표를 기록하고 카드 집계를 동기화한다. @param {boolean} isYes YES 선택 여부 */
-  async function vote(isYes) {
-    const result = await submitVote(currentCard, isYes ? 'yes' : 'no', votedIds);
+  /** 정의: 카테고리 평가 유형에 맞춰 BINARY 또는 NUMERIC_AGE 투표를 기록하고 카드 집계를 동기화한다. @param {boolean|number} value YES/NO 또는 예상 나이 */
+  async function vote(value) {
+    const payload = currentCard.evaluationType === 'NUMERIC_AGE' ? { type: 'age', value } : value ? 'yes' : 'no';
+    const result = await submitVote(currentCard, payload, votedIds);
     if (result.error) { setToast(result.error.message); return; }
     setCards((items) => items.map((card) => card.id === currentCard.id ? result.data.post : card));
     setVotedIds((ids) => new Set([...ids, currentCard.id]));
-    setToast(isYes ? 'YES 의견을 남겼습니다.' : 'NO 의견을 남겼습니다.');
+    setToast(currentCard.evaluationType === 'NUMERIC_AGE' ? `${value}세로 첫인상을 남겼습니다.` : value ? 'YES 의견을 남겼습니다.' : 'NO 의견을 남겼습니다.');
   }
 
   /** 정의: 유효한 댓글을 현재 목업 카드에 추가한다. @param {string} cardId 게시물 ID @param {string} body 댓글 내용 */
@@ -100,6 +102,25 @@ export default function App() {
   /** 정의: 목업 프로필에서 카드 노출을 제거하고 완료 안내를 표시한다. @param {string} id 카드 ID */
   function deleteCard(id) { setCards((items) => items.filter((item) => item.id !== id)); setToast('게시물을 삭제했습니다.'); }
 
+  /** 정의: 본문에서의 가로 터치를 기록하되 카드 앨범·입력·버튼과 같은 자체 제스처 영역은 탭 이동 대상에서 제외한다. @param {PointerEvent} event 포인터 시작 이벤트 */
+  function startTabGesture(event) {
+    if (event.pointerType !== 'touch' || event.target.closest('button, input, textarea, select, a, [role="dialog"], .media-carousel')) return;
+    tabGestureStart.current = { x: event.clientX, y: event.clientY };
+  }
+
+  /** 정의: 가로 터치가 세로 스크롤보다 충분히 클 때 Feed·Upload·Ranking·Profile을 인접 순서로 이동한다. @param {PointerEvent} event 포인터 종료 이벤트 */
+  function finishTabGesture(event) {
+    const start = tabGestureStart.current;
+    tabGestureStart.current = null;
+    if (!start || event.pointerType !== 'touch') return;
+    const deltaX = event.clientX - start.x;
+    const deltaY = event.clientY - start.y;
+    if (Math.abs(deltaX) < 72 || Math.abs(deltaX) <= Math.abs(deltaY) * 1.2) return;
+    const currentTabIndex = tabs.findIndex(([id]) => id === activeTab);
+    const nextIndex = Math.min(Math.max(currentTabIndex + (deltaX < 0 ? 1 : -1), 0), tabs.length - 1);
+    if (nextIndex !== currentTabIndex) setActiveTab(tabs[nextIndex][0]);
+  }
+
   if (isGuest) return <CanvasStage><SplashView cards={cards} onEnter={(provider) => { setIsGuest(false); setToast(`${provider} 로그인은 현재 목업입니다.`); }} /></CanvasStage>;
 
   return <CanvasStage><div className="editorial-app h-full bg-background text-on-background font-body">
@@ -117,7 +138,7 @@ export default function App() {
       </div>
     </header>
 
-    <main id="main-content" tabIndex="-1" className={`editorial-main mx-auto flex h-full w-full max-w-none flex-col px-4 pb-11 pt-[56px] sm:px-5 ${activeTab === 'feed' ? 'editorial-main--feed' : 'editorial-main--scroll'}`}>
+    <main id="main-content" tabIndex="-1" onPointerDown={startTabGesture} onPointerUp={finishTabGesture} onPointerCancel={() => { tabGestureStart.current = null; }} className={`editorial-main mx-auto flex h-full w-full max-w-none flex-col px-4 pb-11 pt-[56px] sm:px-5 ${activeTab === 'feed' ? 'editorial-main--feed' : 'editorial-main--scroll'}`}>
       {previewState !== 'ready' ? <StatePanel state={previewState} pageName={tabs.find(([id]) => id === activeTab)?.[2] ?? 'xCubus'} onAction={() => { if (previewState === 'permission') setIsGuest(true); else if (previewState === 'review') setActiveTab('profile'); setPreviewState('ready'); }} /> : <>
         {activeTab === 'feed' && <FeedView categories={categories} cards={visibleCards} card={currentCard} currentIndex={safeIndex} activeCategory={activeCategory} hasVoted={currentCard && votedIds.has(currentCard.id)} onCategoryChange={changeCategory} onPrevious={() => moveCard(-1)} onNext={() => moveCard(1)} onShuffle={shuffle} onVote={vote} onAddComment={addComment} />}
         {activeTab === 'upload' && <UploadView categories={categories} onSubmit={addCard} onMessage={setToast} />}

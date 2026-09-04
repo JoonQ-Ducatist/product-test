@@ -4,6 +4,7 @@
  */
 
 /** @typedef {'yes'|'no'} VoteValue */
+/** @typedef {{ type: 'age', value: number }} AgeVoteValue */
 
 /** 정의: UI가 기능별로 임의 해석하지 않도록 고정한 목업 API 오류 코드 집합이다. */
 export const API_ERROR = {
@@ -28,6 +29,15 @@ export function apiFailure(code, message, fieldErrors = {}) {
 
 /** 정의: 카드의 YES/NO 수를 API Aggregate 계약 형태로 변환한다. @param {{ yesVotes: number, noVotes: number }} post 대상 카드 */
 export function toAggregate(post) {
+  if (post.evaluationType === 'NUMERIC_AGE') {
+    const totalVotes = post.ageVoteCount ?? 0;
+    return {
+      evaluationType: 'NUMERIC_AGE',
+      averageAge: post.ageEstimate ?? null,
+      totalVotes,
+      sampleStatus: totalVotes >= 20 ? 'sufficient' : 'insufficient',
+    };
+  }
   const yesCount = post.yesVotes ?? 0;
   const noCount = post.noVotes ?? 0;
   const totalVotes = yesCount + noCount;
@@ -53,11 +63,19 @@ export async function getAggregate(post) {
   return apiSuccess(toAggregate(post));
 }
 
-/** 정의: 단일 사용자·단일 게시물 투표 제약을 적용하는 Vote 쓰기를 목업한다. @param {{ id: string, yesVotes: number, noVotes: number } | undefined} post 대상 카드 @param {VoteValue} value 선택값 @param {Set<string>} votedIds 이미 투표한 카드 ID */
+/** 정의: 단일 사용자·단일 게시물 투표 제약을 적용하며 BINARY와 NUMERIC_AGE 평가를 분리하는 Vote 쓰기 목업이다. @param {object | undefined} post 대상 카드 @param {VoteValue|AgeVoteValue} value 선택값 @param {Set<string>} votedIds 이미 투표한 카드 ID */
 export async function submitVote(post, value, votedIds) {
   if (!post) return apiFailure(API_ERROR.NOT_FOUND, '게시물을 찾을 수 없어요.');
-  if (value !== 'yes' && value !== 'no') return apiFailure(API_ERROR.VALIDATION_FAILED, 'YES 또는 NO를 선택해 주세요.', { value: 'invalid_vote' });
   if (votedIds.has(post.id)) return apiFailure(API_ERROR.ALREADY_VOTED, '이미 의견을 남긴 게시물이에요.');
+  if (post.evaluationType === 'NUMERIC_AGE') {
+    if (value?.type !== 'age' || !Number.isInteger(value.value) || value.value < 18 || value.value > 99) return apiFailure(API_ERROR.VALIDATION_FAILED, '18세부터 99세 사이의 예상 나이를 선택해 주세요.', { value: 'invalid_age_vote' });
+    const previousCount = post.ageVoteCount ?? 0;
+    const previousAverage = post.ageEstimate ?? value.value;
+    const nextCount = previousCount + 1;
+    const nextPost = { ...post, ageVoteCount: nextCount, ageEstimate: Number(((previousAverage * previousCount + value.value) / nextCount).toFixed(1)) };
+    return apiSuccess({ vote: { postId: post.id, value }, aggregate: toAggregate(nextPost), post: nextPost });
+  }
+  if (value !== 'yes' && value !== 'no') return apiFailure(API_ERROR.VALIDATION_FAILED, 'YES 또는 NO를 선택해 주세요.', { value: 'invalid_vote' });
   const nextPost = { ...post, yesVotes: post.yesVotes + (value === 'yes' ? 1 : 0), noVotes: post.noVotes + (value === 'no' ? 1 : 0) };
   return apiSuccess({ vote: { postId: post.id, value }, aggregate: toAggregate(nextPost), post: nextPost });
 }

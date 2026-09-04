@@ -1,6 +1,7 @@
 /** 정의: 화면 목업에서 사용하는 카테고리 토큰과 카드 샘플 데이터의 단일 출처다. */
 const selfieAssets = import.meta.glob('../../assets/generated/selfies/*.jpg', { eager: true, import: 'default' });
 const seriesAssets = import.meta.glob('../../assets/generated/feed-series/*.jpg', { eager: true, import: 'default' });
+const perceivedAgeAssets = import.meta.glob('../../assets/generated/perceived-age/*.jpg', { eager: true, import: 'default' });
 
 /** 정의: 세트·합성 이미지를 배제하고 카드마다 한 명의 단독 인물만 쓰는 대표 사진 인덱스다. */
 const categorySelfieIndex = { Outfit: 1, Date: 3, Travel: 4, Fitness: 1, Work: 5, SocialProfile: 6 };
@@ -15,9 +16,13 @@ function getSelfieImage(index, fitness = false) {
 /** 정의: 동일 인물의 복장·포즈·장소가 달라진 단독 세로 셀피 시리즈 URL을 반환한다. @param {string} name 시리즈 파일명 */
 function getSeriesImage(name) { return seriesAssets[`../../assets/generated/feed-series/${name}.jpg`]; }
 
+/** 정의: PERCEIVED_AGE 카드에만 쓰는 단독 인물·서울 생활권 셀피 자산 URL을 반환한다. @param {string} name 파일명 */
+function getPerceivedAgeImage(name) { return perceivedAgeAssets[`../../assets/generated/perceived-age/${name}.jpg`]; }
+
 /** 정의: 사용자·관리 화면이 공유하는 카테고리의 표시명, 아이콘, 색상과 피드 표기 토큰이다. */
 export const categories = {
   Outfit: { label: '오늘의 룩', icon: 'checkroom', color: '#FE2C55', liveTag: 'OOTD', feedLabel: 'OOTD' },
+  PerceivedAge: { label: '몇 살로 보여?', globalLabel: 'How Old Do I Look?', internalId: 'PERCEIVED_AGE', evaluationType: 'NUMERIC_AGE', icon: 'face_3', color: '#FF0050', liveTag: 'Age Check', feedLabel: 'AGE CHECK' },
   Date: { label: '데이트', icon: 'favorite', color: '#EA4C89', liveTag: 'Date Look' },
   Travel: { label: '여행', icon: 'travel_explore', color: '#1AB7EA', liveTag: 'Travel Look' },
   Fitness: { label: '운동', icon: 'fitness_center', color: '#25D366', liveTag: 'Fitness Look' },
@@ -45,9 +50,19 @@ const mediaByCategory = {
   SocialProfile: [getSelfieImage(6)],
 };
 
+/** 정의: 연령 첫인상 카드는 사람별로만 묶어 1장·2장·3장의 독립 사진을 제공한다. */
+const perceivedAgeAlbums = {
+  pool: [getPerceivedAgeImage('age-pool-01')],
+  bike: [getPerceivedAgeImage('age-bike-01'), getPerceivedAgeImage('age-bike-02')],
+  office: [getPerceivedAgeImage('age-office-01'), getPerceivedAgeImage('age-office-02'), getPerceivedAgeImage('age-office-03')],
+};
+
 /** 정의: 카테고리별로 생성한 서울 생활권 사진과 대표 질문을 정의한 목업 시드다. */
 const mockCardSeeds = [
   { category: 'Outfit', author: 'today_sora', question: '오늘 이 스타일,\n괜찮아 보여요?', subtext: 'Does this outfit feel right for today?', imageUrl: getSelfieImage(categorySelfieIndex.Outfit), yesVotes: 1280, noVotes: 210, comments: [{ id: 'c1', author: 'style_lab', body: '서울 거리의 자연광과 룩이 잘 어울려요.', createdAt: '8분 전', replies: [{ id: 'r1', author: 'today_sora', body: '의견 감사합니다!', createdAt: '6분 전' }] }] },
+  { category: 'PerceivedAge', evaluationType: 'NUMERIC_AGE', author: 'pool_jiyeon', question: '사람들은 저를\n몇 살로 볼까요?', subtext: 'How old do I look at first glance?', imageUrls: perceivedAgeAlbums.pool, ageEstimate: 32.4, ageVoteCount: 28, comments: [{ id: 'age-c1', author: 'summer_note', body: '수영장에서도 생기 있는 첫인상이에요.', createdAt: '9분 전', replies: [] }] },
+  { category: 'PerceivedAge', evaluationType: 'NUMERIC_AGE', author: 'cycle_mina', question: '자전거 라이딩 후의 저는\n몇 살로 보여요?', subtext: 'What age does this active look suggest?', imageUrls: perceivedAgeAlbums.bike, ageEstimate: 34.1, ageVoteCount: 41, comments: [{ id: 'age-c2', author: 'ride_seoul', body: '건강하고 밝은 에너지가 느껴져요.', createdAt: '14분 전', replies: [] }] },
+  { category: 'PerceivedAge', evaluationType: 'NUMERIC_AGE', author: 'career_yuna', question: '일하다 잠깐 찍은 이 사진,\n몇 살로 보여요?', subtext: 'How old do I look in this workday moment?', imageUrls: perceivedAgeAlbums.office, ageEstimate: 33.2, ageVoteCount: 53, comments: [{ id: 'age-c3', author: 'office_days', body: '차분하고 자신감 있는 분위기예요.', createdAt: '18분 전', replies: [] }] },
   { category: 'Date', author: 'date_mood', question: '첫 만남이라면\n호감이 가나요?', subtext: 'Would this look make a lovely first impression?', imageUrl: getSelfieImage(categorySelfieIndex.Date), yesVotes: 942, noVotes: 88, comments: [{ id: 'c2', author: 'xcubus_kr', body: '밝고 다정한 인상이 느껴져요.', createdAt: '12분 전', replies: [] }] },
   { category: 'Travel', author: 'travel_day', question: '이 여행 스타일,\n매력적으로 보이나요?', subtext: 'Does this travel style feel memorable and charming?', imageUrl: getSelfieImage(categorySelfieIndex.Travel), yesVotes: 782, noVotes: 86, comments: [{ id: 'c3', author: 'seoul_walker', body: '여행의 설렘이 자연스럽게 담겼네요.', createdAt: '20분 전', replies: [] }] },
   { category: 'Fitness', author: 'fit_queen', question: '건강하고 매력적인 인상을\n주나요?', subtext: 'Does this look feel healthy and confident?', imageUrl: getSelfieImage(categorySelfieIndex.Fitness, true), yesVotes: 1105, noVotes: 95, comments: [{ id: 'c4', author: 'run_more', body: '활동적인 에너지가 잘 보여요.', createdAt: '1시간 전', replies: [] }] },
@@ -57,6 +72,6 @@ const mockCardSeeds = [
 
 /** 정의: 카테고리별 1~5장의 현실적인 단독 인물 미디어 수를 가진 초기 목업 피드다. */
 export const initialCards = mockCardSeeds.map((seed, seedIndex) => {
-  const mediaUrls = mediaByCategory[seed.category];
+  const mediaUrls = seed.imageUrls ?? mediaByCategory[seed.category];
   return { ...seed, id: `card-${seedIndex + 1}`, imageUrl: mediaUrls[0], media: createAlbum(`card-${seedIndex + 1}`, mediaUrls), objectPosition: 'center center', timestamp: `${seedIndex * 20 + 10}분 전`, isMyUpload: seedIndex === 0, commentsAllowed: true };
 });
