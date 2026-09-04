@@ -12,7 +12,7 @@ const splashCopies = [
 ];
 
 /** 정의: 비로그인 방문자에게 인기 콘텐츠와 인증 진입점을 보여 주는 전체 화면 스플래시다. */
-export default function SplashView({ cards, onEnter }) {
+export default function SplashView({ cards, locale = 'ko', onEnter }) {
   const popularCards = useMemo(
     () => [...cards].sort((a, b) => participationCount(b) - participationCount(a)).slice(0, 5),
     [cards],
@@ -51,22 +51,21 @@ export default function SplashView({ cards, onEnter }) {
 
         <section className="mb-4 text-center drop-shadow-md" aria-live="polite">
           <p className="font-mono text-[10px] font-bold tracking-[0.2em] text-[#ecd8a8]">TODAY&apos;S LOOK CHECK</p>
-          <h1 className="mt-2 font-headline text-[28px] font-extrabold leading-tight tracking-tight text-white">{copy.title}</h1>
-          <p className="mt-2 text-xs text-white/75">{copy.english}</p>
+          <h1 className="mt-2 font-headline text-[28px] font-extrabold leading-tight tracking-tight text-white">{locale === 'en' ? copy.english : copy.title}</h1>
+          {locale !== 'en' && <p className="mt-2 text-xs text-white/75">{copy.english}</p>}
         </section>
 
         <section className="mx-auto w-[86%] max-w-[330px] rounded-2xl border border-white/10 bg-white/[0.025] p-3 shadow-[0_14px_38px_rgba(0,0,0,0.08)] backdrop-blur-[1px]">
           <p className="mb-3 text-center text-[11px] leading-relaxed text-white/75">
-            가입하고 오늘의 내 모습을 확인해 보세요.
-            <span className="block text-white/55">Join to see yourself through more views.</span>
+            {locale === 'en' ? 'Join to see yourself through more views.' : <>가입하고 오늘의 내 모습을 확인해 보세요.<span className="block text-white/55">Join to see yourself through more views.</span></>}
           </p>
           <div className="flex flex-col gap-2">
-            <ProviderButton label="Google로 계속하기" icon="G" onClick={() => onEnter('Google')} />
-            <ProviderButton label="Apple로 계속하기" icon="apple" onClick={() => onEnter('Apple')} />
-            <ProviderButton label="카카오로 계속하기" icon="chat_bubble" onClick={() => onEnter('Kakao')} />
-            <ProviderButton label="이메일로 계속하기" icon="mail" onClick={() => onEnter('이메일')} />
+            <ProviderButton label={locale === 'en' ? 'Continue with Google' : 'Google로 계속하기'} icon="G" onClick={() => onEnter('Google')} />
+            <ProviderButton label={locale === 'en' ? 'Continue with Apple' : 'Apple로 계속하기'} icon="apple" onClick={() => onEnter('Apple')} />
+            <ProviderButton label={locale === 'en' ? 'Continue with Kakao' : '카카오로 계속하기'} icon="chat_bubble" onClick={() => onEnter('Kakao')} />
+            <ProviderButton label={locale === 'en' ? 'Continue with email' : '이메일로 계속하기'} icon="mail" onClick={() => onEnter(locale === 'en' ? 'Email' : '이메일')} />
           </div>
-          <p className="mt-3 text-center text-[9px] leading-relaxed text-white/45">계속하면 이용약관 및 개인정보 처리방침에 동의하게 됩니다.</p>
+          <p className="mt-3 text-center text-[9px] leading-relaxed text-white/45">{locale === 'en' ? 'By continuing, you agree to our Terms and Privacy Policy.' : '계속하면 이용약관 및 개인정보 처리방침에 동의하게 됩니다.'}</p>
         </section>
       </div>
     </main>

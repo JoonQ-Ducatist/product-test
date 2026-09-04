@@ -15,11 +15,26 @@ const questionSuggestions = {
   Work: ['직장에서 좋은 첫인상을 줄 것 같나요?', '오늘의 출근 룩, 깔끔하고 센스 있어 보이나요?', '이 룩에서 신뢰감이 느껴지나요?', '전문적이면서도 친근한 인상인가요?'],
   SocialProfile: ['이 사진, SNS 프로필로 매력적으로 보이나요?', '이 사진에서 제 분위기가 잘 드러나나요?', '처음 보는 사람에게 좋은 인상을 줄 것 같나요?', '프로필 첫 화면에서 시선이 머무를 사진인가요?'],
 };
+const englishQuestionSuggestions = {
+  Outfit: ['Does this look work for today?', 'Does this new outfit suit me?', 'Does this look express my vibe?', 'What is the most appealing part of today’s look?'],
+  PerceivedAge: ['How old do I look to people?', 'Do I look younger than my age here?', 'What age impression do my hair and makeup create?', 'What age would people guess from this photo?'],
+  Date: ['Would this make a lovely first impression?', 'Do I look comfortable and appealing for a date?', 'Does this style suit me?', 'Would this be a memorable look?'],
+  Travel: ['Does this travel look feel appealing?', 'Does this look suit the destination?', 'Is this a travel look worth remembering?', 'Does the photo convey a relaxed, exciting mood?'],
+  Fitness: ['Does this look feel healthy and confident?', 'Does this workout look feel comfortable and stylish?', 'Does today’s workout look feel confident?', 'Can you feel the active energy in this photo?'],
+  Work: ['Would this make a great first impression at work?', 'Does today’s work look feel polished?', 'Does this look feel trustworthy?', 'Does it feel professional and approachable?'],
+  SocialProfile: ['Does this work as an appealing profile photo?', 'Does this photo express my vibe?', 'Would this make a good first impression?', 'Would this photo stand out on a profile?'],
+};
 
 /** 정의: 카테고리와 선택한 미디어 유형·수에 따라 첫 추천 질문을 조정한다. @param {string} category 카테고리 ID @param {Array<object>} media 선택 미디어 */
-function getQuestionSuggestions(category, media) {
-  const base = questionSuggestions[category] ?? questionSuggestions.Outfit;
+function getQuestionSuggestions(category, media, locale) {
+  const source = locale === 'en' ? englishQuestionSuggestions : questionSuggestions;
+  const base = source[category] ?? source.Outfit;
   if (!media.length) return base;
+  if (locale === 'en') {
+    const mediaHint = media.some((item) => item.type === 'video') ? 'Does my vibe in this short video' : media.length > 1 ? 'Does my vibe across these photos' : 'Does my vibe in this photo';
+    const endings = { Outfit: 'feel fresh and well styled?', PerceivedAge: 'suggest a younger first impression?', Date: 'make a good first impression?', Travel: 'capture the excitement of travel?', Fitness: 'feel healthy and confident?', Work: 'feel professional and trustworthy?', SocialProfile: 'work for a profile?' };
+    return [`${mediaHint} ${endings[category] ?? endings.Outfit}`, ...base.slice(1)];
+  }
   const mediaHint = media.some((item) => item.type === 'video') ? '짧은 영상에서 보이는 제 분위기는' : media.length > 1 ? '여러 장의 사진에서 보이는 제 분위기는' : '이 사진에서 보이는 제 분위기는';
   const visualLead = {
     Outfit: `${mediaHint} 산뜻하고 잘 어울려 보이나요?`,
@@ -34,7 +49,7 @@ function getQuestionSuggestions(category, media) {
 }
 
 /** 정의: 복수 미디어 선택·정렬·질문 입력·사전 검증을 제공하는 개발용 업로드 화면이다. 실제 저장·검토는 백엔드 단계에서 처리한다. */
-export default function UploadView({ categories, onSubmit, onMessage }) {
+export default function UploadView({ categories, locale = 'ko', onSubmit, onMessage }) {
   const inputRef = useRef(null);
   const cameraInputRef = useRef(null);
   const questionRef = useRef(null);
@@ -53,7 +68,7 @@ export default function UploadView({ categories, onSubmit, onMessage }) {
   const imageCount = media.filter((item) => item.type === 'image').length;
   const videoCount = media.filter((item) => item.type === 'video').length;
   const selectedTheme = categories[category];
-  const suggestions = getQuestionSuggestions(category, media);
+  const suggestions = getQuestionSuggestions(category, media, locale);
   const canAddImage = imageCount < MAX_IMAGES;
   const canAddVideo = videoCount < MAX_VIDEOS;
   const canAddMedia = canAddImage || canAddVideo;

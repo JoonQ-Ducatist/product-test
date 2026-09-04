@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { getSampleStatus, SAMPLE_STATUS } from '../../services/mockApi.js';
 
 /** 정의: 카테고리 필터, 카드 제스처, 투표와 댓글 요약을 제공하는 콘텐츠 중심 피드 화면이다. */
-export default function FeedView({ categories, cards, card, currentIndex, activeCategory, hasVoted, onCategoryChange, onPrevious, onNext, onShuffle, onVote, onBoost, onStartUpload, onAddComment }) {
+export default function FeedView({ categories, cards, card, currentIndex, activeCategory, hasVoted, onCategoryChange, onPrevious, onNext, onShuffle, onVote, onShare, onBoost, onStartUpload, onAddComment }) {
   const [expandedComments, setExpandedComments] = useState(false);
   const [draft, setDraft] = useState('');
   const gestureStart = useRef(null);
@@ -111,7 +111,7 @@ export default function FeedView({ categories, cards, card, currentIndex, active
       {hasMultipleMedia && <div className="absolute left-4 right-4 top-3 z-30 flex h-1.5 gap-1" aria-label={`등록된 사진 ${cardMedia.length}장`}>
         {cardMedia.map((media, index) => <button key={media.id} type="button" aria-label={`${index + 1}번째 사진 보기`} aria-current={mediaIndex === index ? 'true' : undefined} onClick={() => setMediaIndex(index)} className="flex-1 rounded-full bg-white/35 p-0 shadow-sm"><span className="block h-full rounded-full transition-all" style={{ backgroundColor: mediaIndex === index ? theme.color : 'transparent' }} /></button>)}
       </div>}
-      <div className={`absolute left-0 top-0 z-30 flex w-full items-start justify-between px-4 ${hasMultipleMedia ? 'pt-6' : 'pt-3'}`}><div className="flex items-center gap-1 rounded-full border border-white/20 bg-black/35 px-2 py-0.5 shadow-lg backdrop-blur-sm"><span className="h-1.5 w-1.5 animate-pulse rounded-full" style={{ backgroundColor: theme.color, boxShadow: `0 0 8px ${theme.color}` }} /><span className="font-mono text-[8px] font-bold leading-none tracking-wide text-white">LIVE STREAM</span><span className="font-mono text-[8px] leading-none text-white/75">{card.timestamp}</span></div><UserBadge author={card.author} /></div>
+      <div className={`absolute left-0 top-0 z-30 flex w-full items-start justify-between px-4 ${hasMultipleMedia ? 'pt-6' : 'pt-3'}`}><div className="flex items-center gap-1 rounded-full border border-white/20 bg-black/35 px-2 py-0.5 shadow-lg backdrop-blur-sm"><span className="h-1.5 w-1.5 animate-pulse rounded-full" style={{ backgroundColor: theme.color, boxShadow: `0 0 8px ${theme.color}` }} /><span className="font-mono text-[8px] font-bold leading-none tracking-wide text-white">LIVE STREAM</span><span className="font-mono text-[8px] leading-none text-white/75">{card.timestamp}</span></div><div className="flex flex-col items-end gap-1"><UserBadge author={card.author} /><button type="button" onClick={() => onShare(card)} aria-label="이 피드 공유하기" title="공유하기" className="flex h-7 w-7 items-center justify-center rounded-full border border-white/25 bg-black/35 text-white/95 shadow-sm backdrop-blur-sm active:scale-90"><span className="material-symbols-outlined text-[16px]">ios_share</span></button></div></div>
       <div className={`absolute left-0 top-0 z-30 flex w-full items-start px-4 ${hasMultipleMedia ? 'pt-10' : 'pt-7'}`}><CategoryBadge theme={theme} category={card.category} /></div>
       <div className="absolute right-3 top-1/2 z-30 flex -translate-y-1/2 flex-col gap-2.5"><ArrowButton label="이전 카드" icon="expand_less" onClick={() => navigateFeed(-1)} /><ArrowButton label="다음 카드" icon="expand_more" onClick={() => navigateFeed(1)} /></div>
       <div className="card-details absolute bottom-0 left-0 z-20 flex w-full flex-col px-4 pb-2 pt-9"><div className="mb-2"><h1 className="whitespace-pre-line font-headline text-lg font-bold leading-snug text-white sm:text-xl">{card.question}</h1><p className="mt-0.5 text-xs text-slate-300">{card.subtext}</p></div>
@@ -173,7 +173,7 @@ function AgeResult({ card, color, onNext, onBoost, onStartUpload }) {
 function CommentPreview({ comments, onExpand }) {
   const comment = comments[0];
   return <div className="relative mt-2 overflow-hidden bg-gradient-to-b from-transparent via-[#061225]/10 to-transparent px-1 py-1.5" aria-label="댓글 미리보기">
-    <button type="button" onClick={onExpand} aria-label="댓글 더 보기" className="absolute right-0 top-1/2 z-10 flex -translate-y-1/2 items-center gap-0.5 px-1 text-[12px] font-bold text-cyan-glow"><span>더 보기</span><span className="material-symbols-outlined text-[16px]">more_horiz</span></button>
+    <div className="absolute right-0 top-1/2 z-10 flex -translate-y-1/2 items-center gap-1"><button type="button" onClick={onExpand} aria-label="댓글 더 보기" className="flex items-center gap-0.5 px-1 text-[12px] font-bold text-cyan-glow"><span>더 보기</span><span className="material-symbols-outlined text-[16px]">more_horiz</span></button></div>
     {comment ? <p className="truncate pr-16 text-[13px] leading-5 text-white/90"><strong className="mr-1 text-cyan-50">@{comment.author}</strong>{comment.body}</p> : <p className="pr-16 text-[12px] text-slate-300/80">첫 번째 댓글을 남겨 보세요.</p>}
   </div>;
 }

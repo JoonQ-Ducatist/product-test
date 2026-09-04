@@ -45,6 +45,9 @@
 | CL-03 | Signup/Auth → Feed → Vote → Upload → Result 흐름 | Engagement | 가입 뒤 30초 이내 핵심 가치 경험, 프로필 강제 입력 없음 | 목업 동선 구현 완료 — Splash 가입 → Feed → Vote Result → 나도 평가받기 → Upload. 실제 Auth·서버 Result는 CL-04/CL-06에서 연결, 사용자 승인 대기 |
 | CL-04 | 실제 유효 투표·기본 Result | Data | 1인 1표·서버 집계·BINARY YES/NO 또는 NUMERIC_AGE·표본 수 결과 제공 | 대기 |
 | CL-05 | 초기 Analytics | Acquisition·Engagement·Data | Visitor→Signup→First Vote→Upload→Result 이벤트와 Weekly Valid Votes 수집 | 대기 |
+| GEO-01 | 동의 기반 촬영 장소 컨텍스트 | Trust·Engagement | EXIF/기기/입력 출처·확실성·공개 동의·민감 장소 차단·상세 패널 노출을 구현 | 대기 — 위치·개인정보 영향평가와 관리자 검토 설계 선행 |
+| I18N-01 | 글로벌 언어·지역 선택 | Acquisition·Trust | `ko/en/zh` 번역 키, 서버 국가 신호+브라우저 언어 제안, 수동 언어 선택, 한국 테스트 한국어 기본을 구현 | 대기 |
+| HAP-01 | 모바일 평가 햅틱 | Engagement | YES 단일·NO 이중 햅틱을 지원 기기에서 제공하고 비지원 환경 안전 폴백 검증 | 대기 |
 
 ### Day 15–30 — Closed Beta 기반
 
@@ -68,6 +71,7 @@
 | --- | --- | --- | --- | --- |
 | CL-12 | Boost 제안·표본 증가 처리 | Monetization·Data | ₩1,900 가설, 노출·속도·표본만 증가, 결과·랭킹 불변 | 대기 |
 | CL-13 | Payment·결제 상태·환불 정책 | Monetization | 실제 결제, 영수증·실패·취소·환불·감사 처리와 구매 퍼널 측정 | 대기 |
+| PAY-02 | 현지 통화·Bitcoin 결제 | Monetization·Trust | 지원 국가별 동등 가치 가격, US$1 최초 Boost, 결제 제공자 기반 Bitcoin 견적·확인·만료·환불·감사 흐름 구현 | 대기 — 국가별 규제·결제 제공자 검토 선행 |
 | CL-14 | Boost 가격 A/B 테스트 | Monetization | ₩1,500/₩1,900/₩2,900/₩3,900 가설을 안전하게 비교 | 대기 |
 
 ### Day 61–75 — Report
@@ -90,6 +94,7 @@
 | --- | --- | --- |
 | P1 | Profile, Comments, Ranking Top 5, Notification | Closed Beta에서 Cash Loop 행동이 확인된 뒤 |
 | P2 | Follow, Relationship, 24시간 Chat, Advanced AI Analysis, Visual Commerce/Affiliate, Ads | 첫 결제·재구매와 신뢰 가능한 데이터·트래픽이 확인된 뒤 |
+| P2 | Tournament 5:5 | 별도 토너먼트의 대결 규칙·보상·안전 정책이 확정된 뒤. 일반 Feed·Boost·Ranking과 집계를 분리 |
 
 ## 4. 기존 기능·운영 백로그 (이력 및 종속 과제)
 
