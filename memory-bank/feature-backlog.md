@@ -44,9 +44,9 @@
 | CL-02 | 무료 경계와 Result 계약 | Engagement·Data | 기본 결과, 유효 표본, 표본 부족, 유료 전환 조건을 문서·UI 계약으로 확정 | **완료(승인)** — 4단계 표본 상태, 투명 Result 오버레이, 100명 Boost ₩1,000 가설을 목업 API·UI·계약에 반영 |
 | CL-03 | Signup/Auth → Feed → Vote → Upload → Result 흐름 | Engagement | 가입 뒤 30초 이내 핵심 가치 경험, 프로필 강제 입력 없음 | 목업 동선 구현 완료 — Splash 가입 → Feed → Vote Result → 나도 평가받기 → Upload. 실제 Auth·서버 Result는 CL-04/CL-06에서 연결, 사용자 승인 대기 |
 | CL-04 | 실제 유효 투표·기본 Result | Data | 1인 1표·서버 집계·BINARY YES/NO 또는 NUMERIC_AGE·표본 수 결과 제공 | 대기 |
-| CL-05 | 초기 Analytics | Acquisition·Engagement·Data | Visitor→Signup→First Vote→Upload→Result 이벤트와 Weekly Valid Votes 수집 | 진행 중 — 익명 로컬 이벤트 계약·퍼널 이벤트 연결 완료. 서버 수집·주간 지표는 Closed Beta/Supabase 단계에서 연결 |
+| CL-05 | 초기 Analytics | Acquisition·Engagement·Data | Visitor→Signup→First Vote→Upload→Result 이벤트와 Weekly Valid Votes 수집 | **Codex셀프 완료(로컬 범위)** — 익명 로컬 이벤트 계약·퍼널 이벤트 연결 완료. 서버 수집·주간 지표는 Closed Beta/Supabase 단계에서 연결 |
 | GEO-01 | 동의 기반 촬영 장소 컨텍스트 | Trust·Engagement | EXIF/기기/입력 출처·확실성·공개 동의·민감 장소 차단·상세 패널 노출을 구현 | 대기 — 위치·개인정보 영향평가와 관리자 검토 설계 선행 |
-| I18N-01 | 글로벌 언어·지역 선택 | Acquisition·Trust | `ko/en/zh` 번역 키, 서버 국가 신호+브라우저 언어 제안, 수동 언어 선택, 한국 테스트 한국어 기본을 구현 | 진행 중 — 로컬 한국어 기본·영어 수동 전환·브라우저 영어 제안 기반을 구현. 중국어 번역 카탈로그와 서버 국가 신호는 개인정보·운영 정책 확정 뒤 연결 |
+| I18N-01 | 글로벌 언어·지역 선택 | Acquisition·Trust | `ko/en/zh` 번역 키, 서버 국가 신호+브라우저 언어 제안, 수동 언어 선택, 한국 테스트 한국어 기본을 구현 | **Codex셀프 완료(ko/en 기반 범위)** — 로컬 한국어 기본·영어 수동 전환·브라우저 영어 제안 기반을 구현. 중국어 번역 카탈로그와 서버 국가 신호는 개인정보·운영 정책 확정 뒤 연결 |
 | HAP-01 | 모바일 평가 햅틱 | Engagement | YES 단일·NO 이중 햅틱을 지원 기기에서 제공하고 비지원 환경 안전 폴백 검증 | 진행 중 — 지원 브라우저에서 YES 12ms 단일, NO 이중 패턴을 호출하며 `navigator.vibrate` 미지원 시 무동작 폴백. 실제 기기 QA 대기 |
 
 ### Day 15–30 — Closed Beta 기반
@@ -100,8 +100,8 @@
 
 | ID | 기능·결정 | 완료 기준 | 상태 |
 | --- | --- | --- | --- |
-| SEO-01 | 검색 엔진 기본 노출 | 언어별 title·description, Open Graph·X 공유 메타, robots·sitemap을 제공 | 진행 중 — SPA 기본 메타·robots·sitemap 반영. 운영 도메인 확정 후 절대 URL·Search Console 등록 필요 |
-| GEO-SEO-01 | 생성형 검색(GEO) 콘텐츠 신뢰성 | 서비스 목적·평가의 주관성·안전 원칙·운영자 책임을 명확한 공개 문서와 구조화 데이터로 제공 | 진행 중 — WebApplication 구조화 데이터에 주관적 첫인상·비객관적 판단 원칙을 명시. 공개 도움말·정책 문서와 운영 도메인 확정 뒤 확장 |
+| SEO-01 | 검색 엔진 기본 노출 | 언어별 title·description, Open Graph·X 공유 메타, robots·sitemap을 제공 | **Codex셀프 완료(프론트엔드 범위)** — SPA 기본 메타·robots·sitemap 반영. 운영 도메인 확정 후 절대 URL·Search Console 등록 필요 |
+| GEO-SEO-01 | 생성형 검색(GEO) 콘텐츠 신뢰성 | 서비스 목적·평가의 주관성·안전 원칙·운영자 책임을 명확한 공개 문서와 구조화 데이터로 제공 | **Codex셀프 완료(구조화 데이터 범위)** — WebApplication 구조화 데이터에 주관적 첫인상·비객관적 판단 원칙을 명시. 공개 도움말·정책 문서와 운영 도메인 확정 뒤 확장 |
 
 ## 4. 기존 기능·운영 백로그 (이력 및 종속 과제)
 
@@ -122,7 +122,7 @@
 | FE-01 | Vite·React 기반과 기능별 화면 구조 | React 활성 엔트리, 기능별 화면 분리, 프로덕션 빌드 성공 | 완료 |
 | FE-02 | Feed·Upload·Ranking·Profile 화면 동등성 | 기존 프로토타입의 화면·동작이 React에서 동일 | 완료 — 네 화면 사용자 검증 적합 |
 | FE-03 | 공통 UI·디자인 토큰 | 버튼, 카드, 상태 화면의 재사용 기준 마련 | 진행 중 — 에디토리얼 토큰과 PageHeading 공통 요소 분리 시작 |
-| FE-04 | lint·포맷·컴포넌트 테스트 | 기본 품질 도구가 실행됨 | 진행 중 — 의존성 없는 Node 테스트 러너로 언어·URL 결정 규칙부터 자동 검증 시작. ESLint·컴포넌트 테스트 도입은 도구 선정 뒤 확장 |
+| FE-04 | lint·포맷·컴포넌트 테스트 | 기본 품질 도구가 실행됨 | **Codex셀프 완료(기본 범위)** — 의존성 없는 Node 테스트 러너와 `git diff --check`로 언어·URL·투표·결과 계약을 자동 검증. ESLint·브라우저 컴포넌트 테스트는 도구 선정 뒤 확장 |
 
 ### 단계 2 — 사용자 경험과 목업 경계
 
