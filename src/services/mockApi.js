@@ -6,6 +6,22 @@
 /** @typedef {'yes'|'no'} VoteValue */
 /** @typedef {{ type: 'age', value: number }} AgeVoteValue */
 
+/** 정의: Result의 표본 상태를 UI와 API에서 동일하게 해석하기 위한 고정 enum이다. */
+export const SAMPLE_STATUS = {
+  INSUFFICIENT: 'INSUFFICIENT',
+  EARLY_SIGNAL: 'EARLY_SIGNAL',
+  BASE_RESULT: 'BASE_RESULT',
+  EXPANDED_SAMPLE: 'EXPANDED_SAMPLE',
+};
+
+/** 정의: 유효 투표 수를 Cash Loop Result 계약의 네 표본 상태로 변환한다. */
+export function getSampleStatus(totalVotes = 0) {
+  if (totalVotes < 10) return SAMPLE_STATUS.INSUFFICIENT;
+  if (totalVotes < 30) return SAMPLE_STATUS.EARLY_SIGNAL;
+  if (totalVotes < 100) return SAMPLE_STATUS.BASE_RESULT;
+  return SAMPLE_STATUS.EXPANDED_SAMPLE;
+}
+
 /** 정의: UI가 기능별로 임의 해석하지 않도록 고정한 목업 API 오류 코드 집합이다. */
 export const API_ERROR = {
   VALIDATION_FAILED: 'VALIDATION_FAILED',
@@ -35,7 +51,7 @@ export function toAggregate(post) {
       evaluationType: 'NUMERIC_AGE',
       averageAge: post.ageEstimate ?? null,
       totalVotes,
-      sampleStatus: totalVotes >= 20 ? 'sufficient' : 'insufficient',
+      sampleStatus: getSampleStatus(totalVotes),
     };
   }
   const yesCount = post.yesVotes ?? 0;
@@ -46,7 +62,7 @@ export function toAggregate(post) {
     noCount,
     totalVotes,
     approvalRate: totalVotes ? Math.round((yesCount / totalVotes) * 100) : 0,
-    sampleStatus: totalVotes >= 20 ? 'sufficient' : 'insufficient',
+    sampleStatus: getSampleStatus(totalVotes),
   };
 }
 
@@ -68,7 +84,9 @@ export async function submitVote(post, value, votedIds) {
   if (!post) return apiFailure(API_ERROR.NOT_FOUND, '게시물을 찾을 수 없어요.');
   if (votedIds.has(post.id)) return apiFailure(API_ERROR.ALREADY_VOTED, '이미 의견을 남긴 게시물이에요.');
   if (post.evaluationType === 'NUMERIC_AGE') {
-    if (value?.type !== 'age' || !Number.isInteger(value.value) || value.value < 18 || value.value > 99) return apiFailure(API_ERROR.VALIDATION_FAILED, '18세부터 99세 사이의 예상 나이를 선택해 주세요.', { value: 'invalid_age_vote' });
+    const min = post.ageMin ?? 18;
+    const max = post.ageMax ?? 99;
+    if (value?.type !== 'age' || !Number.isInteger(value.value) || value.value < min || value.value > max) return apiFailure(API_ERROR.VALIDATION_FAILED, `${min}세부터 ${max}세 사이의 예상 나이를 선택해 주세요.`, { value: 'invalid_age_vote' });
     const previousCount = post.ageVoteCount ?? 0;
     const previousAverage = post.ageEstimate ?? value.value;
     const nextCount = previousCount + 1;

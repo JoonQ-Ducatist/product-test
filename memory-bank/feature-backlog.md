@@ -1,4 +1,4 @@
-# xCubus 전체 기능 백로그
+# FACt.Smack 전체 기능 백로그
 
 > 기준 문서: product-philosophy.md, monetization.md, 90-day-cash-loop-plan.md, service-design-rule.md, TECH-AGENTS.md, progress.md
 >
@@ -40,17 +40,20 @@
 
 | ID | 기능·결정 | Cash Loop 영향 | 완료 기준 | 상태 |
 | --- | --- | --- | --- | --- |
-| CL-01 | MVP 카테고리 Cash Loop 최종 선정 | Acquisition·Data·Monetization | 7개 후보(Outfit, Perceived Age, Date, Travel, Fitness, Work, Profile)를 8개 평가 기준으로 점수화하고 최종 목록·질문·평가 방식 확정 | 진행 중 — `PERCEIVED_AGE / NUMERIC_AGE` 프로토타입 반영 |
-| CL-02 | 무료 경계와 Result 계약 | Engagement·Data | 기본 결과, 유효 표본, 표본 부족, 유료 전환 조건을 문서·UI 계약으로 확정 | 대기 |
-| CL-03 | Signup/Auth → Feed → Vote → Upload → Result 흐름 | Engagement | 가입 뒤 30초 이내 핵심 가치 경험, 프로필 강제 입력 없음 | 대기 |
+| CL-01 | MVP 카테고리 Cash Loop 최종 선정 | Acquisition·Data·Monetization | 7개 후보(Outfit, Perceived Age, Date, Travel, Fitness, Work, Profile)를 8개 평가 기준으로 점수화하고 최종 목록·질문·평가 방식 확정 | **완료(승인)** — 핵심: Perceived Age → 오늘의 룩 → SNS 프로필 → 데이트 / 비교군: 운동 → 출근 → 여행. Closed Beta 전환 지표로 재평가 예정 |
+| CL-02 | 무료 경계와 Result 계약 | Engagement·Data | 기본 결과, 유효 표본, 표본 부족, 유료 전환 조건을 문서·UI 계약으로 확정 | **완료(승인)** — 4단계 표본 상태, 투명 Result 오버레이, 100명 Boost ₩1,000 가설을 목업 API·UI·계약에 반영 |
+| CL-03 | Signup/Auth → Feed → Vote → Upload → Result 흐름 | Engagement | 가입 뒤 30초 이내 핵심 가치 경험, 프로필 강제 입력 없음 | 목업 동선 구현 완료 — Splash 가입 → Feed → Vote Result → 나도 평가받기 → Upload. 실제 Auth·서버 Result는 CL-04/CL-06에서 연결, 사용자 승인 대기 |
 | CL-04 | 실제 유효 투표·기본 Result | Data | 1인 1표·서버 집계·BINARY YES/NO 또는 NUMERIC_AGE·표본 수 결과 제공 | 대기 |
-| CL-05 | 초기 Analytics | Acquisition·Engagement·Data | Visitor→Signup→First Vote→Upload→Result 이벤트와 Weekly Valid Votes 수집 | 대기 |
+| CL-05 | 초기 Analytics | Acquisition·Engagement·Data | Visitor→Signup→First Vote→Upload→Result 이벤트와 Weekly Valid Votes 수집 | **Codex셀프 완료(로컬 범위)** — 익명 로컬 이벤트 계약·퍼널 이벤트 연결 완료. 서버 수집·주간 지표는 Closed Beta/Supabase 단계에서 연결 |
+| GEO-01 | 동의 기반 촬영 장소 컨텍스트 | Trust·Engagement | EXIF/기기/입력 출처·확실성·공개 동의·민감 장소 차단·상세 패널 노출을 구현 | 대기 — 위치·개인정보 영향평가와 관리자 검토 설계 선행 |
+| I18N-01 | 글로벌 언어·지역 선택 | Acquisition·Trust | `ko/en/zh` 번역 키, 서버 국가 신호+브라우저 언어 제안, 수동 언어 선택, 한국 테스트 한국어 기본을 구현 | **Codex셀프 완료(ko/en 기반 범위)** — 로컬 한국어 기본·영어 수동 전환·브라우저 영어 제안 기반을 구현. 중국어 번역 카탈로그와 서버 국가 신호는 개인정보·운영 정책 확정 뒤 연결 |
+| HAP-01 | 모바일 평가 햅틱 | Engagement | YES 단일·NO 이중 햅틱을 지원 기기에서 제공하고 비지원 환경 안전 폴백 검증 | **Codex셀프 완료(코드 범위)** — 지원 브라우저에서 YES 12ms 단일, NO 이중 패턴을 호출하며 `navigator.vibrate` 미지원 시 무동작 폴백. 실제 기기 QA 대기 |
 
 ### Day 15–30 — Closed Beta 기반
 
 | ID | 기능·결정 | Cash Loop 영향 | 완료 기준 | 상태 |
 | --- | --- | --- | --- | --- |
-| CL-06 | Supabase Auth·DB·Storage·RLS | Engagement·Data | 실제 사용자·미디어·권한·투표 데이터를 안전하게 영구 저장 | 대기 |
+| CL-06 | Supabase Auth·DB·Storage·RLS | Engagement·Data | 실제 사용자·미디어·권한·투표 데이터를 안전하게 영구 저장 | 연결 기반 완료(승인) — 프로젝트 URL·Publishable Key·Dashboard 관리자 접근과 브라우저 SDK 연결 기반을 설정. DB 스키마·RLS·Auth Redirect 적용은 다음 승인 단계 |
 | CL-07 | 검토·신고·미디어 안전 흐름 | Data | 게시물 공개 전 상태·신고·예외 사람 검토·감사 기록 제공 | 대기 |
 | CL-08 | Closed Beta Seed Group 운영 | Acquisition·Engagement | 100명+ 실제 사용자와 Vote→Upload→Result 행동 검증 | 대기 |
 
@@ -59,8 +62,8 @@
 | ID | 기능·결정 | Cash Loop 영향 | 완료 기준 | 상태 |
 | --- | --- | --- | --- | --- |
 | CL-09 | Result Card 생성 | Referral | 카테고리·유효 표본·결과가 담긴 공유 가능한 결과 카드 생성 | 대기 |
-| CL-10 | Result Share URL·채널 공유 | Referral·Acquisition | 공유 URL과 Instagram·TikTok·KakaoTalk·X 등의 플랫폼 공유 진입 제공 | 대기 |
-| CL-11 | Guest Vote → Signup → Upload | Acquisition·Engagement | 공유 방문자는 가입 전 투표 가능, 투표 뒤 가입·업로드 전환을 측정 | 대기 |
+| CL-10 | Result Share URL·채널 공유 | Referral·Acquisition | 공유 URL과 Instagram·TikTok·KakaoTalk·X 등의 플랫폼 공유 진입 제공 | **Codex셀프 완료(웹 범위)** — 게시물별 공유 URL, Web Share API, 클립보드 폴백과 공유 이벤트를 구현. 플랫폼별 SDK·앱 딥링크는 실제 채널 정책 확정 뒤 연결 |
+| CL-11 | Guest Vote → Signup → Upload | Acquisition·Engagement | 공유 방문자는 가입 전 투표 가능, 투표 뒤 가입·업로드 전환을 측정 | **Codex셀프 완료(목업 범위)** — 공유 URL의 게스트 진입과 Feed→가입 목업 전환을 구현. 실제 인증·전환 서버 측정은 CL-06 이후 연결 |
 
 ### Day 46–60 — P0 First Revenue
 
@@ -68,6 +71,7 @@
 | --- | --- | --- | --- | --- |
 | CL-12 | Boost 제안·표본 증가 처리 | Monetization·Data | ₩1,900 가설, 노출·속도·표본만 증가, 결과·랭킹 불변 | 대기 |
 | CL-13 | Payment·결제 상태·환불 정책 | Monetization | 실제 결제, 영수증·실패·취소·환불·감사 처리와 구매 퍼널 측정 | 대기 |
+| PAY-02 | 현지 통화·Bitcoin 결제 | Monetization·Trust | 지원 국가별 동등 가치 가격, US$1 최초 Boost, 결제 제공자 기반 Bitcoin 견적·확인·만료·환불·감사 흐름 구현 | 대기 — 국가별 규제·결제 제공자 검토 선행 |
 | CL-14 | Boost 가격 A/B 테스트 | Monetization | ₩1,500/₩1,900/₩2,900/₩3,900 가설을 안전하게 비교 | 대기 |
 
 ### Day 61–75 — Report
@@ -81,7 +85,7 @@
 
 | ID | 기능·결정 | Cash Loop 영향 | 완료 기준 | 상태 |
 | --- | --- | --- | --- | --- |
-| CL-17 | xCubus+ 구독 | Monetization·Retention | ₩7,900/월 가설, 월 Boost·Premium Report·변화 추적 제공 | 대기 |
+| CL-17 | FACS+ 구독 | Monetization·Retention | ₩7,900/월 가설, 월 Boost·Premium Report·변화 추적 제공 | 대기 |
 | CL-18 | 재구매·구독 갱신 분석 | Retention·Monetization | 첫 결제→두 번째 결제, 구독 전환·갱신, ARPPU·MRR 측정 | 대기 |
 
 ### Cash Loop 이후 — P1/P2 보류 기능
@@ -90,6 +94,14 @@
 | --- | --- | --- |
 | P1 | Profile, Comments, Ranking Top 5, Notification | Closed Beta에서 Cash Loop 행동이 확인된 뒤 |
 | P2 | Follow, Relationship, 24시간 Chat, Advanced AI Analysis, Visual Commerce/Affiliate, Ads | 첫 결제·재구매와 신뢰 가능한 데이터·트래픽이 확인된 뒤 |
+| P2 | Tournament 5:5 | 별도 토너먼트의 대결 규칙·보상·안전 정책이 확정된 뒤. 일반 Feed·Boost·Ranking과 집계를 분리 |
+
+### 검색·생성형 검색 최적화
+
+| ID | 기능·결정 | 완료 기준 | 상태 |
+| --- | --- | --- | --- |
+| SEO-01 | 검색 엔진 기본 노출 | 언어별 title·description, Open Graph·X 공유 메타, robots·sitemap을 제공 | **Codex셀프 완료(프론트엔드 범위)** — SPA 기본 메타·robots·sitemap 반영. 운영 도메인 확정 후 절대 URL·Search Console 등록 필요 |
+| GEO-SEO-01 | 생성형 검색(GEO) 콘텐츠 신뢰성 | 서비스 목적·평가의 주관성·안전 원칙·운영자 책임을 명확한 공개 문서와 구조화 데이터로 제공 | **Codex셀프 완료(구조화 데이터 범위)** — WebApplication 구조화 데이터에 주관적 첫인상·비객관적 판단 원칙을 명시. 공개 도움말·정책 문서와 운영 도메인 확정 뒤 확장 |
 
 ## 4. 기존 기능·운영 백로그 (이력 및 종속 과제)
 
@@ -110,7 +122,7 @@
 | FE-01 | Vite·React 기반과 기능별 화면 구조 | React 활성 엔트리, 기능별 화면 분리, 프로덕션 빌드 성공 | 완료 |
 | FE-02 | Feed·Upload·Ranking·Profile 화면 동등성 | 기존 프로토타입의 화면·동작이 React에서 동일 | 완료 — 네 화면 사용자 검증 적합 |
 | FE-03 | 공통 UI·디자인 토큰 | 버튼, 카드, 상태 화면의 재사용 기준 마련 | 진행 중 — 에디토리얼 토큰과 PageHeading 공통 요소 분리 시작 |
-| FE-04 | lint·포맷·컴포넌트 테스트 | 기본 품질 도구가 실행됨 | 대기 |
+| FE-04 | lint·포맷·컴포넌트 테스트 | 기본 품질 도구가 실행됨 | **Codex셀프 완료(기본 범위)** — 의존성 없는 Node 테스트 러너와 `git diff --check`로 언어·URL·투표·결과 계약을 자동 검증. ESLint·브라우저 컴포넌트 테스트는 도구 선정 뒤 확장 |
 
 ### 단계 2 — 사용자 경험과 목업 경계
 
@@ -128,7 +140,7 @@
 | ID | 기능 | 완료 기준 | 상태 |
 | --- | --- | --- | --- |
 | BE-00 | Supabase 기반 구성 | Supabase Postgres·Auth·Storage·Edge Functions 환경, SQL 마이그레이션, RLS 기본 정책이 준비됨 | 대기 |
-| BE-01 | 인증·세션·역할 | 일반 사용자·운영자·관리자 권한이 분리됨 | 대기 |
+| BE-01 | 인증·세션·역할 | 일반 사용자·운영자·관리자 권한이 분리됨 | 진행 중 — Supabase 이메일 매직링크 가입·로그인 UI, 세션 감지, 로컬 Redirect URL을 설정. 실제 이메일 발송·복귀 E2E와 사용자 역할/RLS는 다음 단계 |
 | BE-07 | 다중 인증 제공자 | Apple·Google·Kakao·이메일 가입·로그인, 계정 연결·해제, 제공자별 오류 처리를 지원 | 대기 |
 | BE-08 | 팔로우·차단 관계·가시성 인가 | 승인 없는 단방향 Follow, 양방향 노출을 차단하는 Block, Post visibility(public/followers) 권한 검사를 서버에서 처리 | 대기 |
 | BE-09 | 업로드 자격 규칙 | 초기 전체 허용 후 활동 기준 기반 업로드 자격을 서버에서 판정하고, 비활성·활성 전환을 안전하게 처리 | 대기 |
@@ -151,7 +163,7 @@
 | CNT-06 | 전체·팔로워 공개 | 업로더가 공개 범위를 선택하고, 팔로워 공개 콘텐츠를 권한 있는 사용자에게만 노출 | 대기 |
 | CNT-07 | 업로드 자격 안내 | 업로드 가능·제한 상태, 부족한 활동 기준, 전환 안내를 사용자에게 명확히 표시 | 대기 |
 | CNT-08 | 댓글·한 단계 대댓글 | 열람 권한 회원의 댓글·대댓글, 신고, 작성자 삭제 UI(소프트 숨김), 요약·전체 확장 댓글 UI를 제공 | 진행 중 — React Feed 목업 UI 구현, 서버 권한·신고·저장은 대기 |
-| CNT-09 | 다중 미디어 캐러셀 | 이미지 최대 5장과 10초 이하 동영상 1개 업로드, 좌·우 스와이프, 현재 위치·전체 장수 표시를 제공 | 대기 |
+| CNT-09 | 다중 미디어 캐러셀 | 이미지 최대 5장과 10초 이하 동영상 1개 업로드, 좌·우 스와이프, 현재 위치·전체 장수 표시를 제공 | **Codex셀프 완료(프론트엔드 목업 범위)** — 피드·랭킹 팝업의 다중 미디어 탐색, 위치 표기, 좌우 스와이프와 PC 화살표를 구현. 실제 미디어 저장·동영상 처리는 BE-04/05에서 연결 |
 | CNT-10 | 사진 권리 확인 동의 | 업로드 시 권리 보유 확인과 동의 버전을 받고 사용자에게 안내 | 대기 |
 | CNT-11 | 개인 계정 설정 | 프로필 사진·핸들, 로그인 수단, 알림, 기본 공개·댓글 설정, 차단 목록, 탈퇴·데이터 요청을 관리 | 대기 |
 

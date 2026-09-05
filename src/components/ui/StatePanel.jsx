@@ -3,7 +3,7 @@ const stateContent = {
   loading: { icon: 'progress_activity', eyebrow: 'PLEASE WAIT', title: '룩을 준비하고 있어요.', body: '잠시만 기다리면 새로운 콘텐츠를 보여드릴게요.', action: null },
   empty: { icon: 'auto_awesome', eyebrow: 'NOTHING HERE YET', title: '아직 보여드릴 룩이 없어요.', body: '조금 뒤 다시 확인하거나, 오늘의 첫 룩을 직접 공유해 보세요.', action: '새로고침' },
   error: { icon: 'cloud_off', eyebrow: 'SOMETHING WENT WRONG', title: '화면을 불러오지 못했어요.', body: '연결 상태를 확인한 뒤 다시 시도해 주세요.', action: '다시 시도' },
-  permission: { icon: 'lock', eyebrow: 'MEMBERS ONLY', title: '로그인 후 이용할 수 있어요.', body: 'xCubus에 가입하고 더 많은 시선으로 오늘의 룩을 확인해 보세요.', action: '로그인하기' },
+  permission: { icon: 'lock', eyebrow: 'MEMBERS ONLY', title: '로그인 후 이용할 수 있어요.', body: 'FACt.Smack에 가입하고 더 많은 시선으로 오늘의 룩을 확인해 보세요.', action: '로그인하기' },
   review: { icon: 'hourglass_top', eyebrow: 'UNDER REVIEW', title: '게시물을 검토하고 있어요.', body: '안전한 커뮤니티를 위해 확인이 끝나면 피드에 공개됩니다.', action: '내 프로필 보기' },
 };
 

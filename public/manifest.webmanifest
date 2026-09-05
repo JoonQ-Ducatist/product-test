@@ -1,0 +1,9 @@
+{
+  "name": "FACt.Smack",
+  "short_name": "FACt.Smack",
+  "lang": "ko",
+  "display": "standalone",
+  "start_url": "/",
+  "background_color": "#f9f7f2",
+  "theme_color": "#f9f7f2"
+}

@@ -1,15 +1,15 @@
-# xCubus — First Impression Data Platform
+# FACt.Smack — First Impression Data Platform
 
 > **첫인상을 직관에서 데이터로.**  
 > 사진/짧은 영상을 올리고, 실제 사람들의 빠른 평가를 통해 상황별 첫인상을 데이터로 확인하는 글로벌 플랫폼.
 
-![xCubus Preview](assets/images/card1_business.jpg)
+![FACt.Smack Preview](assets/images/card1_business.jpg)
 
 ---
 
 ## 🎯 Product Vision
 
-xCubus는 단순 SNS, 소개팅 앱, 외모 평가 앱이 아닙니다.
+FACt.Smack는 단순 SNS, 소개팅 앱, 외모 평가 앱이 아닙니다.
 
 사용자가 특정 상황의 사진 또는 10초 이내 영상을 업로드하면 다른 사용자들이 빠르게 평가하고, 그 결과를 축적해 **상황별 First Impression Data**로 보여주는 플랫폼입니다.
 
@@ -23,7 +23,7 @@ xCubus는 단순 SNS, 소개팅 앱, 외모 평가 앱이 아닙니다.
 
 ## 💸 90-Day Cash Loop
 
-현재 xCubus의 최우선 목표는 기능이 많은 SNS를 완성하는 것이 아니라 **90일 안에 실제 사용자의 첫 결제와 반복 가능한 현금흐름을 검증하는 것**입니다.
+현재 FACt.Smack의 최우선 목표는 기능이 많은 SNS를 완성하는 것이 아니라 **90일 안에 실제 사용자의 첫 결제와 반복 가능한 현금흐름을 검증하는 것**입니다.
 
 ```text
 Feed
@@ -42,7 +42,7 @@ Boost
   ↓
 Premium Report
   ↓
-xCubus+
+FACS+
   ↓
 Return / Re-upload
 ```
@@ -60,7 +60,7 @@ Return / Re-upload
 | FREE | 기본 Feed / Vote / Upload / Result | ₩0 | 핵심 가치 경험 및 사용자 획득 |
 | BOOST | 추가 노출 및 더 많은 평가 표본 | ₩1,900/회 우선 테스트 | 더 빠르고 많은 응답 확보 |
 | REPORT | First Impression 상세 분석 | ₩5,900/회 우선 테스트 | 충분한 표본 기반의 심화 결과 |
-| xCubus+ | 반복 사용자 구독 | ₩7,900/월 우선 테스트 | Boost/Report 혜택, 변화 추적, Premium 기능 등 |
+| FACS+ | 반복 사용자 구독 | ₩7,900/월 우선 테스트 | Boost/Report 혜택, 변화 추적, Premium 기능 등 |
 
 가격은 확정값이 아니라 실제 결제 데이터를 통해 검증할 **초기 가설**입니다.
 
@@ -187,7 +187,7 @@ Upload → Vote → Result → Share → New User → Guest Vote → Signup → 
 | Retention / Growth | D31–45 | Vote → Upload → Result 재방문 및 Result Share 검증 |
 | First Revenue | D46–60 | Boost 도입 및 제3자의 첫 실제 결제 발생 |
 | Monetization | D61–75 | First Impression Report 및 가격/전환 A/B Test |
-| Recurring Revenue | D76–90 | xCubus+ 도입, 첫 MRR 및 반복결제 검증 |
+| Recurring Revenue | D76–90 | FACS+ 도입, 첫 MRR 및 반복결제 검증 |
 
 90일의 성공 기준은 단순 출시가 아니라 **모르는 고객이 실제 돈을 지불하고 다시 결제할 이유가 있음을 증명하는 것**입니다.
 
@@ -202,7 +202,7 @@ Upload → Vote → Result → Share → New User → Guest Vote → Signup → 
 5. **Growth Loop** — Result Card / Share URL / Guest Vote / Referral
 6. **First Revenue** — Boost / Payment
 7. **Monetization** — Premium Report / Pricing Test
-8. **Recurring Revenue** — xCubus+
+8. **Recurring Revenue** — FACS+
 9. **Scale** — Referral / Organic Content / Paid UA 실험
 10. **Expansion** — Ads / Visual Commerce / Affiliate / Relationship 기능
 
@@ -249,7 +249,7 @@ Upload → Vote → Result → Share → New User → Guest Vote → Signup → 
 
 ## 🤖 One-Person Operating Model
 
-xCubus는 초기 단계에서 1인 창업자가 운영 가능한 구조를 목표로 합니다.
+FACt.Smack는 초기 단계에서 1인 창업자가 운영 가능한 구조를 목표로 합니다.
 
 회원가입, Storage, 평가 집계, Result 생성, 이메일, Push, Analytics 및 운영 KPI 리포트는 가능한 범위에서 자동화합니다. AI는 고객에게 보여주기 위한 목적보다 **개발·운영·분석을 자동화하는 내부 도구**로 우선 활용합니다.
 
@@ -276,7 +276,7 @@ npx serve .
 ## 📁 Current Prototype Structure
 
 ```text
-xCubus/
+FACt.Smack/
 ├── assets/
 │   └── images/
 ├── index.html

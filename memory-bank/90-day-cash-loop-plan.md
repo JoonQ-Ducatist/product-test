@@ -1,4 +1,4 @@
-# xCubus 90일 Cash Loop 실행 계획
+# FACt.Smack 90일 Cash Loop 실행 계획
 
 > 최상위 기준: [Product Philosophy](./product-philosophy.md) · 수익화 기준: [Monetization](./monetization.md) · 세부 기능 목록: [Feature Backlog](./feature-backlog.md)
 >
@@ -6,16 +6,16 @@
 
 ## 1. 제품 루프
 
-**xCubus = First Impression Data Platform**
+**FACt.Smack = First Impression Data Platform**
 
 `Feed → Vote → Upload → Result → Share → Guest Vote → Signup → Upload`
 
-`Result → Boost → Report → xCubus+ → 재방문`
+`Result → Boost → Report → FACS+ → 재방문`
 
 ## 2. 90일 성공 정의
 
-1. xCubus를 처음 접한 사용자가 자기 돈으로 Boost 또는 Report를 구매한다.
-2. 한 번 결제한 사용자가 재구매하거나 xCubus+를 구독한다.
+1. FACt.Smack를 처음 접한 사용자가 자기 돈으로 Boost 또는 Report를 구매한다.
+2. 한 번 결제한 사용자가 재구매하거나 FACS+를 구독한다.
 
 두 조건이 충족되면 Cash Loop를 검증한 것이다. 이후 CAC, LTV, 유료 획득 확대를 검토한다.
 
@@ -36,7 +36,7 @@
 | Day 31–45 | Growth Loop | Result Card, Share URL, Guest Vote, Signup 전환 | Share → Guest Vote → Signup 실제 유입 |
 | Day 46–60 | First Revenue | Boost Paywall·결제·표본 증가 처리 | 관계없는 사용자의 첫 Boost 결제 |
 | Day 61–75 | ARPPU 검증 | First Impression Report·가격 A/B 테스트 | Report 전환·가격 데이터 |
-| Day 76–90 | Recurring Revenue | xCubus+·구독·갱신 측정 | 첫 MRR·재구매·구독 갱신 |
+| Day 76–90 | Recurring Revenue | FACS+·구독·갱신 측정 | 첫 MRR·재구매·구독 갱신 |
 
 ## 5. 기간별 상세 실행
 
@@ -64,7 +64,7 @@
 ### Day 46–60 — Boost 첫 결제
 
 - 표본 조건에서 “100명의 첫인상을 확인해 볼까요?”를 제안한다.
-- Boost ₩1,900 가설과 가격 후보를 A/B 테스트한다.
+- Boost ₩1,000 가설과 가격 후보를 A/B 테스트한다.
 - Boost는 노출·응답 속도·표본만 바꾸며, 결과·랭킹·신뢰도를 바꾸지 않는다.
 
 ### Day 61–75 — Report 상품화
@@ -73,9 +73,9 @@
 - Report ₩5,900 가설과 구성·가격을 A/B 테스트한다.
 - 인구통계 분석은 동의·최소 표본이 충족될 때만 제공한다.
 
-### Day 76–90 — xCubus+와 반복 매출
+### Day 76–90 — FACS+와 반복 매출
 
-- xCubus+ ₩7,900/월 가설을 출시한다.
+- FACS+ ₩7,900/월 가설을 출시한다.
 - 월 Boost, Premium Report, 변화 추적, 카테고리 분석, Premium Profile, 광고 제거 조합을 실험한다.
 - 재구매율, 구독 전환, 갱신, MRR을 측정한다.
 

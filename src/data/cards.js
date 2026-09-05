@@ -21,13 +21,13 @@ function getPerceivedAgeImage(name) { return perceivedAgeAssets[`../../assets/ge
 
 /** 정의: 사용자·관리 화면이 공유하는 카테고리의 표시명, 아이콘, 색상과 피드 표기 토큰이다. */
 export const categories = {
-  Outfit: { label: '오늘의 룩', icon: 'checkroom', color: '#FE2C55', liveTag: 'OOTD', feedLabel: 'OOTD' },
   PerceivedAge: { label: '몇 살로 보여?', globalLabel: 'How Old Do I Look?', internalId: 'PERCEIVED_AGE', evaluationType: 'NUMERIC_AGE', icon: 'face_3', color: '#FF0050', liveTag: 'Age Check', feedLabel: 'AGE CHECK' },
-  Date: { label: '데이트', icon: 'favorite', color: '#EA4C89', liveTag: 'Date Look' },
-  Travel: { label: '여행', icon: 'travel_explore', color: '#1AB7EA', liveTag: 'Travel Look' },
-  Fitness: { label: '운동', icon: 'fitness_center', color: '#25D366', liveTag: 'Fitness Look' },
-  Work: { label: '출근', icon: 'business_center', color: '#5865F2', liveTag: 'Work Look' },
-  SocialProfile: { label: 'SNS 프로필', icon: 'account_circle', color: '#F2C94C', liveTag: 'Profile Look' },
+  Outfit: { label: '오늘의 룩', icon: 'checkroom', color: '#FF6B35', liveTag: 'OOTD', feedLabel: 'OOTD' },
+  Date: { label: '데이트', icon: 'favorite', color: '#A855F7', liveTag: 'Date Look' },
+  Travel: { label: '여행', icon: 'travel_explore', color: '#0EA5E9', liveTag: 'Travel Look' },
+  Fitness: { label: '운동', icon: 'fitness_center', color: '#22C55E', liveTag: 'Fitness Look' },
+  Work: { label: '출근', icon: 'business_center', color: '#2563EB', liveTag: 'Work Look' },
+  SocialProfile: { label: 'SNS 프로필', icon: 'account_circle', color: '#F59E0B', liveTag: 'Profile Look' },
 };
 
 /** 정의: 다중 사진 카드에 동일 인물의 서로 다른 단독 셀피만 순서대로 담는다. @param {string} prefix 카드 ID 접두어 @param {string[]} imageUrls 단독 인물 사진 URL 목록 */
@@ -59,19 +59,58 @@ const perceivedAgeAlbums = {
 
 /** 정의: 카테고리별로 생성한 서울 생활권 사진과 대표 질문을 정의한 목업 시드다. */
 const mockCardSeeds = [
-  { category: 'Outfit', author: 'today_sora', question: '오늘 이 스타일,\n괜찮아 보여요?', subtext: 'Does this outfit feel right for today?', imageUrl: getSelfieImage(categorySelfieIndex.Outfit), yesVotes: 1280, noVotes: 210, comments: [{ id: 'c1', author: 'style_lab', body: '서울 거리의 자연광과 룩이 잘 어울려요.', createdAt: '8분 전', replies: [{ id: 'r1', author: 'today_sora', body: '의견 감사합니다!', createdAt: '6분 전' }] }] },
-  { category: 'PerceivedAge', evaluationType: 'NUMERIC_AGE', author: 'pool_jiyeon', question: '사람들은 저를\n몇 살로 볼까요?', subtext: 'How old do I look at first glance?', imageUrls: perceivedAgeAlbums.pool, ageEstimate: 32.4, ageVoteCount: 28, comments: [{ id: 'age-c1', author: 'summer_note', body: '수영장에서도 생기 있는 첫인상이에요.', createdAt: '9분 전', replies: [] }] },
-  { category: 'PerceivedAge', evaluationType: 'NUMERIC_AGE', author: 'cycle_mina', question: '자전거 라이딩 후의 저는\n몇 살로 보여요?', subtext: 'What age does this active look suggest?', imageUrls: perceivedAgeAlbums.bike, ageEstimate: 34.1, ageVoteCount: 41, comments: [{ id: 'age-c2', author: 'ride_seoul', body: '건강하고 밝은 에너지가 느껴져요.', createdAt: '14분 전', replies: [] }] },
-  { category: 'PerceivedAge', evaluationType: 'NUMERIC_AGE', author: 'career_yuna', question: '일하다 잠깐 찍은 이 사진,\n몇 살로 보여요?', subtext: 'How old do I look in this workday moment?', imageUrls: perceivedAgeAlbums.office, ageEstimate: 33.2, ageVoteCount: 53, comments: [{ id: 'age-c3', author: 'office_days', body: '차분하고 자신감 있는 분위기예요.', createdAt: '18분 전', replies: [] }] },
-  { category: 'Date', author: 'date_mood', question: '첫 만남이라면\n호감이 가나요?', subtext: 'Would this look make a lovely first impression?', imageUrl: getSelfieImage(categorySelfieIndex.Date), yesVotes: 942, noVotes: 88, comments: [{ id: 'c2', author: 'xcubus_kr', body: '밝고 다정한 인상이 느껴져요.', createdAt: '12분 전', replies: [] }] },
-  { category: 'Travel', author: 'travel_day', question: '이 여행 스타일,\n매력적으로 보이나요?', subtext: 'Does this travel style feel memorable and charming?', imageUrl: getSelfieImage(categorySelfieIndex.Travel), yesVotes: 782, noVotes: 86, comments: [{ id: 'c3', author: 'seoul_walker', body: '여행의 설렘이 자연스럽게 담겼네요.', createdAt: '20분 전', replies: [] }] },
-  { category: 'Fitness', author: 'fit_queen', question: '건강하고 매력적인 인상을\n주나요?', subtext: 'Does this look feel healthy and confident?', imageUrl: getSelfieImage(categorySelfieIndex.Fitness, true), yesVotes: 1105, noVotes: 95, comments: [{ id: 'c4', author: 'run_more', body: '활동적인 에너지가 잘 보여요.', createdAt: '1시간 전', replies: [] }] },
-  { category: 'Work', author: 'workday_note', question: '직장에서 좋은 첫인상을\n줄 것 같나요?', subtext: 'Would this make a great first impression at work?', imageUrl: getSelfieImage(categorySelfieIndex.Work), yesVotes: 1430, noVotes: 190, comments: [{ id: 'c5', author: 'team_player', body: '차분하고 믿음직한 분위기입니다.', createdAt: '45분 전', replies: [] }] },
-  { category: 'SocialProfile', author: 'portrait_note', question: '이 사진, SNS 프로필로\n매력적으로 보이나요?', subtext: 'Would this make a memorable social profile photo?', imageUrl: getSelfieImage(categorySelfieIndex.SocialProfile), yesVotes: 654, noVotes: 72, comments: [] },
+  { category: 'Outfit', author: 'today_sora', question: '오늘 이 스타일,\n괜찮아 보여요?', subtext: '오늘의 스타일이 주는 첫인상이에요.', imageUrl: getSelfieImage(categorySelfieIndex.Outfit), yesVotes: 1280, noVotes: 210, comments: [{ id: 'c1', author: 'style_lab', body: '서울 거리의 자연광과 룩이 잘 어울려요.', createdAt: '8분 전', replies: [{ id: 'r1', author: 'today_sora', body: '의견 감사합니다!', createdAt: '6분 전' }] }] },
+  { category: 'PerceivedAge', evaluationType: 'NUMERIC_AGE', author: 'pool_jiyeon', question: '사람들은 저를\n몇 살로 볼까요?', subtext: '사진 속 첫인상은 몇 살로 느껴지나요?', imageUrls: perceivedAgeAlbums.pool, ageMin: 25, ageMax: 42, ageEstimate: 32.4, ageVoteCount: 28, comments: [{ id: 'age-c1', author: 'summer_note', body: '수영장에서도 생기 있는 첫인상이에요.', createdAt: '9분 전', replies: [] }] },
+  { category: 'PerceivedAge', evaluationType: 'NUMERIC_AGE', author: 'cycle_mina', question: '자전거 라이딩 후의 저는\n몇 살로 보여요?', subtext: '활동적인 분위기가 주는 첫인상이에요.', imageUrls: perceivedAgeAlbums.bike, ageMin: 26, ageMax: 44, ageEstimate: 34.1, ageVoteCount: 41, comments: [{ id: 'age-c2', author: 'ride_seoul', body: '건강하고 밝은 에너지가 느껴져요.', createdAt: '14분 전', replies: [] }] },
+  { category: 'PerceivedAge', evaluationType: 'NUMERIC_AGE', author: 'career_yuna', question: '일하다 잠깐 찍은 이 사진,\n몇 살로 보여요?', subtext: '일하는 순간의 첫인상이에요.', imageUrls: perceivedAgeAlbums.office, ageMin: 27, ageMax: 46, ageEstimate: 33.2, ageVoteCount: 53, comments: [{ id: 'age-c3', author: 'office_days', body: '차분하고 자신감 있는 분위기예요.', createdAt: '18분 전', replies: [] }] },
+  { category: 'Date', author: 'date_mood', question: '첫 만남이라면\n호감이 가나요?', subtext: '첫 만남에서 느껴지는 인상이에요.', imageUrl: getSelfieImage(categorySelfieIndex.Date), yesVotes: 942, noVotes: 88, comments: [{ id: 'c2', author: 'facs_kr', body: '밝고 다정한 인상이 느껴져요.', createdAt: '12분 전', replies: [] }] },
+  { category: 'Travel', author: 'travel_day', question: '이 여행 스타일,\n매력적으로 보이나요?', subtext: '여행의 설렘이 담긴 첫인상이에요.', imageUrl: getSelfieImage(categorySelfieIndex.Travel), yesVotes: 782, noVotes: 86, comments: [{ id: 'c3', author: 'seoul_walker', body: '여행의 설렘이 자연스럽게 담겼네요.', createdAt: '20분 전', replies: [] }] },
+  { category: 'Fitness', author: 'fit_queen', question: '건강하고 매력적인 인상을\n주나요?', subtext: '건강하고 자신감 있는 첫인상이에요.', imageUrl: getSelfieImage(categorySelfieIndex.Fitness, true), yesVotes: 1105, noVotes: 95, comments: [{ id: 'c4', author: 'run_more', body: '활동적인 에너지가 잘 보여요.', createdAt: '1시간 전', replies: [] }] },
+  { category: 'Work', author: 'workday_note', question: '직장에서 좋은 첫인상을\n줄 것 같나요?', subtext: '직장에서 느껴지는 첫인상이에요.', imageUrl: getSelfieImage(categorySelfieIndex.Work), yesVotes: 1430, noVotes: 190, comments: [{ id: 'c5', author: 'team_player', body: '차분하고 믿음직한 분위기입니다.', createdAt: '45분 전', replies: [] }] },
+  { category: 'SocialProfile', author: 'portrait_note', question: '이 사진, SNS 프로필로\n매력적으로 보이나요?', subtext: '프로필 사진으로 남는 첫인상이에요.', imageUrl: getSelfieImage(categorySelfieIndex.SocialProfile), yesVotes: 654, noVotes: 72, comments: [] },
 ];
 
 /** 정의: 카테고리별 1~5장의 현실적인 단독 인물 미디어 수를 가진 초기 목업 피드다. */
-export const initialCards = mockCardSeeds.map((seed, seedIndex) => {
+const legacyCards = mockCardSeeds.map((seed, seedIndex) => {
   const mediaUrls = seed.imageUrls ?? mediaByCategory[seed.category];
   return { ...seed, id: `card-${seedIndex + 1}`, imageUrl: mediaUrls[0], media: createAlbum(`card-${seedIndex + 1}`, mediaUrls), objectPosition: 'center center', timestamp: `${seedIndex * 20 + 10}분 전`, isMyUpload: seedIndex === 0, commentsAllowed: true };
+});
+
+/** 정의: 카드별 사진을 한 번만 배정하는 전체 자산 레지스트리다. 같은 사진을 다른 사용자의 카드에 재사용하지 않는다. */
+const sampleAssets = import.meta.glob('../../assets/**/*.{jpg,png}', { eager: true, import: 'default' });
+function samplePhoto(path) {
+  const url = sampleAssets[`../../assets/${path}`];
+  if (!url) throw new Error(`Missing sample photo: ${path}`);
+  return url;
+}
+
+const sampleCopy = {
+  PerceivedAge: ['사람들은 저를\n몇 살로 볼까요?', '사진 속 첫인상은 몇 살로 느껴지나요?'],
+  Outfit: ['오늘 이 스타일,\n괜찮아 보여요?', '오늘의 스타일이 주는 첫인상이에요.'],
+  Date: ['첫 만남이라면\n호감이 가나요?', '첫 만남에서 느껴지는 인상이에요.'],
+  Travel: ['이 여행 스타일,\n매력적으로 보이나요?', '여행의 설렘이 담긴 첫인상이에요.'],
+  Fitness: ['건강하고 매력적인 인상을\n주나요?', '건강하고 자신감 있는 첫인상이에요.'],
+  Work: ['직장에서 좋은 첫인상을\n줄 것 같나요?', '직장에서 느껴지는 첫인상이에요.'],
+  SocialProfile: ['이 사진, SNS 프로필로\n매력적으로 보이나요?', '프로필 사진으로 남는 첫인상이에요.'],
+};
+
+/** 정의: 7개 카테고리마다 다른 사용자의 카드 5개를 제공한다. 서비스 전체에서 1·2·3·4·5장 피드 규칙을 모두 검증한다. */
+const sampleSeeds = [
+  s('PerceivedAge', 'pool_jiyeon', ['generated/perceived-age/age-pool-01.jpg'], 32.4, 28), s('PerceivedAge', 'pool_suah', ['generated/perceived-age/age-pool-02.png'], 34.2, 34), s('PerceivedAge', 'cycle_mina', ['generated/perceived-age/age-bike-01.jpg'], 34.1, 41), s('PerceivedAge', 'bike_haru', ['generated/perceived-age/age-bike-02.jpg'], 30.6, 37), s('PerceivedAge', 'career_yuna', ['generated/perceived-age/age-office-01.jpg', 'generated/perceived-age/age-office-02.jpg', 'generated/perceived-age/age-office-03.jpg', 'generated/selfies/selfie-02.jpg', 'generated/selfies/selfie-03.jpg'], 33.2, 53),
+  s('Outfit', 'today_sora', ['generated/feed-series/outfit-02.jpg'], 86, 1490), s('Outfit', 'daily_min', ['generated/feed-series/outfit-03.jpg'], 88, 1088), s('Outfit', 'closet_yuri', ['generated/feed-series/outfit-04.jpg'], 89, 836), s('Outfit', 'look_mate', ['generated/feed-series/outfit-05.jpg'], 88, 1269), s('Outfit', 'mood_jin', ['generated/mock-outfit-seoul.jpg', 'generated/outfit-06.png', 'generated/selfies/selfie-01.jpg', 'generated/selfies/selfie-04.jpg'], 89, 985),
+  s('Date', 'date_mood', ['generated/date-05.png'], 91, 1030), s('Date', 'first_hello', ['generated/feed-series/date-02.jpg'], 89, 930), s('Date', 'warm_smile', ['generated/feed-series/date-03.jpg'], 88, 1149), s('Date', 'weekend_look', ['generated/feed-series/date-04.jpg'], 87, 796), s('Date', 'cafe_evening', ['generated/mock-date-seoul.jpg', 'images/card2_dating.png', 'generated/selfies/selfie-05.jpg'], 89, 1025),
+  s('Travel', 'travel_day', ['generated/feed-series/travel-02.jpg'], 90, 868), s('Travel', 'jeju_walk', ['generated/feed-series/travel-03.jpg'], 90, 984), s('Travel', 'city_window', ['generated/mock-travel-seoul.jpg'], 88, 878), s('Travel', 'island_note', ['generated/travel-04.png'], 89, 1063), s('Travel', 'weekend_route', ['generated/selfies/selfie-06.jpg', 'generated/selfies/fitness-selfie-06.jpg'], 89, 805),
+  s('Fitness', 'fit_queen', ['generated/feed-series/fitness-02.jpg'], 92, 1200), s('Fitness', 'pilates_sun', ['generated/fitness-03.png'], 91, 1088), s('Fitness', 'morning_run', ['generated/mock-fitness-seoul.jpg'], 91, 920), s('Fitness', 'strong_jiyu', ['generated/selfies/fitness-selfie-01.jpg'], 90, 1011), s('Fitness', 'move_daily', ['images/card4_workout.png'], 90, 853),
+  s('Work', 'workday_note', ['generated/mock-work-seoul.jpg'], 88, 1620), s('Work', 'office_mina', ['generated/work-04.png'], 89, 1365), s('Work', 'business_ji', ['images/card1_business.jpg'], 89, 1116), s('Work', 'meeting_mood', ['images/card3_office.png'], 88, 957), s('Work', 'calm_monday', ['generated/selfies/fitness-selfie-05.jpg'], 90, 881),
+  s('SocialProfile', 'portrait_note', ['generated/mock-social-profile-seoul.jpg'], 90, 726), s('SocialProfile', 'profile_jane', ['generated/profile-02.png'], 90, 984), s('SocialProfile', 'smile_pick', ['generated/selfies/fitness-selfie-02.jpg'], 90, 794), s('SocialProfile', 'frame_mood', ['generated/selfies/fitness-selfie-03.jpg'], 90, 894), s('SocialProfile', 'face_value', ['generated/selfies/fitness-selfie-04.jpg'], 90, 964),
+];
+function s(category, author, paths, score, total) { return { category, author, paths, score, total }; }
+
+export const initialCards = sampleSeeds.map((seed, index) => {
+  const id = `card-${index + 1}`;
+  const media = seed.paths.map((path, mediaIndex) => ({ id: `${id}-media-${mediaIndex + 1}`, type: 'image', url: samplePhoto(path), objectPosition: 'center center' }));
+  const isAge = seed.category === 'PerceivedAge';
+  const [question, subtext] = sampleCopy[seed.category];
+  const yesVotes = isAge ? 0 : Math.round(seed.total * seed.score / 100);
+  return { id, category: seed.category, evaluationType: isAge ? 'NUMERIC_AGE' : 'BINARY', author: seed.author, question, subtext, imageUrl: media[0].url, media, objectPosition: 'center center', timestamp: `${index * 7 + 3}분 전`, isMyUpload: index === 5, commentsAllowed: true, comments: index % 3 === 0 ? [{ id: `${id}-comment`, author: 'first_view', body: '첫인상이 자연스럽고 좋아 보여요.', createdAt: '방금 전', replies: [] }] : [], ...(isAge ? { ageMin: 24, ageMax: 46, ageEstimate: seed.score, ageVoteCount: seed.total } : { yesVotes, noVotes: seed.total - yesVotes }) };
 });

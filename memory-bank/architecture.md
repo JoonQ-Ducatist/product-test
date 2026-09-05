@@ -1,4 +1,4 @@
-# xCubus 아키텍처
+# FACt.Smack 아키텍처
 
 > 기준 문서: service-design-rule.md, TECH-AGENTS.md, plan.md, progress.md
 

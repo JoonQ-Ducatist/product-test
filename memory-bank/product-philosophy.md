@@ -1,19 +1,19 @@
-# xCubus Product Philosophy — Human Desire Engine
+# FACt.Smack Product Philosophy — Human Desire Engine
 
 > **Canonical Product Principle**  
-> xCubus의 출발점은 기능이나 기술이 아니라 인간이 반복적으로 느끼는 근원적 욕망이다.
+> FACt.Smack의 출발점은 기능이나 기술이 아니라 인간이 반복적으로 느끼는 근원적 욕망이다.
 
 ---
 
 ## 1. Founding Thesis
 
-xCubus는 다음과 같은 인간의 기본적이고 반복적인 욕구에서 출발한다.
+FACt.Smack는 다음과 같은 인간의 기본적이고 반복적인 욕구에서 출발한다.
 
 > **이성 · 관계 · 평가 · 자랑 · 칭찬 · 욕망**
 
 사람은 다른 사람에게 어떻게 보이는지 궁금해하고, 관심 있는 사람에게 선택받고 싶어하며, 자신의 매력과 취향을 드러내고 싶어한다. 타인의 반응을 통해 자신을 확인하고, 좋은 반응을 받으면 그것을 공유하고 싶어하며, 그 과정에서 새로운 관계가 형성된다.
 
-xCubus는 이 행동을 억지로 만들어내는 서비스가 아니라 **이미 존재하는 인간의 욕구를 매우 짧고 쉬운 디지털 행동으로 연결하는 서비스**를 지향한다.
+FACt.Smack는 이 행동을 억지로 만들어내는 서비스가 아니라 **이미 존재하는 인간의 욕구를 매우 짧고 쉬운 디지털 행동으로 연결하는 서비스**를 지향한다.
 
 ```text
 보여주고 싶다
@@ -39,7 +39,7 @@ xCubus는 이 행동을 억지로 만들어내는 서비스가 아니라 **이�
 
 ## 2. Six Human Drivers
 
-| Driver | Human Need | xCubus Product Translation |
+| Driver | Human Need | FACt.Smack Product Translation |
 |---|---|---|
 | **이성 / Attraction** | 매력적으로 보이고 선택받고 싶은 욕구 | Date, Outfit, Profile 등 첫인상 평가 |
 | **관계 / Relationship** | 관심이 맞는 사람과 연결되고 관계를 유지하려는 욕구 | 초기에는 콘텐츠·평가·프로필, 이후 Follow/Relationship 기능 |
@@ -54,11 +54,11 @@ xCubus는 이 행동을 억지로 만들어내는 서비스가 아니라 **이�
 
 ## 3. Product Identity
 
-xCubus의 표면적 기능은 사진/영상과 평가지만 제품의 본질은 다음과 같다.
+FACt.Smack의 표면적 기능은 사진/영상과 평가지만 제품의 본질은 다음과 같다.
 
 > **“다른 사람의 시선을 통해 나를 확인하고, 보여주고, 인정받고, 관계로 확장하는 플랫폼.”**
 
-따라서 xCubus는 단순 SNS, 외모 점수 앱, 소개팅 앱 중 하나로 고정하지 않는다.
+따라서 FACt.Smack는 단순 SNS, 외모 점수 앱, 소개팅 앱 중 하나로 고정하지 않는다.
 
 - **SNS적 요소:** 보여주기, 자랑, 공유, 관계 축적
 - **Feedback 요소:** 타인의 즉각적인 평가
@@ -103,7 +103,7 @@ Result
    ↓
 더 깊이 알고 싶다 → REPORT
    ↓
-계속 확인하고 비교하고 싶다 → xCubus+
+계속 확인하고 비교하고 싶다 → FACS+
 ```
 
 수익화는 사용자의 불안이나 열등감을 인위적으로 키워 결제를 강요하는 방식이 아니라 **이미 발생한 궁금증에 더 많은 표본·분석·편의성을 제공하는 방식**으로 설계한다.
@@ -114,7 +114,7 @@ Result
 
 ### 5.1 Attraction is a powerful entry point, not the whole product
 
-이성에게 어떻게 보이는지는 강한 참여 동기다. 그러나 xCubus 전체를 데이팅 앱으로 한정하지 않는다. Outfit, Work, Fitness, Travel, Profile, Perceived Age 등 다양한 상황에서 동일한 욕구 구조를 사용한다.
+이성에게 어떻게 보이는지는 강한 참여 동기다. 그러나 FACt.Smack 전체를 데이팅 앱으로 한정하지 않는다. Outfit, Work, Fitness, Travel, Profile, Perceived Age 등 다양한 상황에서 동일한 욕구 구조를 사용한다.
 
 ### 5.2 Evaluation must be instant
 
@@ -177,8 +177,8 @@ Result
 | 1 | 인간의 기본 욕구 중 하나를 실제 행동으로 전환하는가? |
 | 2 | Vote → Upload → Result 반복을 강화하는가? |
 | 3 | Result Share를 통해 신규 사용자를 데려오는가? |
-| 4 | 더 많은/깊은 데이터를 만들어 xCubus의 데이터 자산을 강화하는가? |
-| 5 | Boost / Report / xCubus+의 자연스러운 결제 이유를 만드는가? |
+| 4 | 더 많은/깊은 데이터를 만들어 FACt.Smack의 데이터 자산을 강화하는가? |
+| 5 | Boost / Report / FACS+의 자연스러운 결제 이유를 만드는가? |
 | 6 | 장기적으로 사람과 사람 사이의 관계 자산을 축적하는가? |
 | 7 | 1인 운영과 자동화가 가능한가? |
 | 8 | Trust & Safety를 훼손하지 않는가? |
@@ -189,7 +189,7 @@ Result
 
 ## 8. UX Direction
 
-xCubus의 UX는 사용자가 설명서를 읽고 이해하는 구조가 아니라 본능적으로 행동하는 구조를 지향한다.
+FACt.Smack의 UX는 사용자가 설명서를 읽고 이해하는 구조가 아니라 본능적으로 행동하는 구조를 지향한다.
 
 ```text
 SEE → JUDGE → WONDER → SHOW → RECEIVE → SHARE → CONNECT → RETURN
@@ -251,13 +251,13 @@ Phase 5 — Commerce
 
 ## 11. Canonical One-Line Principle
 
-> **xCubus는 이성·관계·평가·자랑·칭찬·욕망이라는 인간의 반복적인 욕구를 ‘보여주기 → 평가 → 데이터 → 공유 → 관계’로 연결하고, 그 과정에서 더 많은 표본·분석·편의성에 대한 자연스러운 결제를 만드는 글로벌 First Impression Platform이다.**
+> **FACt.Smack는 이성·관계·평가·자랑·칭찬·욕망이라는 인간의 반복적인 욕구를 ‘보여주기 → 평가 → 데이터 → 공유 → 관계’로 연결하고, 그 과정에서 더 많은 표본·분석·편의성에 대한 자연스러운 결제를 만드는 글로벌 First Impression Platform이다.**
 
 ---
 
 ## 12. Governance
 
-이 문서는 xCubus의 **상위 Product Philosophy 문서**다.
+이 문서는 FACt.Smack의 **상위 Product Philosophy 문서**다.
 
 향후 `service-design-rule.md`, `feature-backlog.md`, `plan.md`, `monetization.md`, UX/UI, DB/API 및 마케팅 의사결정이 이 철학과 충돌할 경우 다음 순서로 판단한다.
 
