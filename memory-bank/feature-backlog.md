@@ -44,10 +44,10 @@
 | CL-02 | 무료 경계와 Result 계약 | Engagement·Data | 기본 결과, 유효 표본, 표본 부족, 유료 전환 조건을 문서·UI 계약으로 확정 | **완료(승인)** — 4단계 표본 상태, 투명 Result 오버레이, 100명 Boost ₩1,000 가설을 목업 API·UI·계약에 반영 |
 | CL-03 | Signup/Auth → Feed → Vote → Upload → Result 흐름 | Engagement | 가입 뒤 30초 이내 핵심 가치 경험, 프로필 강제 입력 없음 | 목업 동선 구현 완료 — Splash 가입 → Feed → Vote Result → 나도 평가받기 → Upload. 실제 Auth·서버 Result는 CL-04/CL-06에서 연결, 사용자 승인 대기 |
 | CL-04 | 실제 유효 투표·기본 Result | Data | 1인 1표·서버 집계·BINARY YES/NO 또는 NUMERIC_AGE·표본 수 결과 제공 | 대기 |
-| CL-05 | 초기 Analytics | Acquisition·Engagement·Data | Visitor→Signup→First Vote→Upload→Result 이벤트와 Weekly Valid Votes 수집 | 대기 |
+| CL-05 | 초기 Analytics | Acquisition·Engagement·Data | Visitor→Signup→First Vote→Upload→Result 이벤트와 Weekly Valid Votes 수집 | 진행 중 — 익명 로컬 이벤트 계약·퍼널 이벤트 연결 완료. 서버 수집·주간 지표는 Closed Beta/Supabase 단계에서 연결 |
 | GEO-01 | 동의 기반 촬영 장소 컨텍스트 | Trust·Engagement | EXIF/기기/입력 출처·확실성·공개 동의·민감 장소 차단·상세 패널 노출을 구현 | 대기 — 위치·개인정보 영향평가와 관리자 검토 설계 선행 |
 | I18N-01 | 글로벌 언어·지역 선택 | Acquisition·Trust | `ko/en/zh` 번역 키, 서버 국가 신호+브라우저 언어 제안, 수동 언어 선택, 한국 테스트 한국어 기본을 구현 | 대기 |
-| HAP-01 | 모바일 평가 햅틱 | Engagement | YES 단일·NO 이중 햅틱을 지원 기기에서 제공하고 비지원 환경 안전 폴백 검증 | 대기 |
+| HAP-01 | 모바일 평가 햅틱 | Engagement | YES 단일·NO 이중 햅틱을 지원 기기에서 제공하고 비지원 환경 안전 폴백 검증 | 진행 중 — 지원 브라우저에서 YES 12ms 단일, NO 이중 패턴을 호출하며 `navigator.vibrate` 미지원 시 무동작 폴백. 실제 기기 QA 대기 |
 
 ### Day 15–30 — Closed Beta 기반
 

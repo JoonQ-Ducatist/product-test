@@ -9,6 +9,7 @@ import logoUrl from './assets/xcubus-snake-logo.png';
 import StatePanel from './components/ui/StatePanel.jsx';
 import SkipLink from './components/ui/SkipLink.jsx';
 import { submitVote } from './services/mockApi.js';
+import { ANALYTICS_EVENT, trackEvent } from './services/analytics.js';
 
 /** 정의: 앱 전역 하단 탐색 메뉴의 식별자·아이콘·표시명·선택 색상 목록이다. */
 const tabs = [
@@ -49,6 +50,14 @@ export default function App() {
     const timer = window.setTimeout(() => setToast(''), 1800);
     return () => window.clearTimeout(timer);
   }, [toast]);
+
+  /** 정의: 동일 브라우저 세션의 첫 진입만 Visitor 이벤트로 남겨 새로고침에 따른 과대 계수를 막는다. */
+  useEffect(() => {
+    const sessionKey = 'xcubus_visitor_tracked_v1';
+    if (window.sessionStorage.getItem(sessionKey)) return;
+    window.sessionStorage.setItem(sessionKey, '1');
+    trackEvent(ANALYTICS_EVENT.VISITOR_OPENED, { locale, source: sharedPostId ? 'shared_post' : 'direct' });
+  }, [locale, sharedPostId]);
 
   /** 정의: iOS Safari·모바일 브라우저의 탭/세션 복원 뒤에도 헤더와 본문 시작 좌표를 재계산한다. 복귀 시 고정 레이어를 다시 마운트해 이전 합성 레이어가 남는 현상을 막는다. */
   useEffect(() => {
@@ -115,6 +124,7 @@ export default function App() {
 
   /** 정의: 모바일은 시스템 공유 시트, 그 외 환경은 링크 복사를 우선해 설치된 SNS·메신저와 미래 앱 딥링크를 함께 지원한다. */
   async function shareCard(card) {
+    trackEvent(ANALYTICS_EVENT.SHARE_REQUESTED, { category: card.category, evaluationType: card.evaluationType, locale });
     const url = `${window.location.origin}${window.location.pathname}?post=${encodeURIComponent(card.id)}&shared=1`;
     const shareData = locale === 'en'
       ? { title: 'xCubus First Impression', text: `Share your first impression of @${card.author}.`, url }
@@ -131,11 +141,14 @@ export default function App() {
   /** 정의: 카테고리 평가 유형에 맞춰 BINARY 또는 NUMERIC_AGE 투표를 기록하고 카드 집계를 동기화한다. @param {boolean|number} value YES/NO 또는 예상 나이 */
   async function vote(value) {
     const payload = currentCard.evaluationType === 'NUMERIC_AGE' ? { type: 'age', value } : value ? 'yes' : 'no';
+    // 정의: 지원 기기에서 YES는 잔잔한 단일 진동, NO는 분명한 이중 진동을 제공하며 비지원 브라우저는 조용히 통과한다.
     if (currentCard.evaluationType !== 'NUMERIC_AGE' && typeof navigator !== 'undefined' && typeof navigator.vibrate === 'function') navigator.vibrate(value ? 12 : [24, 34, 42]);
     const result = await submitVote(currentCard, payload, votedIds);
     if (result.error) { setToast(result.error.message); return; }
     setCards((items) => items.map((card) => card.id === currentCard.id ? result.data.post : card));
     setVotedIds((ids) => new Set([...ids, currentCard.id]));
+    trackEvent(votedIds.size === 0 ? ANALYTICS_EVENT.FIRST_VOTE : ANALYTICS_EVENT.VOTE_COMPLETED, { category: currentCard.category, evaluationType: currentCard.evaluationType, locale });
+    trackEvent(ANALYTICS_EVENT.RESULT_VIEWED, { category: currentCard.category, evaluationType: currentCard.evaluationType, locale });
     setToast(locale === 'en'
       ? (currentCard.evaluationType === 'NUMERIC_AGE' ? `You chose age ${value}.` : value ? 'Your YES vote was recorded.' : 'Your NO vote was recorded.')
       : (currentCard.evaluationType === 'NUMERIC_AGE' ? `${value}세로 첫인상을 남겼습니다.` : value ? 'YES 의견을 남겼습니다.' : 'NO 의견을 남겼습니다.'));
@@ -158,6 +171,7 @@ export default function App() {
     setActiveCategory('ALL');
     setCurrentIndex(0);
     setActiveTab('feed');
+    trackEvent(ANALYTICS_EVENT.UPLOAD_COMPLETED, { category: card.category, evaluationType: card.evaluationType, locale });
     setToast(locale === 'en' ? 'Your new post is now first in the feed.' : '새 사진이 피드 맨 앞에 등록되었습니다.');
   }
 
@@ -190,7 +204,7 @@ export default function App() {
     if (nextIndex !== currentTabIndex) setActiveTab(tabs[nextIndex][0]);
   }
 
-  if (isGuest) return <CanvasStage><SplashView cards={cards} locale={locale} onEnter={(provider) => { setIsGuest(false); setToast(locale === 'en' ? `${provider} sign-in is currently a mock.` : `${provider} 로그인은 현재 목업입니다.`); }} /></CanvasStage>;
+  if (isGuest) return <CanvasStage><SplashView cards={cards} locale={locale} onEnter={(provider) => { setIsGuest(false); trackEvent(ANALYTICS_EVENT.SIGNUP_COMPLETED, { locale, source: provider }); setToast(locale === 'en' ? `${provider} sign-in is currently a mock.` : `${provider} 로그인은 현재 목업입니다.`); }} /></CanvasStage>;
 
   return <CanvasStage><div className="editorial-app h-full bg-background text-on-background font-body">
     <SkipLink />

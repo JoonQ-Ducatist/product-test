@@ -96,6 +96,12 @@ P1 결정 전에도 아래 작업은 안전하게 시작할 수 있다.
 3. CSS 토큰과 접근성·반응형 UI 개선
 4. 샘플 데이터 기반 목업 API와 컴포넌트 테스트 작성
 
+### ✅ 자율 실행 기록 — CL-05 초기 Analytics
+
+- 개발용 익명 이벤트 계약을 추가했다. 이벤트는 Visitor, Signup, First Vote, Vote, Upload, Result, Share이며 사진·문구·핸들·URL을 저장하거나 외부로 전송하지 않는다.
+- `visitor_opened → signup_completed → first_vote → upload_completed → result_viewed` 퍼널의 UI 연결과 프로덕션 빌드 검증을 완료했다.
+- 실제 주간 유효 투표 집계와 서버 전송은 Supabase·Closed Beta 착수 후에만 진행한다.
+
 단, 이 작업은 실제 사용자 데이터나 외부 인증·이미지 저장소를 연결하지 않는다.
 
 ## 다음 작업 시작 안내
