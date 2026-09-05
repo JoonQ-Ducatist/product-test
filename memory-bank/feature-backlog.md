@@ -96,6 +96,13 @@
 | P2 | Follow, Relationship, 24시간 Chat, Advanced AI Analysis, Visual Commerce/Affiliate, Ads | 첫 결제·재구매와 신뢰 가능한 데이터·트래픽이 확인된 뒤 |
 | P2 | Tournament 5:5 | 별도 토너먼트의 대결 규칙·보상·안전 정책이 확정된 뒤. 일반 Feed·Boost·Ranking과 집계를 분리 |
 
+### 검색·생성형 검색 최적화
+
+| ID | 기능·결정 | 완료 기준 | 상태 |
+| --- | --- | --- | --- |
+| SEO-01 | 검색 엔진 기본 노출 | 언어별 title·description, Open Graph·X 공유 메타, robots·sitemap을 제공 | 진행 중 — SPA 기본 메타·robots·sitemap 반영. 운영 도메인 확정 후 절대 URL·Search Console 등록 필요 |
+| GEO-SEO-01 | 생성형 검색(GEO) 콘텐츠 신뢰성 | 서비스 목적·평가의 주관성·안전 원칙·운영자 책임을 명확한 공개 문서와 구조화 데이터로 제공 | 진행 중 — WebApplication 구조화 데이터에 주관적 첫인상·비객관적 판단 원칙을 명시. 공개 도움말·정책 문서와 운영 도메인 확정 뒤 확장 |
+
 ## 4. 기존 기능·운영 백로그 (이력 및 종속 과제)
 
 ### 단계 0 — 제품·안전 정책

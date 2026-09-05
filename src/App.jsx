@@ -11,6 +11,7 @@ import SkipLink from './components/ui/SkipLink.jsx';
 import { submitVote } from './services/mockApi.js';
 import { ANALYTICS_EVENT, trackEvent } from './services/analytics.js';
 import { localeUrl, resolveLocale } from './services/locale.js';
+import { applySeoMetadata } from './services/seo.js';
 
 /** 정의: 앱 전역 하단 탐색 메뉴의 식별자·아이콘·표시명·선택 색상 목록이다. */
 const tabs = [
@@ -96,6 +97,7 @@ export default function App() {
   }, []);
 
   useEnglishUi(locale);
+  useEffect(() => { applySeoMetadata(locale); }, [locale]);
 
   /** 정의: 메뉴 전환마다 이전 화면의 스크롤 위치를 0으로 초기화해 상단 헤더·본문이 잘린 채 렌더링되는 것을 막는다. */
   useLayoutEffect(() => {
