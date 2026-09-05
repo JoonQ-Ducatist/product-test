@@ -12,6 +12,7 @@ import { submitVote } from './services/mockApi.js';
 import { ANALYTICS_EVENT, trackEvent } from './services/analytics.js';
 import { localeUrl, resolveLocale } from './services/locale.js';
 import { applySeoMetadata } from './services/seo.js';
+import { buildShareUrl } from './services/share.js';
 
 /** 정의: 앱 전역 하단 탐색 메뉴의 식별자·아이콘·표시명·선택 색상 목록이다. */
 const tabs = [
@@ -128,7 +129,7 @@ export default function App() {
   /** 정의: 모바일은 시스템 공유 시트, 그 외 환경은 링크 복사를 우선해 설치된 SNS·메신저와 미래 앱 딥링크를 함께 지원한다. */
   async function shareCard(card) {
     trackEvent(ANALYTICS_EVENT.SHARE_REQUESTED, { category: card.category, evaluationType: card.evaluationType, locale });
-    const url = `${window.location.origin}${window.location.pathname}?post=${encodeURIComponent(card.id)}&shared=1`;
+    const url = buildShareUrl(card.id, locale);
     const shareData = locale === 'en'
       ? { title: 'xCubus First Impression', text: `Share your first impression of @${card.author}.`, url }
       : { title: 'xCubus 첫인상', text: `@${card.author}의 첫인상 평가에 참여해 보세요.`, url };

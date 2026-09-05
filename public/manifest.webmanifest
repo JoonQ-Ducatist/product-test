@@ -1,0 +1,9 @@
+{
+  "name": "xCubus",
+  "short_name": "xCubus",
+  "lang": "ko",
+  "display": "standalone",
+  "start_url": "/",
+  "background_color": "#f9f7f2",
+  "theme_color": "#f9f7f2"
+}
