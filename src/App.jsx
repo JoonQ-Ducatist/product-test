@@ -33,6 +33,7 @@ export default function App() {
   const [currentIndex, setCurrentIndex] = useState(() => Math.max(initialCards.findIndex((card) => card.id === sharedPostId), 0));
   const [votedIds, setVotedIds] = useState(() => new Set());
   const [toast, setToast] = useState('');
+  const [viewportEpoch, setViewportEpoch] = useState(0);
   const [previewState, setPreviewState] = useState(() => new URLSearchParams(window.location.search).get('state') ?? 'ready');
   const tabGestureStart = useRef(null);
   const mainRef = useRef(null);
@@ -49,14 +50,16 @@ export default function App() {
     return () => window.clearTimeout(timer);
   }, [toast]);
 
-  /** 정의: iOS Safari·모바일 브라우저의 탭/세션 복원이 React 초기 렌더 뒤 문서 스크롤을 되살려 고정 헤더를 밀어내는 현상을 막는다. 본문 탭별 스크롤은 건드리지 않고 문서 좌표만 복구한다. */
+  /** 정의: iOS Safari·모바일 브라우저의 탭/세션 복원 뒤에도 헤더와 본문 시작 좌표를 재계산한다. 복귀 시 고정 레이어를 다시 마운트해 이전 합성 레이어가 남는 현상을 막는다. */
   useEffect(() => {
     let delayedReset;
     const resetDocumentViewport = () => {
       const reset = () => {
+        document.documentElement.style.setProperty('--xc-app-height', `${window.innerHeight}px`);
         window.scrollTo(0, 0);
         document.documentElement.scrollTop = 0;
         document.body.scrollTop = 0;
+        mainRef.current?.scrollTo({ top: 0, left: 0, behavior: 'instant' });
       };
       reset();
       window.requestAnimationFrame(() => {
@@ -66,14 +69,17 @@ export default function App() {
       window.clearTimeout(delayedReset);
       delayedReset = window.setTimeout(reset, 120);
     };
-    const onVisibilityChange = () => { if (document.visibilityState === 'visible') resetDocumentViewport(); };
-    window.addEventListener('pageshow', resetDocumentViewport);
-    window.addEventListener('focus', resetDocumentViewport);
+    const onResume = () => { resetDocumentViewport(); setViewportEpoch((value) => value + 1); };
+    const onVisibilityChange = () => { if (document.visibilityState === 'visible') onResume(); };
+    window.addEventListener('pageshow', onResume);
+    window.addEventListener('focus', onResume);
+    window.visualViewport?.addEventListener('resize', resetDocumentViewport);
     document.addEventListener('visibilitychange', onVisibilityChange);
     resetDocumentViewport();
     return () => {
-      window.removeEventListener('pageshow', resetDocumentViewport);
-      window.removeEventListener('focus', resetDocumentViewport);
+      window.removeEventListener('pageshow', onResume);
+      window.removeEventListener('focus', onResume);
+      window.visualViewport?.removeEventListener('resize', resetDocumentViewport);
       document.removeEventListener('visibilitychange', onVisibilityChange);
       window.clearTimeout(delayedReset);
     };
@@ -188,7 +194,7 @@ export default function App() {
 
   return <CanvasStage><div className="editorial-app h-full bg-background text-on-background font-body">
     <SkipLink />
-    <header className="fixed top-0 z-50 w-full border-b border-[#e4e2dd] bg-[#fbf9f4]/95 backdrop-blur-xl">
+    <header key={`header-${viewportEpoch}`} className="fixed top-0 z-50 w-full border-b border-[#e4e2dd] bg-[#fbf9f4]/95 backdrop-blur-xl">
       <div className="mx-auto flex h-[48px] max-w-none items-center justify-between px-4">
         <button type="button" onClick={() => setActiveTab('feed')} className="flex min-w-0 items-end gap-1 text-left" aria-label="xy by x.Cubus 피드로 이동">
           <img src={logoUrl} width="38" height="28" className="h-7 w-9 shrink-0 object-contain" alt="xy by x.Cubus 로고" />
@@ -201,7 +207,7 @@ export default function App() {
       </div>
     </header>
 
-    <main key={`main-${activeTab}`} ref={mainRef} id="main-content" tabIndex="-1" onPointerDown={startTabGesture} onPointerUp={finishTabGesture} onPointerCancel={() => { tabGestureStart.current = null; }} className={`editorial-main mx-auto flex h-full w-full max-w-none flex-col px-4 pb-11 pt-[56px] sm:px-5 ${activeTab === 'feed' ? 'editorial-main--feed' : 'editorial-main--scroll'}`}>
+    <main key={`main-${activeTab}-${viewportEpoch}`} ref={mainRef} id="main-content" tabIndex="-1" onPointerDown={startTabGesture} onPointerUp={finishTabGesture} onPointerCancel={() => { tabGestureStart.current = null; }} className={`editorial-main mx-auto flex h-full w-full max-w-none flex-col px-4 pb-11 pt-[56px] sm:px-5 ${activeTab === 'feed' ? 'editorial-main--feed' : 'editorial-main--scroll'}`}>
       {previewState !== 'ready' ? <StatePanel state={previewState} pageName={tabs.find(([id]) => id === activeTab)?.[2] ?? 'xCubus'} onAction={() => { if (previewState === 'permission') setIsGuest(true); else if (previewState === 'review') setActiveTab('profile'); setPreviewState('ready'); }} /> : <>
         {activeTab === 'feed' && <FeedView categories={displayCategories} cards={visibleCards} card={currentCard} currentIndex={safeIndex} activeCategory={activeCategory} hasVoted={currentCard && votedIds.has(currentCard.id)} onCategoryChange={changeCategory} onPrevious={() => moveCard(-1)} onNext={() => moveCard(1)} onShuffle={shuffle} onVote={vote} onShare={shareCard} onBoost={() => setToast(locale === 'en' ? 'Boost never changes the result; it only increases reach and sample size.' : 'Boost는 결과를 바꾸지 않고 추가 노출과 표본만 늘립니다. 결제 연결은 다음 단계에서 적용합니다.')} onStartUpload={() => { if (isSharedGuest) { setIsSharedGuest(false); setIsGuest(true); } else { setActiveTab('upload'); setToast(locale === 'en' ? 'Let people see your first impression too.' : '내 사진도 첫인상을 받아보세요.'); } }} onAddComment={addComment} />}
         {activeTab === 'upload' && <UploadView categories={displayCategories} locale={locale} onSubmit={addCard} onMessage={setToast} />}
