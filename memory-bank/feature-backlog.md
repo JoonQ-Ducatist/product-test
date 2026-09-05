@@ -47,7 +47,7 @@
 | CL-05 | 초기 Analytics | Acquisition·Engagement·Data | Visitor→Signup→First Vote→Upload→Result 이벤트와 Weekly Valid Votes 수집 | **Codex셀프 완료(로컬 범위)** — 익명 로컬 이벤트 계약·퍼널 이벤트 연결 완료. 서버 수집·주간 지표는 Closed Beta/Supabase 단계에서 연결 |
 | GEO-01 | 동의 기반 촬영 장소 컨텍스트 | Trust·Engagement | EXIF/기기/입력 출처·확실성·공개 동의·민감 장소 차단·상세 패널 노출을 구현 | 대기 — 위치·개인정보 영향평가와 관리자 검토 설계 선행 |
 | I18N-01 | 글로벌 언어·지역 선택 | Acquisition·Trust | `ko/en/zh` 번역 키, 서버 국가 신호+브라우저 언어 제안, 수동 언어 선택, 한국 테스트 한국어 기본을 구현 | **Codex셀프 완료(ko/en 기반 범위)** — 로컬 한국어 기본·영어 수동 전환·브라우저 영어 제안 기반을 구현. 중국어 번역 카탈로그와 서버 국가 신호는 개인정보·운영 정책 확정 뒤 연결 |
-| HAP-01 | 모바일 평가 햅틱 | Engagement | YES 단일·NO 이중 햅틱을 지원 기기에서 제공하고 비지원 환경 안전 폴백 검증 | 진행 중 — 지원 브라우저에서 YES 12ms 단일, NO 이중 패턴을 호출하며 `navigator.vibrate` 미지원 시 무동작 폴백. 실제 기기 QA 대기 |
+| HAP-01 | 모바일 평가 햅틱 | Engagement | YES 단일·NO 이중 햅틱을 지원 기기에서 제공하고 비지원 환경 안전 폴백 검증 | **Codex셀프 완료(코드 범위)** — 지원 브라우저에서 YES 12ms 단일, NO 이중 패턴을 호출하며 `navigator.vibrate` 미지원 시 무동작 폴백. 실제 기기 QA 대기 |
 
 ### Day 15–30 — Closed Beta 기반
 
@@ -62,8 +62,8 @@
 | ID | 기능·결정 | Cash Loop 영향 | 완료 기준 | 상태 |
 | --- | --- | --- | --- | --- |
 | CL-09 | Result Card 생성 | Referral | 카테고리·유효 표본·결과가 담긴 공유 가능한 결과 카드 생성 | 대기 |
-| CL-10 | Result Share URL·채널 공유 | Referral·Acquisition | 공유 URL과 Instagram·TikTok·KakaoTalk·X 등의 플랫폼 공유 진입 제공 | 대기 |
-| CL-11 | Guest Vote → Signup → Upload | Acquisition·Engagement | 공유 방문자는 가입 전 투표 가능, 투표 뒤 가입·업로드 전환을 측정 | 대기 |
+| CL-10 | Result Share URL·채널 공유 | Referral·Acquisition | 공유 URL과 Instagram·TikTok·KakaoTalk·X 등의 플랫폼 공유 진입 제공 | **Codex셀프 완료(웹 범위)** — 게시물별 공유 URL, Web Share API, 클립보드 폴백과 공유 이벤트를 구현. 플랫폼별 SDK·앱 딥링크는 실제 채널 정책 확정 뒤 연결 |
+| CL-11 | Guest Vote → Signup → Upload | Acquisition·Engagement | 공유 방문자는 가입 전 투표 가능, 투표 뒤 가입·업로드 전환을 측정 | **Codex셀프 완료(목업 범위)** — 공유 URL의 게스트 진입과 Feed→가입 목업 전환을 구현. 실제 인증·전환 서버 측정은 CL-06 이후 연결 |
 
 ### Day 46–60 — P0 First Revenue
 
@@ -163,7 +163,7 @@
 | CNT-06 | 전체·팔로워 공개 | 업로더가 공개 범위를 선택하고, 팔로워 공개 콘텐츠를 권한 있는 사용자에게만 노출 | 대기 |
 | CNT-07 | 업로드 자격 안내 | 업로드 가능·제한 상태, 부족한 활동 기준, 전환 안내를 사용자에게 명확히 표시 | 대기 |
 | CNT-08 | 댓글·한 단계 대댓글 | 열람 권한 회원의 댓글·대댓글, 신고, 작성자 삭제 UI(소프트 숨김), 요약·전체 확장 댓글 UI를 제공 | 진행 중 — React Feed 목업 UI 구현, 서버 권한·신고·저장은 대기 |
-| CNT-09 | 다중 미디어 캐러셀 | 이미지 최대 5장과 10초 이하 동영상 1개 업로드, 좌·우 스와이프, 현재 위치·전체 장수 표시를 제공 | 대기 |
+| CNT-09 | 다중 미디어 캐러셀 | 이미지 최대 5장과 10초 이하 동영상 1개 업로드, 좌·우 스와이프, 현재 위치·전체 장수 표시를 제공 | **Codex셀프 완료(프론트엔드 목업 범위)** — 피드·랭킹 팝업의 다중 미디어 탐색, 위치 표기, 좌우 스와이프와 PC 화살표를 구현. 실제 미디어 저장·동영상 처리는 BE-04/05에서 연결 |
 | CNT-10 | 사진 권리 확인 동의 | 업로드 시 권리 보유 확인과 동의 버전을 받고 사용자에게 안내 | 대기 |
 | CNT-11 | 개인 계정 설정 | 프로필 사진·핸들, 로그인 수단, 알림, 기본 공개·댓글 설정, 차단 목록, 탈퇴·데이터 요청을 관리 | 대기 |
 
