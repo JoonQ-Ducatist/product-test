@@ -1,11 +1,11 @@
-# xCubus Result · Sample · Boost Contract
+# FACt.Smack Result · Sample · Boost Contract
 
 > 상태: **CL-02 설계안 — 사용자 승인 대기**  
 > 상위 원칙: [Product Philosophy](./product-philosophy.md) · [Monetization](./monetization.md) · [90-day Cash Loop Plan](./90-day-cash-loop-plan.md)
 
 ## 1. 목적
 
-무료 Result는 사용자가 xCubus의 첫인상 데이터를 실제로 경험하는 완결된 가치여야 한다. Boost는 무료 결과를 의도적으로 불완전하게 만들거나 긍정 결과를 판매하는 도구가 아니라, 이미 확인한 결과에 대해 **더 큰 표본과 더 빠른 응답**을 원하는 사용자의 선택지다.
+무료 Result는 사용자가 FACt.Smack의 첫인상 데이터를 실제로 경험하는 완결된 가치여야 한다. Boost는 무료 결과를 의도적으로 불완전하게 만들거나 긍정 결과를 판매하는 도구가 아니라, 이미 확인한 결과에 대해 **더 큰 표본과 더 빠른 응답**을 원하는 사용자의 선택지다.
 
 ## 2. 유효 표본 상태
 

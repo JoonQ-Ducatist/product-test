@@ -1,4 +1,4 @@
-# xCubus 전체 기능 백로그
+# FACt.Smack 전체 기능 백로그
 
 > 기준 문서: product-philosophy.md, monetization.md, 90-day-cash-loop-plan.md, service-design-rule.md, TECH-AGENTS.md, progress.md
 >
@@ -85,7 +85,7 @@
 
 | ID | 기능·결정 | Cash Loop 영향 | 완료 기준 | 상태 |
 | --- | --- | --- | --- | --- |
-| CL-17 | xCubus+ 구독 | Monetization·Retention | ₩7,900/월 가설, 월 Boost·Premium Report·변화 추적 제공 | 대기 |
+| CL-17 | FACS+ 구독 | Monetization·Retention | ₩7,900/월 가설, 월 Boost·Premium Report·변화 추적 제공 | 대기 |
 | CL-18 | 재구매·구독 갱신 분석 | Retention·Monetization | 첫 결제→두 번째 결제, 구독 전환·갱신, ARPPU·MRR 측정 | 대기 |
 
 ### Cash Loop 이후 — P1/P2 보류 기능

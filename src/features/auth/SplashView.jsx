@@ -1,5 +1,4 @@
 import { useEffect, useMemo, useState } from 'react';
-import logoUrl from '../../assets/xcubus-snake-logo.png';
 
 /** 정의: 방문마다 무작위로 보여 주는 한·영 가입 유도 문구 목록이다. */
 const splashCopies = [
@@ -57,8 +56,7 @@ export default function SplashView({ cards, locale = 'ko', onEnter, onEmailAuth 
 
       <div className="relative z-10 flex h-full flex-col px-5 pb-6 pt-10">
         <header className="flex flex-col items-center text-center">
-          <img src={logoUrl} width="96" height="64" className="h-16 w-24 object-contain drop-shadow-[0_3px_12px_rgba(0,0,0,0.5)]" alt="xCubus 뱀 로고" />
-          <p lang="en" className="mt-3 font-latin text-[25px] font-extrabold leading-none tracking-tight">xy by x.Cubus</p>
+          <p lang="en" className="mt-3 font-latin text-[25px] font-extrabold leading-none tracking-tight">FACt.Smack</p>
           <div className="mt-2 flex items-center gap-2">
             <span className="h-px w-5 bg-[#c5a059]/70" />
             <p lang="en" className="font-mono text-[9px] font-bold tracking-[0.22em] text-[#ecd8a8]">MORE VIEWS, MORE YOU</p>

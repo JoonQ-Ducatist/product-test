@@ -1,11 +1,11 @@
 const COPY = {
   ko: {
-    title: 'xCubus | 사람들의 첫인상을 데이터로',
-    description: '사진에 대한 사람들의 주관적인 첫인상을 안전하고 투명하게 확인하는 xCubus 피드백 플랫폼입니다.',
+    title: 'FACt.Smack | 사람들의 첫인상을 데이터로',
+    description: '사진에 대한 사람들의 주관적인 첫인상을 안전하고 투명하게 확인하는 FACt.Smack 피드백 플랫폼입니다.',
   },
   en: {
-    title: 'xCubus | First impressions, made visible',
-    description: 'xCubus is a transparent feedback platform for understanding people’s subjective first impressions of your photos.',
+    title: 'FACt.Smack | First impressions, made visible',
+    description: 'FACt.Smack is a transparent feedback platform for understanding people’s subjective first impressions of your photos.',
   },
 };
 

@@ -1,4 +1,4 @@
-# xCubus Monetization & Cash Flow Memory Bank
+# FACt.Smack Monetization & Cash Flow Memory Bank
 
 > Status: Working Strategy / MVP validation hypothesis  
 > Goal: **90일 안에 제3자의 첫 실제 결제와 반복 가능한 현금흐름을 검증한다.**
@@ -7,12 +7,12 @@
 
 ## 1. Monetization Principle
 
-xCubus의 초기 목표는 광고 트래픽을 크게 만든 뒤 수익화하는 것이 아니다.
+FACt.Smack의 초기 목표는 광고 트래픽을 크게 만든 뒤 수익화하는 것이 아니다.
 
 핵심은 사용자의 자연스러운 행동 흐름 안에 결제 이유를 만드는 것이다.
 
 ```text
-Feed → Vote → Upload → Result → Share → Boost → Report → xCubus+ → Return
+Feed → Vote → Upload → Result → Share → Boost → Report → FACS+ → Return
 ```
 
 무료 사용자는 첫인상 데이터를 경험할 수 있고, 유료 사용자는 **더 많은 표본, 더 빠른 응답, 더 깊은 분석, 변화 추적 및 편의성**에 비용을 지불한다.
@@ -37,8 +37,8 @@ Feed → Vote → Upload → Result → Share → Boost → Report → xCubus+ �
 | BOOST Test | 우선 가격 테스트 | **₩1,000/회** | 1회 저마찰 결제 | First Revenue |
 | REPORT | First Impression 상세 Report | ₩4,900~9,900/회 | 충분한 표본 기반 심화 분석 | ARPPU Expansion |
 | REPORT Test | 우선 가격 테스트 | **₩5,900/회** | 고급 결과/비교 | Second Purchase |
-| xCubus+ | 반복 사용자 Subscription | ₩6,900~9,900/월 | 반복 Boost/Report 혜택 및 Premium 기능 | MRR |
-| xCubus+ Test | 우선 가격 테스트 | **₩7,900/월** | 지속적 분석/혜택 | Recurring Revenue |
+| FACS+ | 반복 사용자 Subscription | ₩6,900~9,900/월 | 반복 Boost/Report 혜택 및 Premium 기능 | MRR |
+| FACS+ Test | 우선 가격 테스트 | **₩7,900/월** | 지속적 분석/혜택 | Recurring Revenue |
 
 장기 Revenue Stack:
 
@@ -56,7 +56,7 @@ Subscription
 
 ## 3. FREE
 
-무료 경험은 결제를 강제하기 위한 불완전한 제품이 아니라 xCubus의 핵심 가치를 실제로 경험하게 해야 한다.
+무료 경험은 결제를 강제하기 위한 불완전한 제품이 아니라 FACt.Smack의 핵심 가치를 실제로 경험하게 해야 한다.
 
 초기 후보:
 
@@ -73,7 +73,7 @@ Subscription
 
 ## 4. BOOST — First Purchase Engine
 
-Boost는 xCubus의 첫 번째 유료상품으로 우선 검증한다.
+Boost는 FACt.Smack의 첫 번째 유료상품으로 우선 검증한다.
 
 ### Concept
 
@@ -131,7 +131,7 @@ Report는 단순히 무료 숫자를 가리는 Paywall이 아니라 사용자가
 
 ---
 
-## 6. xCubus+ — Recurring Revenue Engine
+## 6. FACS+ — Recurring Revenue Engine
 
 일회성 Boost/Report 구매 경험이 있는 반복 사용자를 Subscription으로 전환한다.
 
@@ -242,7 +242,7 @@ Photo
 | D31–45 | Retention + Share | Vote → Upload → Result 재방문 / Share 유입 검증 |
 | D46–60 | **Boost Launch** | **제3자의 첫 실제 결제** |
 | D61–75 | **Report Launch** | 가격/구매전환 A/B Test |
-| D76–90 | **xCubus+ Launch** | 첫 MRR + 반복결제 검증 |
+| D76–90 | **FACS+ Launch** | 첫 MRR + 반복결제 검증 |
 
 ### 90-Day Success Definition
 
@@ -250,7 +250,7 @@ Photo
 
 성공은 다음 두 사건을 실제로 확인하는 것이다.
 
-1. **서비스 운영자와 관계없는 사용자가 자기 돈으로 xCubus 상품을 구매한다.**
+1. **서비스 운영자와 관계없는 사용자가 자기 돈으로 FACt.Smack 상품을 구매한다.**
 2. **동일 사용자 또는 동일 Cohort에서 두 번째 결제/구독 유지가 발생한다.**
 
 ---
@@ -317,7 +317,7 @@ North Star Metric 후보:
 
 ## 14. Operating Principle
 
-xCubus는 초기 DAU가 증가하더라도 가능한 한 1인 운영 가능한 구조를 지향한다.
+FACt.Smack는 초기 DAU가 증가하더라도 가능한 한 1인 운영 가능한 구조를 지향한다.
 
 자동화 우선 영역:
 
@@ -352,4 +352,4 @@ AI는 사용자에게 보여주기 위한 기능 자체보다 개발, 운영, �
 4. Result Share → Guest Vote → Signup Funnel을 UX에 반영한다.
 5. Analytics Event Schema를 결제 Funnel 중심으로 정의한다.
 
-이 문서는 xCubus의 수익화 전략이 변경될 때 지속적으로 업데이트하는 **Monetization Memory Bank**로 사용한다.
+이 문서는 FACt.Smack의 수익화 전략이 변경될 때 지속적으로 업데이트하는 **Monetization Memory Bank**로 사용한다.

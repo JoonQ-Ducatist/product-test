@@ -1,7 +1,7 @@
 import * as DialogPrimitive from '@radix-ui/react-dialog';
 
 /**
- * xCubus의 공통 모달 기반 요소다. shadcn/ui의 Radix Dialog 패턴을
+ * FACt.Smack의 공통 모달 기반 요소다. shadcn/ui의 Radix Dialog 패턴을
  * 현재 서비스의 에디토리얼 디자인 토큰에 맞춰 최소 구성으로 적용한다.
  */
 /** 정의: 대화상자의 열림 상태와 접근성 관계를 관리하는 Radix Root 별칭이다. */

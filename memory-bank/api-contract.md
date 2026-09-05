@@ -1,4 +1,4 @@
-# xCubus 목업 API 계약
+# FACt.Smack 목업 API 계약
 
 > UX-04 단계의 프론트엔드·Supabase 전환 경계 문서다. 실제 API 구현 전에도 화면은 이 계약의 요청·응답·오류 형식만 사용한다.
 

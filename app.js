@@ -1,5 +1,5 @@
 /**
- * xCubus - Quantitative Intuition & Realtime Impression Analytics
+ * FACt.Smack - Quantitative Intuition & Realtime Impression Analytics
  * Scalable Infinite Feed Stream, Category Filter Gathering, Shuffle Discovery & User Card Prioritization
  */
 
@@ -144,9 +144,9 @@ const INITIAL_CARDS = [
 ];
 
 // App State
-const LEGACY_STORAGE_KEY = 'xcubus_cards_v7';
-const PREVIOUS_STORAGE_KEY = 'xcubus_cards_v8';
-const STORAGE_KEY = 'xcubus_cards_v9';
+const LEGACY_STORAGE_KEY = 'facs_cards_v7';
+const PREVIOUS_STORAGE_KEY = 'facs_cards_v8';
+const STORAGE_KEY = 'facs_cards_v9';
 let appCards = [];
 let currentCardIndex = 0;
 let currentFeedCategory = 'ALL'; // 'ALL' or specific category
@@ -171,7 +171,7 @@ function initData() {
   // Start this legacy UI from its original sample cards once.
   localStorage.removeItem(LEGACY_STORAGE_KEY);
   localStorage.removeItem(PREVIOUS_STORAGE_KEY);
-  sessionStorage.removeItem('xcubus_user_priority_shown');
+  sessionStorage.removeItem('facs_user_priority_shown');
   const stored = localStorage.getItem(STORAGE_KEY);
   if (stored) {
     try {
@@ -185,12 +185,12 @@ function initData() {
   }
 
   // Prioritize user's uploaded photo on initial load
-  const hasPrioritized = sessionStorage.getItem('xcubus_user_priority_shown');
+  const hasPrioritized = sessionStorage.getItem('facs_user_priority_shown');
   if (!hasPrioritized) {
     const myIndex = appCards.findIndex(c => c.isMyUpload);
     if (myIndex !== -1) {
       currentCardIndex = myIndex;
-      sessionStorage.setItem('xcubus_user_priority_shown', 'true');
+      sessionStorage.setItem('facs_user_priority_shown', 'true');
     }
   }
 }

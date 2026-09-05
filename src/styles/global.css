@@ -1,4 +1,4 @@
-/* 정의: xCubus 전 화면이 공유하는 표면·텍스트·강조 색상 토큰이다. */
+/* 정의: FACt.Smack 전 화면이 공유하는 표면·텍스트·강조 색상 토큰이다. */
 :root {
   --xc-app-height: 100dvh;
   --xc-surface: #f9f7f2;

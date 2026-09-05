@@ -1,4 +1,4 @@
-# xCubus MVP Category Scorecard
+# FACt.Smack MVP Category Scorecard
 
 > 기준일: 2026-09-04  
 > 상위 원칙: [Product Philosophy](./product-philosophy.md) · [90-day Cash Loop Plan](./90-day-cash-loop-plan.md) · [Monetization](./monetization.md)

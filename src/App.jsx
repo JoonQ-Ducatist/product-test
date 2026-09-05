@@ -5,7 +5,6 @@ import UploadView from './features/upload/UploadView.jsx';
 import RankingView from './features/ranking/RankingView.jsx';
 import ProfileView from './features/profile/ProfileView.jsx';
 import SplashView from './features/auth/SplashView.jsx';
-import logoUrl from './assets/xcubus-snake-logo.png';
 import StatePanel from './components/ui/StatePanel.jsx';
 import SkipLink from './components/ui/SkipLink.jsx';
 import { submitVote } from './services/mockApi.js';
@@ -74,7 +73,7 @@ export default function App() {
 
   /** 정의: 동일 브라우저 세션의 첫 진입만 Visitor 이벤트로 남겨 새로고침에 따른 과대 계수를 막는다. */
   useEffect(() => {
-    const sessionKey = 'xcubus_visitor_tracked_v1';
+    const sessionKey = 'facs_visitor_tracked_v1';
     if (window.sessionStorage.getItem(sessionKey)) return;
     window.sessionStorage.setItem(sessionKey, '1');
     trackEvent(ANALYTICS_EVENT.VISITOR_OPENED, { locale, source: sharedPostId ? 'shared_post' : 'direct' });
@@ -149,8 +148,8 @@ export default function App() {
     trackEvent(ANALYTICS_EVENT.SHARE_REQUESTED, { category: card.category, evaluationType: card.evaluationType, locale });
     const url = buildShareUrl(card.id, locale);
     const shareData = locale === 'en'
-      ? { title: 'xCubus First Impression', text: `Share your first impression of @${card.author}.`, url }
-      : { title: 'xCubus 첫인상', text: `@${card.author}의 첫인상 평가에 참여해 보세요.`, url };
+      ? { title: 'FACt.Smack First Impression', text: `Share your first impression of @${card.author}.`, url }
+      : { title: 'FACt.Smack 첫인상', text: `@${card.author}의 첫인상 평가에 참여해 보세요.`, url };
     try {
       if (navigator.share) await navigator.share(shareData);
       else if (navigator.clipboard?.writeText) { await navigator.clipboard.writeText(url); setToast(locale === 'en' ? 'Evaluation link copied.' : '평가 참여 링크를 복사했습니다.'); }
@@ -235,16 +234,16 @@ export default function App() {
     if (nextIndex !== currentTabIndex) setActiveTab(tabs[nextIndex][0]);
   }
 
-  if (!authReady) return <CanvasStage><StatePanel state="loading" pageName="xCubus" /></CanvasStage>;
+  if (!authReady) return <CanvasStage><StatePanel state="loading" pageName="FACt.Smack" /></CanvasStage>;
   if (isGuest) return <CanvasStage><SplashView cards={cards} locale={locale} onEmailAuth={requestEmailAuth} onEnter={(provider) => { setIsGuest(false); trackEvent(ANALYTICS_EVENT.SIGNUP_COMPLETED, { locale, source: provider }); setToast(locale === 'en' ? `${provider} sign-in is currently being prepared.` : `${provider} 로그인은 준비 중입니다.`); }} /></CanvasStage>;
 
   return <CanvasStage><div className="editorial-app h-full bg-background text-on-background font-body">
     <SkipLink />
     <header key={`header-${viewportEpoch}`} className="fixed top-0 z-50 w-full border-b border-[#e4e2dd] bg-[#fbf9f4]/95 backdrop-blur-xl">
       <div className="mx-auto flex h-[48px] max-w-none items-center justify-between gap-2 px-4">
-        <button type="button" onClick={() => setActiveTab('feed')} className="flex min-w-0 flex-1 items-end gap-1 overflow-hidden text-left" aria-label="xy by x.Cubus 피드로 이동">
-          <img src={logoUrl} width="38" height="28" className="h-7 w-9 shrink-0 object-contain" alt="xy by x.Cubus 로고" />
-          <span lang="en" className="truncate whitespace-nowrap font-latin text-[15px] font-bold leading-none tracking-tight text-[#1b1c19] sm:text-[17px] md:text-xl">xy by x.Cubus</span><span aria-label="AI" className="hidden h-[20px] w-[29px] shrink-0 items-center justify-center rounded-[4px] border border-[#c5a059] bg-[#fbf9f4] font-mono text-[10px] font-bold leading-none tracking-[-0.04em] text-[#735c00] md:flex">AI</span><span lang="en" className="hidden whitespace-nowrap font-mono text-[8px] leading-none tracking-wide text-[#735c00] lg:inline">MORE VIEWS, MORE YOU</span>
+        <button type="button" onClick={() => setActiveTab('feed')} className="flex min-w-0 flex-1 items-end gap-1 overflow-hidden text-left" aria-label="FACt.Smack 피드로 이동">
+          <BrandWordmark compact />
+          <span aria-label="AI" className="hidden h-[20px] w-[29px] shrink-0 items-center justify-center rounded-[4px] border border-[#c5a059] bg-[#fbf9f4] font-mono text-[10px] font-bold leading-none tracking-[-0.04em] text-[#735c00] md:flex">AI</span><span lang="en" className="hidden whitespace-nowrap font-mono text-[8px] leading-none tracking-wide text-[#735c00] lg:inline">MORE VIEWS, MORE YOU</span>
         </button>
         <div className="flex shrink-0 items-center gap-1.5">
           <button
@@ -264,7 +263,7 @@ export default function App() {
     </header>
 
     <main key={`main-${activeTab}-${viewportEpoch}`} ref={mainRef} id="main-content" tabIndex="-1" onPointerDown={startTabGesture} onPointerUp={finishTabGesture} onPointerCancel={() => { tabGestureStart.current = null; }} className={`editorial-main mx-auto flex h-full w-full max-w-none flex-col px-4 pb-11 pt-[56px] sm:px-5 ${activeTab === 'feed' ? 'editorial-main--feed' : 'editorial-main--scroll'}`}>
-      {previewState !== 'ready' ? <StatePanel state={previewState} pageName={tabs.find(([id]) => id === activeTab)?.[2] ?? 'xCubus'} onAction={() => { if (previewState === 'permission') setIsGuest(true); else if (previewState === 'review') setActiveTab('profile'); setPreviewState('ready'); }} /> : <>
+      {previewState !== 'ready' ? <StatePanel state={previewState} pageName={tabs.find(([id]) => id === activeTab)?.[2] ?? 'FACt.Smack'} onAction={() => { if (previewState === 'permission') setIsGuest(true); else if (previewState === 'review') setActiveTab('profile'); setPreviewState('ready'); }} /> : <>
         {activeTab === 'feed' && <FeedView categories={displayCategories} cards={visibleCards} card={currentCard} currentIndex={safeIndex} activeCategory={activeCategory} hasVoted={currentCard && votedIds.has(currentCard.id)} onCategoryChange={changeCategory} onPrevious={() => moveCard(-1)} onNext={() => moveCard(1)} onShuffle={shuffle} onVote={vote} onShare={shareCard} onBoost={() => setToast(locale === 'en' ? 'Boost never changes the result; it only increases reach and sample size.' : 'Boost는 결과를 바꾸지 않고 추가 노출과 표본만 늘립니다. 결제 연결은 다음 단계에서 적용합니다.')} onStartUpload={() => { if (isSharedGuest) { setIsSharedGuest(false); setIsGuest(true); } else { setActiveTab('upload'); setToast(locale === 'en' ? 'Let people see your first impression too.' : '내 사진도 첫인상을 받아보세요.'); } }} onAddComment={addComment} />}
         {activeTab === 'upload' && <UploadView categories={displayCategories} locale={locale} onSubmit={addCard} onMessage={setToast} />}
         {activeTab === 'ranking' && <RankingView cards={displayCards} categories={displayCategories} onOpen={openRankingCard} />}
@@ -277,10 +276,15 @@ export default function App() {
     {toast && <div role="status" className="fixed left-1/2 top-[60px] z-[60] w-full max-w-xs -translate-x-1/2 px-4"><div className="flex items-center gap-2 rounded-lg border border-[#e4e2dd] bg-white/95 px-3.5 py-2.5 text-xs text-[#1b1c19] shadow-lg backdrop-blur"><span className="material-symbols-outlined text-base text-cyan-glow">check_circle</span>{toast}</div></div>}
 
     <nav className="fixed bottom-0 z-50 w-full border-t border-[#e4e2dd] bg-[#fbf9f4]/95 pb-[env(safe-area-inset-bottom)] shadow-[0_-4px_20px_rgba(0,0,0,0.03)] backdrop-blur-xl" aria-label="주요 메뉴">
-      <button type="button" onClick={() => setActiveTab('feed')} className="desktop-nav-brand" aria-label="xy by x.Cubus 피드로 이동"><img src={logoUrl} width="30" height="24" alt="" /><span lang="en">xy by x.Cubus</span></button>
+      <button type="button" onClick={() => setActiveTab('feed')} className="desktop-nav-brand" aria-label="FACt.Smack 피드로 이동"><BrandWordmark /></button>
       <div className="desktop-nav-items mx-auto flex h-[44px] max-w-none items-center justify-around px-2">{tabs.map(([id, icon, label, color]) => <button key={id} type="button" onClick={() => setActiveTab(id)} aria-current={activeTab === id ? 'page' : undefined} style={activeTab === id ? { color } : undefined} className={`flex h-[38px] w-16 flex-col items-center justify-center transition-all ${activeTab === id ? 'scale-[1.03]' : 'text-slate-400 hover:text-[#1b1c19]'}`}><span className="material-symbols-outlined text-[20px]">{icon}</span><span className="mt-px font-mono text-[10px] font-bold">{label}</span></button>)}</div>
     </nav>
   </div></CanvasStage>;
+}
+
+/** 정의: 이전 심볼에 의존하지 않고 공식 서비스명 FACt.Smack을 일관되게 표기하는 접근 가능한 워드마크다. */
+function BrandWordmark({ compact = false }) {
+  return <span lang="en" aria-label="FACt.Smack" className={`shrink-0 whitespace-nowrap font-latin font-extrabold leading-none tracking-tight text-[#1b1c19] ${compact ? 'text-[15px] sm:text-[17px] md:text-xl' : 'text-[15px]'}`}>FACt.Smack</span>;
 }
 
 /** 정의: 넓은 PC 화면에서 중앙 피드와 병렬로 표시하는 Instagram형 사용자·추천 콘텐츠 영역이다. */
@@ -295,7 +299,7 @@ function DesktopRecommendationAside({ cards, onProfile }) {
     <div className="mb-3 flex items-center justify-between"><h2 className="text-[13px] font-bold text-[#44474c]">회원님을 위한 추천</h2><button type="button" className="text-[11px] font-bold text-[#1b1c19]">모두 보기</button></div>
     <div className="space-y-3">{suggestions.map((item) => <div key={item.id} className="flex items-center gap-2.5"><img className="h-8 w-8 rounded-full object-cover" src={item.imageUrl} alt="" /><div className="min-w-0 flex-1"><strong className="block truncate text-[12px] text-[#1b1c19]">@{item.author}</strong><span className="block truncate text-[10px] text-[#74777d]">{item.subtext}</span></div><button type="button" className="text-[11px] font-bold text-[#5865F2]">팔로우</button></div>)}</div>
     <p className="mt-8 text-[10px] leading-relaxed text-[#9a9a95]">소개 · 도움말 · 안전 · 개인정보처리방침 · 약관 · 위치 · 언어</p>
-    <p className="mt-3 font-mono text-[10px] text-[#9a9a95]">© 2026 xCUBUS</p>
+    <p className="mt-3 font-mono text-[10px] text-[#9a9a95]">© 2026 FACt.Smack</p>
   </aside>;
 }
 
@@ -366,8 +370,8 @@ function useEnglishUi(locale) {
       '새로운 룩 공유하기': 'Share a new look', '사진 최대 5개와 10초 이하 동영상 1개를 함께 선택할 수 있습니다.': 'Choose up to 5 photos and one video under 10 seconds.', '사진 또는 짧은 동영상 선택': 'Choose photos or a short video', '이미지 5개 + 동영상 1개 · 동영상 최대 10초 · 파일당 15MB': 'Up to 5 photos + 1 video · 10 seconds max · 15 MB per file', '로컬 디바이스에서 파일 찾기': 'Browse files', '파일을 이 영역에 끌어다 놓아도 바로 추가할 수 있어요': 'Or drag files here to add them.', '이미지': 'Photos', '동영상': 'Video', '클릭 또는 드롭하여 추가': 'Click or drop to add', '최대 선택 완료': 'Maximum selected', '1. 카테고리 선택': '1. Choose a category', '2. 어떤 점을 평가받고 싶나요?': '2. What would you like feedback on?', '사진을 올리면 상황에 맞게 다듬어지는 추천 질문': 'Suggested questions tailored to your photo', '선택한 사진·영상에 맞춰 제안하는 질문': 'Suggested questions for your selected media', '예: 오늘 이 룩, 저와 잘 어울리나요?': 'Example: Does this look suit me today?', '지우고 다시 작성': 'Clear and rewrite', '3. 평가 나이 범위': '3. Rating age range', '평가자는 이 범위 안에서 슬라이더와 ± 버튼으로 예상 나이를 선택합니다.': 'Raters choose an age within this range using the slider or ± buttons.', '최소 나이': 'Minimum age', '최대 나이': 'Maximum age', '4. 실제 나이 비교 (선택)': '4. Compare actual age (optional)', '결과에서만 실제 나이와 비교하기': 'Compare with my actual age in results only', '실제 나이는 평가자·프로필·피드에 공개되지 않으며, 본인 결과 비교에만 사용됩니다.': 'Your actual age stays private and is used only for your own result comparison.', '실제 나이 (18~99)': 'Actual age (18–99)', '닉네임 / 핸들': 'Username / handle', '피드에 업로드하기': 'Share to feed', '사진을 추가해 주세요.': 'Add a photo to continue.',
       '현재는 브라우저 목업입니다. 실서비스에서는 권리 동의·검토·안전한 미디어 저장 절차가 적용됩니다.': 'This is a browser mockup. The live service will require rights consent, review, and secure media storage.',
       '이미지 또는 동영상 파일만 선택할 수 있습니다.': 'Choose an image or video file.', '각 파일은 15MB 이하만 선택할 수 있습니다.': 'Each file must be 15 MB or smaller.', '동영상은 1개만 선택할 수 있습니다.': 'Choose no more than one video.', '동영상은 10초 이하만 업로드할 수 있습니다.': 'Videos must be 10 seconds or shorter.', '카메라 촬영은 모바일 환경에서 사용할 수 있는 기능이에요.': 'Camera capture is available on mobile devices.', '닉네임은 2~30자의 한글·영문·숫자·밑줄만 사용할 수 있어요.': 'Use 2–30 letters, numbers, or underscores for the username.', '질문은 4자 이상으로 작성하거나 추천 질문을 선택해 주세요.': 'Write at least 4 characters or choose a suggested question.', '최소·최대 나이는 18~99세 사이며 최소가 최대보다 작아야 해요.': 'The age range must be 18–99 and the minimum must be below the maximum.', '사진 또는 동영상을 선택해 주세요.': 'Choose a photo or video.',
-      '룩을 준비하고 있어요.': 'Preparing your looks.', '잠시만 기다리면 새로운 콘텐츠를 보여드릴게요.': 'Fresh content will be ready in a moment.', '아직 보여드릴 룩이 없어요.': 'Nothing to show yet.', '조금 뒤 다시 확인하거나, 오늘의 첫 룩을 직접 공유해 보세요.': 'Check back soon or share today’s first look.', '새로고침': 'Refresh', '화면을 불러오지 못했어요.': 'Could not load this screen.', '연결 상태를 확인한 뒤 다시 시도해 주세요.': 'Check your connection and try again.', '다시 시도': 'Try again', '로그인 후 이용할 수 있어요.': 'Sign in to continue.', 'xCubus에 가입하고 더 많은 시선으로 오늘의 룩을 확인해 보세요.': 'Join xCubus and see today’s look through more perspectives.', '로그인하기': 'Sign in', '게시물을 검토하고 있어요.': 'Your post is under review.', '안전한 커뮤니티를 위해 확인이 끝나면 피드에 공개됩니다.': 'It will appear in the feed after our safety review.', '내 프로필 보기': 'View my profile', '상태 안내': 'status',
-      '본문으로 바로가기': 'Skip to main content', 'xy by x.Cubus 피드로 이동': 'Go to the xCubus feed', 'xy by x.Cubus 로고': 'xy by x.Cubus logo', 'xCubus 뱀 로고': 'xCubus snake logo', '알림': 'Notifications', '프로필': 'Profile', '내 프로필': 'My profile', '주요 메뉴': 'Main navigation', '카메라로 촬영하기': 'Take a photo', '미디어 추가': 'Add media', '랭킹 카드 미리보기': 'Ranking post preview', '미리보기 닫기': 'Close preview', '대화 상자': 'Dialog', '호감도 높은 순으로 정렬': 'Sort by highest approval', '호감도 낮은 순으로 정렬': 'Sort by lowest approval', '호감도 높은 순': 'Highest approval first', '호감도 낮은 순': 'Lowest approval first', '댓글 미리보기': 'Comment preview', '게시물 댓글 상세': 'Post comments', '댓글 상세 닫기': 'Close comments', '댓글 작성': 'Write a comment', '이전 사진 미리보기': 'Previous photo preview', '다음 사진 미리보기': 'Next photo preview',
+      '룩을 준비하고 있어요.': 'Preparing your looks.', '잠시만 기다리면 새로운 콘텐츠를 보여드릴게요.': 'Fresh content will be ready in a moment.', '아직 보여드릴 룩이 없어요.': 'Nothing to show yet.', '조금 뒤 다시 확인하거나, 오늘의 첫 룩을 직접 공유해 보세요.': 'Check back soon or share today’s first look.', '새로고침': 'Refresh', '화면을 불러오지 못했어요.': 'Could not load this screen.', '연결 상태를 확인한 뒤 다시 시도해 주세요.': 'Check your connection and try again.', '다시 시도': 'Try again', '로그인 후 이용할 수 있어요.': 'Sign in to continue.', 'FACt.Smack에 가입하고 더 많은 시선으로 오늘의 룩을 확인해 보세요.': 'Join FACt.Smack and see today’s look through more perspectives.', '로그인하기': 'Sign in', '게시물을 검토하고 있어요.': 'Your post is under review.', '안전한 커뮤니티를 위해 확인이 끝나면 피드에 공개됩니다.': 'It will appear in the feed after our safety review.', '내 프로필 보기': 'View my profile', '상태 안내': 'status',
+      '본문으로 바로가기': 'Skip to main content', 'FACt.Smack 피드로 이동': 'Go to the FACt.Smack feed', 'FACt.Smack 로고': 'FACt.Smack logo', 'FACt.Smack 뱀 로고': 'FACt.Smack snake logo', '알림': 'Notifications', '프로필': 'Profile', '내 프로필': 'My profile', '주요 메뉴': 'Main navigation', '카메라로 촬영하기': 'Take a photo', '미디어 추가': 'Add media', '랭킹 카드 미리보기': 'Ranking post preview', '미리보기 닫기': 'Close preview', '대화 상자': 'Dialog', '호감도 높은 순으로 정렬': 'Sort by highest approval', '호감도 낮은 순으로 정렬': 'Sort by lowest approval', '호감도 높은 순': 'Highest approval first', '호감도 낮은 순': 'Lowest approval first', '댓글 미리보기': 'Comment preview', '게시물 댓글 상세': 'Post comments', '댓글 상세 닫기': 'Close comments', '댓글 작성': 'Write a comment', '이전 사진 미리보기': 'Previous photo preview', '다음 사진 미리보기': 'Next photo preview',
     };
     const translateText = (text) => {
       const leading = text.match(/^\s*/)?.[0] ?? '';
