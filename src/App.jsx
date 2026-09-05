@@ -213,12 +213,12 @@ export default function App() {
   return <CanvasStage><div className="editorial-app h-full bg-background text-on-background font-body">
     <SkipLink />
     <header key={`header-${viewportEpoch}`} className="fixed top-0 z-50 w-full border-b border-[#e4e2dd] bg-[#fbf9f4]/95 backdrop-blur-xl">
-      <div className="mx-auto flex h-[48px] max-w-none items-center justify-between px-4">
-        <button type="button" onClick={() => setActiveTab('feed')} className="flex min-w-0 items-end gap-1 text-left" aria-label="xy by x.Cubus 피드로 이동">
+      <div className="mx-auto flex h-[48px] max-w-none items-center justify-between gap-2 px-4">
+        <button type="button" onClick={() => setActiveTab('feed')} className="flex min-w-0 flex-1 items-end gap-1 overflow-hidden text-left" aria-label="xy by x.Cubus 피드로 이동">
           <img src={logoUrl} width="38" height="28" className="h-7 w-9 shrink-0 object-contain" alt="xy by x.Cubus 로고" />
-          <span lang="en" className="whitespace-nowrap font-latin text-[17px] font-bold leading-none tracking-tight text-[#1b1c19] sm:text-xl">xy by x.Cubus</span><span aria-label="AI" className="flex h-[20px] w-[29px] shrink-0 items-center justify-center rounded-[4px] border border-[#c5a059] bg-[#fbf9f4] font-mono text-[10px] font-bold leading-none tracking-[-0.04em] text-[#735c00]">AI</span><span lang="en" className="hidden whitespace-nowrap font-mono text-[8px] leading-none tracking-wide text-[#735c00] sm:inline">MORE VIEWS, MORE YOU</span>
+          <span lang="en" className="truncate whitespace-nowrap font-latin text-[15px] font-bold leading-none tracking-tight text-[#1b1c19] min-[380px]:text-[17px] sm:text-xl">xy by x.Cubus</span><span aria-label="AI" className="hidden h-[20px] w-[29px] shrink-0 items-center justify-center rounded-[4px] border border-[#c5a059] bg-[#fbf9f4] font-mono text-[10px] font-bold leading-none tracking-[-0.04em] text-[#735c00] min-[380px]:flex">AI</span><span lang="en" className="hidden whitespace-nowrap font-mono text-[8px] leading-none tracking-wide text-[#735c00] sm:inline">MORE VIEWS, MORE YOU</span>
         </button>
-        <div className="flex items-center gap-1.5">
+        <div className="flex shrink-0 items-center gap-1.5">
           <button
             type="button"
             className="flex h-8 min-w-8 items-center justify-center rounded-full px-1.5 font-latin text-[11px] font-bold tracking-tight text-on-surface-variant hover:bg-surface-container"
