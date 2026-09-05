@@ -10,6 +10,7 @@ import StatePanel from './components/ui/StatePanel.jsx';
 import SkipLink from './components/ui/SkipLink.jsx';
 import { submitVote } from './services/mockApi.js';
 import { ANALYTICS_EVENT, trackEvent } from './services/analytics.js';
+import { localeUrl, resolveLocale } from './services/locale.js';
 
 /** 정의: 앱 전역 하단 탐색 메뉴의 식별자·아이콘·표시명·선택 색상 목록이다. */
 const tabs = [
@@ -24,7 +25,7 @@ function CanvasStage({ children }) { return <div className="app-stage"><div clas
 
 /** 정의: 인증 진입, 탭 상태, 피드 목업 데이터와 사용자 상호작용을 조합하는 루트 화면 컴포넌트다. */
 export default function App() {
-  const locale = new URLSearchParams(window.location.search).get('locale') === 'en' ? 'en' : 'ko';
+  const locale = resolveLocale();
   const sharedPostId = new URLSearchParams(window.location.search).get('post');
   const [isGuest, setIsGuest] = useState(() => !sharedPostId);
   const [isSharedGuest, setIsSharedGuest] = useState(() => Boolean(sharedPostId));
@@ -214,7 +215,17 @@ export default function App() {
           <img src={logoUrl} width="38" height="28" className="h-7 w-9 shrink-0 object-contain" alt="xy by x.Cubus 로고" />
           <span lang="en" className="whitespace-nowrap font-latin text-[17px] font-bold leading-none tracking-tight text-[#1b1c19] sm:text-xl">xy by x.Cubus</span><span aria-label="AI" className="flex h-[20px] w-[29px] shrink-0 items-center justify-center rounded-[4px] border border-[#c5a059] bg-[#fbf9f4] font-mono text-[10px] font-bold leading-none tracking-[-0.04em] text-[#735c00]">AI</span><span lang="en" className="hidden whitespace-nowrap font-mono text-[8px] leading-none tracking-wide text-[#735c00] sm:inline">MORE VIEWS, MORE YOU</span>
         </button>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-1.5">
+          <button
+            type="button"
+            className="flex h-8 min-w-8 items-center justify-center rounded-full px-1.5 font-latin text-[11px] font-bold tracking-tight text-on-surface-variant hover:bg-surface-container"
+            onClick={() => { window.location.assign(localeUrl(locale === 'ko' ? 'en' : 'ko')); }}
+            aria-label={locale === 'ko' ? '영어로 보기' : 'View in Korean'}
+            title={locale === 'ko' ? 'English' : '한국어'}
+          >
+            <span className="material-symbols-outlined text-[19px]" aria-hidden="true">translate</span>
+            <span className="sr-only">{locale === 'ko' ? 'English' : '한국어'}</span>
+          </button>
           <button type="button" className="relative flex h-10 w-10 items-center justify-center rounded-full hover:bg-surface-container" onClick={() => setToast('새 알림은 없습니다.')} aria-label="알림"><span className="material-symbols-outlined text-[22px] text-on-surface-variant">notifications</span><span className="absolute right-2 top-2 h-2 w-2 animate-pulse rounded-full bg-[#c5a059] ring-2 ring-background" /></button>
           <button type="button" onClick={() => setActiveTab('profile')} className="h-9 w-9 overflow-hidden rounded-full border border-[#c5a059]/60 p-0.5" aria-label="프로필"><img className="h-full w-full rounded-full object-cover" src={initialCards[0].imageUrl} alt="내 프로필" /></button>
         </div>
