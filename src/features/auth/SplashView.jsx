@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
+import logoUrl from '../../assets/facs-snake-logo.png';
 
 /** 정의: 방문마다 무작위로 보여 주는 한·영 가입 유도 문구 목록이다. */
 const splashCopies = [
@@ -11,7 +12,7 @@ const splashCopies = [
 ];
 
 /** 정의: 비로그인 방문자에게 인기 콘텐츠와 인증 진입점을 보여 주는 전체 화면 스플래시다. */
-export default function SplashView({ cards, locale = 'ko', onEnter, onEmailAuth }) {
+export default function SplashView({ cards, locale = 'ko', onPreview, onEmailAuth }) {
   const popularCards = useMemo(
     () => [...cards].sort((a, b) => participationCount(b) - participationCount(a)).slice(0, 5),
     [cards],
@@ -56,7 +57,10 @@ export default function SplashView({ cards, locale = 'ko', onEnter, onEmailAuth 
 
       <div className="relative z-10 flex h-full flex-col px-5 pb-6 pt-10">
         <header className="flex flex-col items-center text-center">
-          <p lang="en" className="mt-3 font-latin text-[25px] font-extrabold leading-none tracking-tight">FACt.Smack</p>
+          <button type="button" onClick={onPreview} className="group flex flex-col items-center rounded-xl px-3 py-1 outline-none focus-visible:ring-2 focus-visible:ring-[#ecd8a8]" aria-label={locale === 'en' ? 'Open feed preview without signing in' : '로그인 없이 피드 미리보기 열기'} title={locale === 'en' ? 'Open feed preview' : '피드 미리보기 열기'}>
+            <img src={logoUrl} width="96" height="64" className="h-16 w-24 object-contain drop-shadow-[0_3px_12px_rgba(0,0,0,0.5)] transition-transform duration-200 group-hover:scale-105" alt="FACt.Smack 뱀 로고" />
+            <p lang="en" className="mt-1 font-latin text-[25px] font-extrabold leading-none tracking-tight">FACt.Smack</p>
+          </button>
           <div className="mt-2 flex items-center gap-2">
             <span className="h-px w-5 bg-[#c5a059]/70" />
             <p lang="en" className="font-mono text-[9px] font-bold tracking-[0.22em] text-[#ecd8a8]">MORE VIEWS, MORE YOU</p>

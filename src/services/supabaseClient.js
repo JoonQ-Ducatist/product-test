@@ -1,7 +1,9 @@
 import { createClient } from '@supabase/supabase-js';
 
-const url = import.meta.env.VITE_SUPABASE_URL;
-const publishableKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
+// Node contract tests do not provide Vite's import.meta.env object.
+const environment = import.meta.env ?? {};
+const url = environment.VITE_SUPABASE_URL;
+const publishableKey = environment.VITE_SUPABASE_ANON_KEY;
 
 /**
  * The browser receives only Supabase's publishable key. All data access must

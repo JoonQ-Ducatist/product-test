@@ -41,6 +41,16 @@ button:focus-visible { outline: 2px solid #735c00; outline-offset: 3px; }
 /* 정의: 모바일 전체 폭과 PC·태블릿 중앙 콘텐츠 컬럼을 구분하는 반응형 레이아웃 규칙이다. */
 .app-stage { display: flex; height: var(--xc-app-height); min-height: 0; width: 100%; align-items: stretch; justify-content: center; overflow: hidden; background: var(--xc-surface); }
 .app-canvas { position: relative; width: 100%; height: var(--xc-app-height); overflow: hidden; background: var(--xc-surface); }
+.portrait-lock { display: none; }
+
+/* 정의: 모바일 브라우저는 가로 회전 레이아웃을 제공하지 않는다. OS 회전 잠금은 웹에서 강제할 수 없으므로, 가로 시 앱을 가리고 세로 복귀 안내만 표시한다. */
+@media (max-width: 599px) and (orientation: landscape) {
+  .app-canvas { display: none; }
+  .portrait-lock { position: fixed; inset: 0; z-index: 999; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: .55rem; padding: 1.5rem; background: #051424; color: #fff; text-align: center; }
+  .portrait-lock .material-symbols-outlined { color: #ecd8a8; font-size: 2rem; }
+  .portrait-lock strong { font-size: 1rem; }
+  .portrait-lock p { margin: 0; color: rgba(255,255,255,.7); font-size: .78rem; }
+}
 
 /* 정의: 전 화면에 적용하는 Neutral Sans Serif·에디토리얼 표면·텍스트 규칙이다. */
 .editorial-app { position: relative; height: 100%; overflow: hidden; background: var(--xc-surface); color: var(--xc-text); }

@@ -114,7 +114,7 @@ Result
 
 ### 5.1 Attraction is a powerful entry point, not the whole product
 
-이성에게 어떻게 보이는지는 강한 참여 동기다. 그러나 FACt.Smack 전체를 데이팅 앱으로 한정하지 않는다. Outfit, Work, Fitness, Travel, Profile, Perceived Age 등 다양한 상황에서 동일한 욕구 구조를 사용한다.
+이성에게 어떻게 보이는지는 강한 참여 동기다. 그러나 FACt.Smack 전체를 데이팅 앱으로 한정하지 않는다. Outfit, Work, Fitness, Profile, Perceived Age 등 다양한 상황에서 동일한 욕구 구조를 사용한다.
 
 ### 5.2 Evaluation must be instant
 
@@ -162,7 +162,7 @@ Result
 
 현재 MVP 후보:
 
-`Outfit / Date / Travel / Fitness / Work / Profile / Perceived Age`
+`Outfit / Date / Fitness / Work / Profile / Perceived Age`
 
 이 후보들은 위 Human Desire 기준과 Cash Loop 기준으로 최종 재평가한다.
 

@@ -5,6 +5,7 @@ import UploadView from './features/upload/UploadView.jsx';
 import RankingView from './features/ranking/RankingView.jsx';
 import ProfileView from './features/profile/ProfileView.jsx';
 import SplashView from './features/auth/SplashView.jsx';
+import logoUrl from './assets/facs-snake-logo.png';
 import StatePanel from './components/ui/StatePanel.jsx';
 import SkipLink from './components/ui/SkipLink.jsx';
 import { submitVote } from './services/mockApi.js';
@@ -23,14 +24,22 @@ const tabs = [
 ];
 
 /** 정의: 모바일은 전체 폭, PC·태블릿은 중앙 SNS 콘텐츠 컬럼으로 렌더링하는 반응형 프레임이다. */
-function CanvasStage({ children }) { return <div className="app-stage"><div className="app-canvas">{children}</div></div>; }
+function CanvasStage({ children, locale = 'ko' }) { return <div className="app-stage"><div className="app-canvas">{children}</div><MobilePortraitNotice locale={locale} /></div>; }
+
+/** 정의: 스마트폰 가로 회전에서는 레이아웃을 재배치하지 않고 세로 모드 복귀 안내만 노출한다. */
+function MobilePortraitNotice({ locale }) {
+  const english = locale === 'en';
+  return <aside className="portrait-lock" aria-live="polite"><span className="material-symbols-outlined" aria-hidden="true">screen_rotation</span><strong>{english ? 'Portrait mode only' : '세로 모드로 사용해 주세요'}</strong><p>{english ? 'Rotate your device upright to continue.' : '기기를 세로로 돌리면 계속 이용할 수 있어요.'}</p></aside>;
+}
 
 /** 정의: 인증 진입, 탭 상태, 피드 목업 데이터와 사용자 상호작용을 조합하는 루트 화면 컴포넌트다. */
 export default function App() {
   const locale = resolveLocale();
   const sharedPostId = new URLSearchParams(window.location.search).get('post');
   const authPreview = new URLSearchParams(window.location.search).get('authPreview') === '1';
-  const [isGuest, setIsGuest] = useState(() => authPreview || !sharedPostId);
+  // 정의: 로컬 라이브와 명시적 preview URL은 세션 유무와 관계없이 항상 스플래시부터 시작한다.
+  const previewMode = import.meta.env.DEV || authPreview || new URLSearchParams(window.location.search).has('preview');
+  const [isGuest, setIsGuest] = useState(() => previewMode || !sharedPostId);
   const [authReady, setAuthReady] = useState(() => !supabase);
   const [isSharedGuest, setIsSharedGuest] = useState(() => Boolean(sharedPostId));
   const [activeTab, setActiveTab] = useState('feed');
@@ -62,14 +71,14 @@ export default function App() {
     let active = true;
     supabase.auth.getSession().then(({ data }) => {
       if (!active) return;
-      if (data.session && !authPreview) setIsGuest(false);
+      if (data.session && !previewMode) setIsGuest(false);
       setAuthReady(true);
     });
     const { data: subscription } = supabase.auth.onAuthStateChange((_event, session) => {
-      if (session && !authPreview) setIsGuest(false);
+      if (session && !previewMode) setIsGuest(false);
     });
     return () => { active = false; subscription.subscription.unsubscribe(); };
-  }, [authPreview]);
+  }, [previewMode]);
 
   /** 정의: 동일 브라우저 세션의 첫 진입만 Visitor 이벤트로 남겨 새로고침에 따른 과대 계수를 막는다. */
   useEffect(() => {
@@ -234,21 +243,22 @@ export default function App() {
     if (nextIndex !== currentTabIndex) setActiveTab(tabs[nextIndex][0]);
   }
 
-  if (!authReady) return <CanvasStage><StatePanel state="loading" pageName="FACt.Smack" /></CanvasStage>;
-  if (isGuest) return <CanvasStage><SplashView cards={cards} locale={locale} onEmailAuth={requestEmailAuth} onEnter={(provider) => { setIsGuest(false); trackEvent(ANALYTICS_EVENT.SIGNUP_COMPLETED, { locale, source: provider }); setToast(locale === 'en' ? `${provider} sign-in is currently being prepared.` : `${provider} 로그인은 준비 중입니다.`); }} /></CanvasStage>;
+  if (!authReady) return <CanvasStage locale={locale}><StatePanel state="loading" pageName="FACt.Smack" /></CanvasStage>;
+  if (isGuest) return <CanvasStage locale={locale}><SplashView cards={cards} locale={locale} onEmailAuth={requestEmailAuth} onPreview={() => { setIsGuest(false); setIsSharedGuest(false); setActiveTab('feed'); setToast(locale === 'en' ? 'Preview mode opened the feed.' : '미리보기 모드로 피드를 열었습니다.'); }} /></CanvasStage>;
 
-  return <CanvasStage><div className="editorial-app h-full bg-background text-on-background font-body">
+  return <CanvasStage locale={locale}><div className="editorial-app h-full bg-background text-on-background font-body">
     <SkipLink />
     <header key={`header-${viewportEpoch}`} className="fixed top-0 z-50 w-full border-b border-[#e4e2dd] bg-[#fbf9f4]/95 backdrop-blur-xl">
-      <div className="mx-auto flex h-[48px] max-w-none items-center justify-between gap-2 px-4">
+      <div className="mx-auto flex h-[44px] max-w-none items-center justify-between gap-2 px-4">
         <button type="button" onClick={() => setActiveTab('feed')} className="flex min-w-0 flex-1 items-end gap-1 overflow-hidden text-left" aria-label="FACt.Smack 피드로 이동">
+          <img src={logoUrl} width="38" height="28" className="h-7 w-9 shrink-0 object-contain" alt="FACt.Smack 뱀 로고" />
           <BrandWordmark compact />
           <span aria-label="AI" className="hidden h-[20px] w-[29px] shrink-0 items-center justify-center rounded-[4px] border border-[#c5a059] bg-[#fbf9f4] font-mono text-[10px] font-bold leading-none tracking-[-0.04em] text-[#735c00] md:flex">AI</span><span lang="en" className="hidden whitespace-nowrap font-mono text-[8px] leading-none tracking-wide text-[#735c00] lg:inline">MORE VIEWS, MORE YOU</span>
         </button>
         <div className="flex shrink-0 items-center gap-1.5">
           <button
             type="button"
-            className="flex h-8 min-w-9 items-center justify-center rounded-full border border-[#c5a059]/70 bg-[#fbf9f4] px-2 font-latin text-[11px] font-bold tracking-tight text-[#735c00] hover:bg-surface-container"
+            className="flex h-6 min-w-0 items-center justify-center rounded-md border border-[#c5a059]/55 bg-[#fbf9f4] px-1.5 font-latin text-[9px] font-semibold tracking-tight text-[#735c00]/85 hover:bg-surface-container"
             onClick={() => { window.location.assign(localeUrl(locale === 'ko' ? 'en' : 'ko')); }}
             aria-label={locale === 'ko' ? '영어로 보기' : 'View in Korean'}
             title={locale === 'ko' ? 'English' : '한국어'}
@@ -262,7 +272,7 @@ export default function App() {
       </div>
     </header>
 
-    <main key={`main-${activeTab}-${viewportEpoch}`} ref={mainRef} id="main-content" tabIndex="-1" onPointerDown={startTabGesture} onPointerUp={finishTabGesture} onPointerCancel={() => { tabGestureStart.current = null; }} className={`editorial-main mx-auto flex h-full w-full max-w-none flex-col px-4 pb-11 pt-[56px] sm:px-5 ${activeTab === 'feed' ? 'editorial-main--feed' : 'editorial-main--scroll'}`}>
+    <main key={`main-${activeTab}-${viewportEpoch}`} ref={mainRef} id="main-content" tabIndex="-1" onPointerDown={startTabGesture} onPointerUp={finishTabGesture} onPointerCancel={() => { tabGestureStart.current = null; }} className={`editorial-main mx-auto flex h-full w-full max-w-none flex-col px-4 pb-11 pt-[52px] sm:px-5 ${activeTab === 'feed' ? 'editorial-main--feed' : 'editorial-main--scroll'}`}>
       {previewState !== 'ready' ? <StatePanel state={previewState} pageName={tabs.find(([id]) => id === activeTab)?.[2] ?? 'FACt.Smack'} onAction={() => { if (previewState === 'permission') setIsGuest(true); else if (previewState === 'review') setActiveTab('profile'); setPreviewState('ready'); }} /> : <>
         {activeTab === 'feed' && <FeedView categories={displayCategories} cards={visibleCards} card={currentCard} currentIndex={safeIndex} activeCategory={activeCategory} hasVoted={currentCard && votedIds.has(currentCard.id)} onCategoryChange={changeCategory} onPrevious={() => moveCard(-1)} onNext={() => moveCard(1)} onShuffle={shuffle} onVote={vote} onShare={shareCard} onBoost={() => setToast(locale === 'en' ? 'Boost never changes the result; it only increases reach and sample size.' : 'Boost는 결과를 바꾸지 않고 추가 노출과 표본만 늘립니다. 결제 연결은 다음 단계에서 적용합니다.')} onStartUpload={() => { if (isSharedGuest) { setIsSharedGuest(false); setIsGuest(true); } else { setActiveTab('upload'); setToast(locale === 'en' ? 'Let people see your first impression too.' : '내 사진도 첫인상을 받아보세요.'); } }} onAddComment={addComment} />}
         {activeTab === 'upload' && <UploadView categories={displayCategories} locale={locale} onSubmit={addCard} onMessage={setToast} />}
@@ -276,7 +286,7 @@ export default function App() {
     {toast && <div role="status" className="fixed left-1/2 top-[60px] z-[60] w-full max-w-xs -translate-x-1/2 px-4"><div className="flex items-center gap-2 rounded-lg border border-[#e4e2dd] bg-white/95 px-3.5 py-2.5 text-xs text-[#1b1c19] shadow-lg backdrop-blur"><span className="material-symbols-outlined text-base text-cyan-glow">check_circle</span>{toast}</div></div>}
 
     <nav className="fixed bottom-0 z-50 w-full border-t border-[#e4e2dd] bg-[#fbf9f4]/95 pb-[env(safe-area-inset-bottom)] shadow-[0_-4px_20px_rgba(0,0,0,0.03)] backdrop-blur-xl" aria-label="주요 메뉴">
-      <button type="button" onClick={() => setActiveTab('feed')} className="desktop-nav-brand" aria-label="FACt.Smack 피드로 이동"><BrandWordmark /></button>
+      <button type="button" onClick={() => setActiveTab('feed')} className="desktop-nav-brand" aria-label="FACt.Smack 피드로 이동"><img src={logoUrl} width="30" height="24" alt="" /><BrandWordmark /></button>
       <div className="desktop-nav-items mx-auto flex h-[44px] max-w-none items-center justify-around px-2">{tabs.map(([id, icon, label, color]) => <button key={id} type="button" onClick={() => setActiveTab(id)} aria-current={activeTab === id ? 'page' : undefined} style={activeTab === id ? { color } : undefined} className={`flex h-[38px] w-16 flex-col items-center justify-center transition-all ${activeTab === id ? 'scale-[1.03]' : 'text-slate-400 hover:text-[#1b1c19]'}`}><span className="material-symbols-outlined text-[20px]">{icon}</span><span className="mt-px font-mono text-[10px] font-bold">{label}</span></button>)}</div>
     </nav>
   </div></CanvasStage>;
@@ -284,7 +294,7 @@ export default function App() {
 
 /** 정의: 이전 심볼에 의존하지 않고 공식 서비스명 FACt.Smack을 일관되게 표기하는 접근 가능한 워드마크다. */
 function BrandWordmark({ compact = false }) {
-  return <span lang="en" aria-label="FACt.Smack" className={`shrink-0 whitespace-nowrap font-latin font-extrabold leading-none tracking-tight text-[#1b1c19] ${compact ? 'text-[15px] sm:text-[17px] md:text-xl' : 'text-[15px]'}`}>FACt.Smack</span>;
+  return <span lang="en" aria-label="FACt.Smack" className={`shrink-0 whitespace-nowrap font-latin font-extrabold leading-none tracking-tight text-[#1b1c19] ${compact ? '-translate-y-[2px] text-[15px] sm:text-[17px] md:text-xl' : 'text-[15px]'}`}>FACt.Smack</span>;
 }
 
 /** 정의: 넓은 PC 화면에서 중앙 피드와 병렬로 표시하는 Instagram형 사용자·추천 콘텐츠 영역이다. */
@@ -306,7 +316,7 @@ function DesktopRecommendationAside({ cards, onProfile }) {
 /** 정의: 영어권 미리보기와 실제 로케일 전환에서 카테고리의 표시명을 원본 데이터와 분리한다. */
 function localizeCategories(source, locale) {
   if (locale !== 'en') return source;
-  const labels = { PerceivedAge: 'How Old Do I Look?', Outfit: "Today's Look", Date: 'Date', Travel: 'Travel', Fitness: 'Fitness', Work: 'Work', SocialProfile: 'Profile' };
+  const labels = { PerceivedAge: 'How Old Do I Look?', Outfit: "Today's Look", Date: 'Date', Fitness: 'Fitness', Work: 'Work', SocialProfile: 'Profile' };
   return Object.fromEntries(Object.entries(source).map(([id, category]) => [id, { ...category, label: labels[id] ?? category.label, feedLabel: id === 'PerceivedAge' ? 'AGE CHECK' : category.feedLabel }]));
 }
 
@@ -327,8 +337,6 @@ const EN_COPY = {
   '일하는 순간의 첫인상이에요.': 'A first impression from a moment at work.',
   '첫 만남이라면\n호감이 가나요?': 'Would this make\na lovely first impression?',
   '첫 만남에서 느껴지는 인상이에요.': 'A first impression for a first date.',
-  '이 여행 스타일,\n매력적으로 보이나요?': 'Does this travel look\nfeel appealing?',
-  '여행의 설렘이 담긴 첫인상이에요.': 'A first impression with travel excitement.',
   '건강하고 매력적인 인상을\n주나요?': 'Does this look feel\nhealthy and confident?',
   '건강하고 자신감 있는 첫인상이에요.': 'A healthy, confident first impression.',
   '직장에서 좋은 첫인상을\n줄 것 같나요?': 'Would this make a great\nfirst impression at work?',
@@ -340,7 +348,6 @@ const EN_COPY = {
   '건강하고 밝은 에너지가 느껴져요.': 'It gives off healthy, bright energy.',
   '차분하고 자신감 있는 분위기예요.': 'It feels calm and confident.',
   '밝고 다정한 인상이 느껴져요.': 'It feels bright and warm.',
-  '여행의 설렘이 자연스럽게 담겼네요.': 'The excitement of travel comes through naturally.',
   '활동적인 에너지가 잘 보여요.': 'Your active energy comes through well.',
   '차분하고 믿음직한 분위기입니다.': 'It feels calm and trustworthy.',
   '의견 감사합니다!': 'Thanks for your thoughts!',
@@ -360,7 +367,7 @@ function useEnglishUi(locale) {
     document.documentElement.lang = locale;
     if (locale !== 'en') return undefined;
     const replacements = {
-      '셔플': 'Shuffle', '몇 살로 보여?': 'How Old Do I Look?', '오늘의 룩': "Today's Look", '데이트': 'Date', '여행': 'Travel', '운동': 'Fitness', '출근': 'Work', 'SNS 프로필': 'Profile',
+      '셔플': 'Shuffle', '몇 살로 보여?': 'How Old Do I Look?', '오늘의 룩': "Today's Look", '데이트': 'Date', '운동': 'Fitness', '출근': 'Work', 'SNS 프로필': 'Profile',
       '더 보기': 'More', '다음 사진': 'Next photo', '이전 사진': 'Previous photo', '이전 카드': 'Previous post', '다음 카드': 'Next post', '사진 탐색': 'Photo navigation', '등록된 사진': 'Photos', '유효 평가': 'Valid ratings', '명': '', '평균 예상': 'Average perceived', '평균 예상 나이': 'Average perceived age', '평균 호감도': 'Average approval', '호감도': 'Approval', '호감': 'YES', '비호감': 'NO', '세': ' years', '주관적 첫인상': 'Subjective first impression', '참여자의 주관적': 'Participants’ subjective', '첫인상이에요': 'first impression', '몇 살로 보이나요?': 'How old do I look?', '선택': 'Select',
       '초기 경향': 'Early signal', '현재 결과': 'Current result', '확장 표본': 'Expanded sample', '표본 수집 중': 'Collecting ratings', '100명까지 Boost · ₩1,000': 'Boost to 100 · $1', '나도 평가받기': 'Get feedback too', '아직 충분한 첫인상이 모이지 않았어요. 10명의 반응이 모이면 첫 경향을 알려드릴게요.': 'Not enough first impressions yet. We’ll show an early signal after 10 ratings.',
       '회원님을 위한 추천': 'Suggested for you', '모두 보기': 'See all', '팔로우': 'Follow', '전환': 'Switch', '나의 Look Book': 'My Look Book', '소개 · 도움말 · 안전 · 개인정보처리방침 · 약관 · 위치 · 언어': 'About · Help · Safety · Privacy · Terms · Location · Language',

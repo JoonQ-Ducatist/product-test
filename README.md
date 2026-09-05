@@ -105,13 +105,12 @@ Return / Re-upload
 
 ## 🗂 MVP Category Candidates
 
-현재 검토 중인 카테고리는 다음 7개입니다. 최종 MVP 구성은 트래픽, 반복사용성, 결과 확인 욕구, 바이럴, Boost 구매 가능성, Report 확장성, 글로벌 확장성 및 안전성을 기준으로 재평가합니다.
+현재 MVP 카테고리는 다음 6개입니다. 여행은 초기 MVP 범위에서 제외하며, 향후 실험 지표를 기준으로 재검토합니다.
 
 | Category | Global Label | Example Question / Interaction |
 |---|---|---|
 | 오늘의 룩 | Outfit | 오늘 이 스타일, 괜찮아 보여요? |
 | 데이트 | Date | 첫 만남이라면 호감이 가나요? |
-| 여행 | Travel | 이 모습, 좋은 인상을 주나요? |
 | 운동 | Fitness | 건강하고 매력적인 인상을 주나요? |
 | 출근 | Work | 직장에서 좋은 첫인상을 줄 것 같나요? |
 | SNS 프로필 | Profile | 이 사진, 프로필 사진으로 괜찮아 보여요? |
@@ -291,7 +290,7 @@ FACt.Smack/
 
 **MVP Category Finalization**
 
-현재 7개 후보(`Outfit / Date / Travel / Fitness / Work / Profile / Perceived Age`)를 다음 기준으로 재평가하여 실제 MVP 카테고리를 확정합니다.
+현재 6개 MVP 카테고리(`Outfit / Date / Fitness / Work / Profile / Perceived Age`)를 다음 기준으로 재평가합니다.
 
 `Traffic Potential · Repeat Usage · Result Curiosity · Virality · Boost Purchase Intent · Report Expandability · Global Scalability · Safety/Risk`
 
