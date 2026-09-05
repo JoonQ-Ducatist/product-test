@@ -216,17 +216,17 @@ export default function App() {
       <div className="mx-auto flex h-[48px] max-w-none items-center justify-between gap-2 px-4">
         <button type="button" onClick={() => setActiveTab('feed')} className="flex min-w-0 flex-1 items-end gap-1 overflow-hidden text-left" aria-label="xy by x.Cubus 피드로 이동">
           <img src={logoUrl} width="38" height="28" className="h-7 w-9 shrink-0 object-contain" alt="xy by x.Cubus 로고" />
-          <span lang="en" className="truncate whitespace-nowrap font-latin text-[15px] font-bold leading-none tracking-tight text-[#1b1c19] min-[380px]:text-[17px] sm:text-xl">xy by x.Cubus</span><span aria-label="AI" className="hidden h-[20px] w-[29px] shrink-0 items-center justify-center rounded-[4px] border border-[#c5a059] bg-[#fbf9f4] font-mono text-[10px] font-bold leading-none tracking-[-0.04em] text-[#735c00] min-[380px]:flex">AI</span><span lang="en" className="hidden whitespace-nowrap font-mono text-[8px] leading-none tracking-wide text-[#735c00] sm:inline">MORE VIEWS, MORE YOU</span>
+          <span lang="en" className="truncate whitespace-nowrap font-latin text-[15px] font-bold leading-none tracking-tight text-[#1b1c19] sm:text-[17px] md:text-xl">xy by x.Cubus</span><span aria-label="AI" className="hidden h-[20px] w-[29px] shrink-0 items-center justify-center rounded-[4px] border border-[#c5a059] bg-[#fbf9f4] font-mono text-[10px] font-bold leading-none tracking-[-0.04em] text-[#735c00] md:flex">AI</span><span lang="en" className="hidden whitespace-nowrap font-mono text-[8px] leading-none tracking-wide text-[#735c00] lg:inline">MORE VIEWS, MORE YOU</span>
         </button>
         <div className="flex shrink-0 items-center gap-1.5">
           <button
             type="button"
-            className="flex h-8 min-w-8 items-center justify-center rounded-full px-1.5 font-latin text-[11px] font-bold tracking-tight text-on-surface-variant hover:bg-surface-container"
+            className="flex h-8 min-w-9 items-center justify-center rounded-full border border-[#c5a059]/70 bg-[#fbf9f4] px-2 font-latin text-[11px] font-bold tracking-tight text-[#735c00] hover:bg-surface-container"
             onClick={() => { window.location.assign(localeUrl(locale === 'ko' ? 'en' : 'ko')); }}
             aria-label={locale === 'ko' ? '영어로 보기' : 'View in Korean'}
             title={locale === 'ko' ? 'English' : '한국어'}
           >
-            <span className="material-symbols-outlined text-[19px]" aria-hidden="true">translate</span>
+            <span aria-hidden="true">{locale === 'ko' ? 'EN' : '한글'}</span>
             <span className="sr-only">{locale === 'ko' ? 'English' : '한국어'}</span>
           </button>
           <button type="button" className="relative flex h-10 w-10 items-center justify-center rounded-full hover:bg-surface-container" onClick={() => setToast('새 알림은 없습니다.')} aria-label="알림"><span className="material-symbols-outlined text-[22px] text-on-surface-variant">notifications</span><span className="absolute right-2 top-2 h-2 w-2 animate-pulse rounded-full bg-[#c5a059] ring-2 ring-background" /></button>
