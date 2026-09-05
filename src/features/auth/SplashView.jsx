@@ -12,13 +12,32 @@ const splashCopies = [
 ];
 
 /** 정의: 비로그인 방문자에게 인기 콘텐츠와 인증 진입점을 보여 주는 전체 화면 스플래시다. */
-export default function SplashView({ cards, locale = 'ko', onEnter }) {
+export default function SplashView({ cards, locale = 'ko', onEnter, onEmailAuth }) {
   const popularCards = useMemo(
     () => [...cards].sort((a, b) => participationCount(b) - participationCount(a)).slice(0, 5),
     [cards],
   );
   const [activeIndex, setActiveIndex] = useState(0);
   const [copy] = useState(() => splashCopies[Math.floor(Math.random() * splashCopies.length)]);
+  const [emailOpen, setEmailOpen] = useState(false);
+  const [email, setEmail] = useState('');
+  const [selectedProvider, setSelectedProvider] = useState('email');
+  const [emailSent, setEmailSent] = useState(false);
+  const [emailNotice, setEmailNotice] = useState('');
+
+  function selectProvider(provider) {
+    setSelectedProvider(provider);
+    if (provider === 'email') setEmailOpen(true);
+  }
+
+  async function submitEmail(event) {
+    event.preventDefault();
+    const sent = await onEmailAuth(email.trim());
+    if (!sent) return;
+    setEmailSent(true);
+    setEmailNotice(locale === 'en' ? 'Verification email sent to this address.' : '입력하신 주소로 인증메일을 발송했습니다.');
+    window.setTimeout(() => setEmailNotice(''), 2200);
+  }
 
   useEffect(() => {
     if (popularCards.length < 2) return undefined;
@@ -59,11 +78,11 @@ export default function SplashView({ cards, locale = 'ko', onEnter }) {
           <p className="mb-3 text-center text-[11px] leading-relaxed text-white/75">
             {locale === 'en' ? 'Join to see yourself through more views.' : <>가입하고 오늘의 내 모습을 확인해 보세요.<span className="block text-white/55">Join to see yourself through more views.</span></>}
           </p>
-          <div className="flex flex-col gap-2">
-            <ProviderButton label={locale === 'en' ? 'Continue with Google' : 'Google로 계속하기'} icon="G" onClick={() => onEnter('Google')} />
-            <ProviderButton label={locale === 'en' ? 'Continue with Apple' : 'Apple로 계속하기'} icon="apple" onClick={() => onEnter('Apple')} />
-            <ProviderButton label={locale === 'en' ? 'Continue with Kakao' : '카카오로 계속하기'} icon="chat_bubble" onClick={() => onEnter('Kakao')} />
-            <ProviderButton label={locale === 'en' ? 'Continue with email' : '이메일로 계속하기'} icon="mail" onClick={() => onEnter(locale === 'en' ? 'Email' : '이메일')} />
+          <div className="relative flex flex-col gap-2">
+            <ProviderButton compact={selectedProvider !== 'google'} selected={selectedProvider === 'google'} label={locale === 'en' ? 'Google — coming soon' : 'Google 로그인 — 준비 중'} icon="G" onClick={() => selectProvider('google')} />
+            <ProviderButton compact={selectedProvider !== 'apple'} selected={selectedProvider === 'apple'} label={locale === 'en' ? 'Apple — coming soon' : 'Apple 로그인 — 준비 중'} icon="apple" onClick={() => selectProvider('apple')} />
+            <ProviderButton compact={selectedProvider !== 'kakao'} selected={selectedProvider === 'kakao'} label={locale === 'en' ? 'Kakao — coming soon' : '카카오 로그인 — 준비 중'} icon="chat_bubble" onClick={() => selectProvider('kakao')} />
+            {selectedProvider === 'email' && emailOpen ? <form className="relative mx-auto flex w-[92%] flex-wrap gap-1.5 rounded-xl border border-white/20 bg-black/20 p-2.5 shadow-inner" onSubmit={submitEmail}><input required disabled={emailSent} type="email" value={email} onChange={(event) => setEmail(event.target.value)} placeholder={locale === 'en' ? 'you@example.com' : '이메일 주소'} className="h-9 min-w-0 flex-1 rounded-full border border-[#ecd8a8]/85 bg-black/15 px-3 text-xs text-white placeholder:text-white/45 outline-none focus:border-[#22C55E] disabled:cursor-not-allowed disabled:opacity-55" autoFocus /><button type="submit" disabled={emailSent} className="h-9 shrink-0 rounded-full bg-[#22C55E] px-3 text-xs font-extrabold text-[#071c10] transition hover:bg-[#4ade80] disabled:cursor-not-allowed disabled:opacity-55">{locale === 'en' ? 'Send link' : '링크 보내기'}</button>{emailSent && <button type="button" onClick={() => { setEmailSent(false); setEmailNotice(''); }} className="w-full text-center text-[10px] font-semibold text-white/80 underline underline-offset-2">{locale === 'en' ? 'Use another email address' : '다시 입력하기'}</button>}{emailNotice && <p role="status" className="absolute -top-10 left-1/2 w-max max-w-[94%] -translate-x-1/2 rounded-full border border-[#22C55E]/60 bg-[#0b2a17]/95 px-3 py-1.5 text-[10px] font-semibold text-white shadow-lg">{emailNotice}</p>}</form> : <ProviderButton compact={false} selected={selectedProvider === 'email'} label={locale === 'en' ? 'Continue with email' : '이메일로 계속하기'} icon="mail" onClick={() => selectProvider('email')} />}
           </div>
           <p className="mt-3 text-center text-[9px] leading-relaxed text-white/45">{locale === 'en' ? 'By continuing, you agree to our Terms and Privacy Policy.' : '계속하면 이용약관 및 개인정보 처리방침에 동의하게 됩니다.'}</p>
         </section>
@@ -76,10 +95,10 @@ export default function SplashView({ cards, locale = 'ko', onEnter }) {
 function participationCount(card) { return card.evaluationType === 'NUMERIC_AGE' ? card.ageVoteCount ?? 0 : (card.yesVotes ?? 0) + (card.noVotes ?? 0); }
 
 /** 정의: 인증 제공자별 진입 행동을 일관된 크기·접근성으로 렌더링하는 버튼이다. */
-function ProviderButton({ label, icon, onClick }) {
+function ProviderButton({ label, icon, onClick, compact = false, selected = false }) {
   return (
-    <button type="button" onClick={onClick} className="mx-auto flex h-10 w-[92%] items-center justify-center gap-2 rounded-full border border-white/15 bg-white/[0.055] px-4 text-sm font-bold text-white shadow-sm backdrop-blur-[1px] transition hover:bg-white/[0.14] focus-visible:bg-white/[0.14]">
-      <span className="material-symbols-outlined text-[17px] text-[#ecd8a8]">{icon}</span>
+    <button type="button" onClick={onClick} className={`mx-auto flex w-[92%] items-center justify-center gap-2 rounded-full border px-4 font-bold text-white shadow-sm backdrop-blur-[1px] transition-all duration-200 ${selected ? 'h-11 border-[#ecd8a8]/70 bg-white/[0.14] text-sm' : compact ? 'h-7 border-white/10 bg-white/[0.025] text-[10px] text-white/65 hover:bg-white/[0.08]' : 'h-10 border-white/15 bg-white/[0.055] text-sm hover:bg-white/[0.14]'}`}>
+      <span className={`material-symbols-outlined text-[#ecd8a8] ${compact ? 'text-[13px]' : 'text-[17px]'}`}>{icon}</span>
       {label}
     </button>
   );

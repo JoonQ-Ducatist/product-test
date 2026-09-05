@@ -13,6 +13,7 @@ import { ANALYTICS_EVENT, trackEvent } from './services/analytics.js';
 import { localeUrl, resolveLocale } from './services/locale.js';
 import { applySeoMetadata } from './services/seo.js';
 import { buildShareUrl } from './services/share.js';
+import { supabase } from './services/supabaseClient.js';
 
 /** 정의: 앱 전역 하단 탐색 메뉴의 식별자·아이콘·표시명·선택 색상 목록이다. */
 const tabs = [
@@ -29,7 +30,9 @@ function CanvasStage({ children }) { return <div className="app-stage"><div clas
 export default function App() {
   const locale = resolveLocale();
   const sharedPostId = new URLSearchParams(window.location.search).get('post');
-  const [isGuest, setIsGuest] = useState(() => !sharedPostId);
+  const authPreview = new URLSearchParams(window.location.search).get('authPreview') === '1';
+  const [isGuest, setIsGuest] = useState(() => authPreview || !sharedPostId);
+  const [authReady, setAuthReady] = useState(() => !supabase);
   const [isSharedGuest, setIsSharedGuest] = useState(() => Boolean(sharedPostId));
   const [activeTab, setActiveTab] = useState('feed');
   const [cards, setCards] = useState(initialCards);
@@ -53,6 +56,21 @@ export default function App() {
     const timer = window.setTimeout(() => setToast(''), 1800);
     return () => window.clearTimeout(timer);
   }, [toast]);
+
+  /** Keeps the prototype UI in sync with an actual Supabase email session. */
+  useEffect(() => {
+    if (!supabase) return undefined;
+    let active = true;
+    supabase.auth.getSession().then(({ data }) => {
+      if (!active) return;
+      if (data.session && !authPreview) setIsGuest(false);
+      setAuthReady(true);
+    });
+    const { data: subscription } = supabase.auth.onAuthStateChange((_event, session) => {
+      if (session && !authPreview) setIsGuest(false);
+    });
+    return () => { active = false; subscription.subscription.unsubscribe(); };
+  }, [authPreview]);
 
   /** 정의: 동일 브라우저 세션의 첫 진입만 Visitor 이벤트로 남겨 새로고침에 따른 과대 계수를 막는다. */
   useEffect(() => {
@@ -179,6 +197,15 @@ export default function App() {
     setToast(locale === 'en' ? 'Your new post is now first in the feed.' : '새 사진이 피드 맨 앞에 등록되었습니다.');
   }
 
+  async function requestEmailAuth(email) {
+    if (!supabase) { setToast(locale === 'en' ? 'Authentication is not configured yet.' : '인증 연결 설정이 아직 완료되지 않았습니다.'); return; }
+    const { error } = await supabase.auth.signInWithOtp({ email, options: { emailRedirectTo: window.location.origin } });
+    setToast(error
+      ? (locale === 'en' ? error.message : `인증 메일을 보낼 수 없습니다: ${error.message}`)
+      : (locale === 'en' ? 'Check your email to finish signing in.' : '이메일의 로그인 링크를 확인해 주세요.'));
+    return !error;
+  }
+
   /** 정의: 랭킹에서 선택한 카드의 피드 위치로 이동한다. @param {{ id: string }} target 대상 카드 */
   function openRankingCard(target) {
     setActiveCategory('ALL');
@@ -208,7 +235,8 @@ export default function App() {
     if (nextIndex !== currentTabIndex) setActiveTab(tabs[nextIndex][0]);
   }
 
-  if (isGuest) return <CanvasStage><SplashView cards={cards} locale={locale} onEnter={(provider) => { setIsGuest(false); trackEvent(ANALYTICS_EVENT.SIGNUP_COMPLETED, { locale, source: provider }); setToast(locale === 'en' ? `${provider} sign-in is currently a mock.` : `${provider} 로그인은 현재 목업입니다.`); }} /></CanvasStage>;
+  if (!authReady) return <CanvasStage><StatePanel state="loading" pageName="xCubus" /></CanvasStage>;
+  if (isGuest) return <CanvasStage><SplashView cards={cards} locale={locale} onEmailAuth={requestEmailAuth} onEnter={(provider) => { setIsGuest(false); trackEvent(ANALYTICS_EVENT.SIGNUP_COMPLETED, { locale, source: provider }); setToast(locale === 'en' ? `${provider} sign-in is currently being prepared.` : `${provider} 로그인은 준비 중입니다.`); }} /></CanvasStage>;
 
   return <CanvasStage><div className="editorial-app h-full bg-background text-on-background font-body">
     <SkipLink />

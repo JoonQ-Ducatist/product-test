@@ -53,7 +53,7 @@
 
 | ID | 기능·결정 | Cash Loop 영향 | 완료 기준 | 상태 |
 | --- | --- | --- | --- | --- |
-| CL-06 | Supabase Auth·DB·Storage·RLS | Engagement·Data | 실제 사용자·미디어·권한·투표 데이터를 안전하게 영구 저장 | 대기 |
+| CL-06 | Supabase Auth·DB·Storage·RLS | Engagement·Data | 실제 사용자·미디어·권한·투표 데이터를 안전하게 영구 저장 | 연결 기반 완료(승인) — 프로젝트 URL·Publishable Key·Dashboard 관리자 접근과 브라우저 SDK 연결 기반을 설정. DB 스키마·RLS·Auth Redirect 적용은 다음 승인 단계 |
 | CL-07 | 검토·신고·미디어 안전 흐름 | Data | 게시물 공개 전 상태·신고·예외 사람 검토·감사 기록 제공 | 대기 |
 | CL-08 | Closed Beta Seed Group 운영 | Acquisition·Engagement | 100명+ 실제 사용자와 Vote→Upload→Result 행동 검증 | 대기 |
 
@@ -140,7 +140,7 @@
 | ID | 기능 | 완료 기준 | 상태 |
 | --- | --- | --- | --- |
 | BE-00 | Supabase 기반 구성 | Supabase Postgres·Auth·Storage·Edge Functions 환경, SQL 마이그레이션, RLS 기본 정책이 준비됨 | 대기 |
-| BE-01 | 인증·세션·역할 | 일반 사용자·운영자·관리자 권한이 분리됨 | 대기 |
+| BE-01 | 인증·세션·역할 | 일반 사용자·운영자·관리자 권한이 분리됨 | 진행 중 — Supabase 이메일 매직링크 가입·로그인 UI, 세션 감지, 로컬 Redirect URL을 설정. 실제 이메일 발송·복귀 E2E와 사용자 역할/RLS는 다음 단계 |
 | BE-07 | 다중 인증 제공자 | Apple·Google·Kakao·이메일 가입·로그인, 계정 연결·해제, 제공자별 오류 처리를 지원 | 대기 |
 | BE-08 | 팔로우·차단 관계·가시성 인가 | 승인 없는 단방향 Follow, 양방향 노출을 차단하는 Block, Post visibility(public/followers) 권한 검사를 서버에서 처리 | 대기 |
 | BE-09 | 업로드 자격 규칙 | 초기 전체 허용 후 활동 기준 기반 업로드 자격을 서버에서 판정하고, 비활성·활성 전환을 안전하게 처리 | 대기 |
