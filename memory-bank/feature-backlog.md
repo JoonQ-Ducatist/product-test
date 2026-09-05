@@ -40,7 +40,7 @@
 
 | ID | 기능·결정 | Cash Loop 영향 | 완료 기준 | 상태 |
 | --- | --- | --- | --- | --- |
-| CL-01 | MVP 카테고리 Cash Loop 최종 선정 | Acquisition·Data·Monetization | 7개 후보(Outfit, Perceived Age, Date, Travel, Fitness, Work, Profile)를 8개 평가 기준으로 점수화하고 최종 목록·질문·평가 방식 확정 | **완료(승인)** — 핵심: Perceived Age → 오늘의 룩 → SNS 프로필 → 데이트 / 비교군: 운동 → 출근 → 여행. Closed Beta 전환 지표로 재평가 예정 |
+| CL-01 | MVP 카테고리 Cash Loop 최종 선정 | Acquisition·Data·Monetization | 6개 MVP(Outfit, Perceived Age, Date, Fitness, Work, Profile)를 8개 평가 기준으로 점수화하고 최종 목록·질문·평가 방식 확정 | **완료(승인)** — 핵심: Perceived Age → 오늘의 룩 → SNS 프로필 → 데이트 / 비교군: 운동 → 출근. Travel은 초기 MVP에서 제외 |
 | CL-02 | 무료 경계와 Result 계약 | Engagement·Data | 기본 결과, 유효 표본, 표본 부족, 유료 전환 조건을 문서·UI 계약으로 확정 | **완료(승인)** — 4단계 표본 상태, 투명 Result 오버레이, 100명 Boost ₩1,000 가설을 목업 API·UI·계약에 반영 |
 | CL-03 | Signup/Auth → Feed → Vote → Upload → Result 흐름 | Engagement | 가입 뒤 30초 이내 핵심 가치 경험, 프로필 강제 입력 없음 | 목업 동선 구현 완료 — Splash 가입 → Feed → Vote Result → 나도 평가받기 → Upload. 실제 Auth·서버 Result는 CL-04/CL-06에서 연결, 사용자 승인 대기 |
 | CL-04 | 실제 유효 투표·기본 Result | Data | 1인 1표·서버 집계·BINARY YES/NO 또는 NUMERIC_AGE·표본 수 결과 제공 | 대기 |
@@ -53,7 +53,7 @@
 
 | ID | 기능·결정 | Cash Loop 영향 | 완료 기준 | 상태 |
 | --- | --- | --- | --- | --- |
-| CL-06 | Supabase Auth·DB·Storage·RLS | Engagement·Data | 실제 사용자·미디어·권한·투표 데이터를 안전하게 영구 저장 | 연결 기반 완료(승인) — 프로젝트 URL·Publishable Key·Dashboard 관리자 접근과 브라우저 SDK 연결 기반을 설정. DB 스키마·RLS·Auth Redirect 적용은 다음 승인 단계 |
+| CL-06 | Supabase Auth·DB·Storage·RLS | Engagement·Data | 실제 사용자·미디어·권한·투표 데이터를 안전하게 영구 저장 | 진행 중 — 이메일 Auth UI·SDK 연결과 Core MVP SQL 마이그레이션/RLS 초안을 준비. 프로젝트 적용·Storage 정책·실계정 E2E는 다음 검증 단위 |
 | CL-07 | 검토·신고·미디어 안전 흐름 | Data | 게시물 공개 전 상태·신고·예외 사람 검토·감사 기록 제공 | 대기 |
 | CL-08 | Closed Beta Seed Group 운영 | Acquisition·Engagement | 100명+ 실제 사용자와 Vote→Upload→Result 행동 검증 | 대기 |
 
@@ -177,7 +177,7 @@
 | ADM-02 | 회원 검색·조회 | 최소 정보로 계정·상태·활동을 조회 | 대기 |
 | ADM-03 | 역할·계정 상태·제재 | 역할 부여·회수, 제한·정지·해제, 사유·이력 기록 | 대기 |
 | ADM-04 | 탈퇴·데이터 요청 관리 | 삭제·보존 정책에 맞는 요청 처리와 이력 제공 | 대기 |
-| ADM-05 | 카테고리 관리 | MVP 기본 카테고리(오늘의 룩·데이트·여행·운동·출근·SNS 프로필) 생성, 수정, 숨김, 보관/삭제, 미사용 정리 | 대기 |
+| ADM-05 | 카테고리 관리 | MVP 기본 카테고리(몇 살로 보여?·오늘의 룩·데이트·운동·출근·SNS 프로필) 생성, 수정, 숨김, 보관/삭제, 미사용 정리 | 대기 |
 | ADM-06 | 카테고리 순서 관리 | 정렬 변경이 피드·업로드·랭킹 필터에 일관되게 반영 | 대기 |
 | ADM-07 | 미디어 처리·저장 정책 | 이미지·동영상 허용 형식, 최대 용량·해상도·재생 시간, 파생본·객체 보존 정책을 관리 | 대기 |
 | ADM-08 | 미디어 작업·저장 모니터링 | 처리 큐, 실패 원인, 재시도, 날짜·유형별 저장 현황과 보존 작업을 확인 | 대기 |
@@ -215,7 +215,7 @@
 | 1-Ranking | React Ranking, 카테고리 필터·호감도 아이콘 정렬·카테고리 색상 순위·레이어 미리보기 | 적합 | 2026-08-25 | Profile React 전환 진행 가능 |
 | 1-Profile | React Profile, 프로필 요약·내 업로드·호감/비호감 지수·업로드 진입·삭제 | 적합 | 2026-08-25 | 단계 1 완료, 단계 2 진행 가능 |
 | 2-UX-06 | 비로그인 스플래시와 최신 에디토리얼 UI(Feed·Upload·Ranking·Profile) | 적합 | 2026-08-30 | FE-03 공통 UI·디자인 토큰 정비 진행 가능 |
-| 2-CAT-01 | MVP 카테고리 6개(오늘의 룩·데이트·여행·운동·출근·SNS 프로필)와 화면별 문구·색상 통일 | 적합 | 2026-08-30 | FE-03 공통 UI·디자인 토큰 정비 계속 진행 가능 |
+| 2-CAT-01 | MVP 카테고리 6개(몇 살로 보여?·오늘의 룩·데이트·운동·출근·SNS 프로필)와 화면별 문구·색상 통일 | 적합 | 2026-09-05 | Travel은 초기 MVP에서 제외하고 나머지 카테고리에 동일 적용 |
 | 1 (현재 프로토타입 UI) | Feed, Upload, Ranking, Profile 및 카드·투표·업로드 미리보기 | 적합 | 2026-08-23 | React 전환 자체는 별도 검증 필요 |
 | 이후 단계 | 해당 단계 완료 기준 | 대기 | - | 사용자 적합 확인 전 금지 |
 

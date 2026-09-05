@@ -120,5 +120,5 @@
 ## Supabase 전환 경계
 
 - `src/services/mockApi.js`는 이 계약을 재현하는 개발용 어댑터다.
-- 향후 `supabaseApi.js`가 같은 함수 시그니처를 구현한다.
+- `src/services/supabaseApi.js`가 Auth 사용자 확인·단일 투표 쓰기·Aggregate RPC·초안 생성을 구현한다. 실제 화면 연결은 Core MVP 마이그레이션 적용과 Storage 검증 후에 켠다.
 - UI 컴포넌트는 Supabase SDK·테이블명·Storage 키를 직접 알지 못한다.

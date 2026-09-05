@@ -42,7 +42,7 @@
 
 ### Day 1–14 — Product Core와 Core UX
 
-- 카테고리 5~7개를 Traffic Potential, Repeat Usage, Result Curiosity, Virality, Boost Purchase Intent, Report Expandability, Global Scalability, Safety/Risk로 평가해 확정한다. 현재 후보는 Outfit, **Perceived Age**, Date, Travel, Fitness, Work, Profile 7개다.
+- 카테고리 5~7개를 Traffic Potential, Repeat Usage, Result Curiosity, Virality, Boost Purchase Intent, Report Expandability, Global Scalability, Safety/Risk로 평가해 확정한다. 현재 MVP는 Outfit, **Perceived Age**, Date, Fitness, Work, Profile 6개이며 Travel은 MVP 범위에서 제외한다.
 - Perceived Age는 `Upload → 숫자 나이 평가 → 평균 예상 나이 Result → 더 큰 표본 Boost → Report/A·B 비교 → Share`의 별도 Cash Loop 가설로 측정한다. 실제 나이 비교는 업로더 선택 기능이며 평가자에게 비공개다.
 - 기본 Feed·Vote·Upload·기본 Result의 무료 경계를 확정한다.
 - 유효 표본·긍정률·표본 부족 안내로 Result 계약을 정의한다.
